@@ -1,0 +1,1 @@
+-- Historical no-op migration entry retained to match the remote migration history.

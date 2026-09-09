@@ -1,0 +1,152 @@
+import type { BookingSource, BookingStatus, EnquiryStatus, HoldStatus, PaymentStatus, QuoteStatus, RetreatFormat } from "./domain";
+
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+type ProductRow = { id: string; slug: string; name: string; positioning: string; allowed_formats: RetreatFormat[]; is_published: boolean; sort_order: number; created_at: string; updated_at: string };
+type AvailabilityRow = { id: string; retreat_product_id: string | null; retreat_format: RetreatFormat | null; start_date: string; end_date: string; state: "available" | "blocked"; capacity: number | null; created_at: string; updated_at: string };
+type EventRow = { id: string; title: string; slug: string; retreat_product_id: string; retreat_format: RetreatFormat; start_date: string; end_date: string; capacity: number; available_places: number; status: "draft" | "published" | "full" | "cancelled" | "completed"; description: string | null; price_usd_per_person: number; created_at: string; updated_at: string };
+type PricingRow = { id: string; retreat_product_id: string; retreat_format: RetreatFormat; price_usd_per_person_per_night: number; created_at: string; updated_at: string };
+type EnquiryRow = { id: string; enquiry_type: "stay" | "general"; full_name: string; email: string; phone: string; country: string; retreat_product_id: string | null; retreat_type_name: string | null; retreat_format: RetreatFormat | null; guest_count: number | null; requested_start_date: string | null; requested_end_date: string | null; alternative_date: string | null; retreat_event_id: string | null; message: string | null; referral_code: string | null; referral_source: string | null; status: EnquiryStatus; admin_notes: string | null; created_at: string; updated_at: string };
+type QuoteRow = {
+  id: string;
+  reference: string;
+  enquiry_id: string;
+  retreat_product_id: string;
+  retreat_type_name: string;
+  retreat_format: RetreatFormat;
+  start_date: string;
+  end_date: string | null;
+  duration_days: number | null;
+  guest_count: number;
+  total_price: number;
+  rate_usd_per_person_per_night: number | null;
+  deposit_required: number;
+  currency: string;
+  expiry_date: string | null;
+  notes: string | null;
+  payment_instructions: string | null;
+  payment_token_hash: string | null;
+  status: QuoteStatus;
+  payment_status: PaymentStatus;
+  payment_received_at: string | null;
+  eth_amount: number | null;
+  eth_converted_at: string | null;
+  eth_price_usd: number | null;
+  payment_submitted_at: string | null;
+  payment_verified_at: string | null;
+  payment_verified_by: string | null;
+  payment_tx_hash: string | null;
+  public_slug: string | null;
+  created_at: string;
+};
+
+type QuoteInsert = Partial<QuoteRow> & {
+  id?: string;
+  created_at?: string;
+  payment_received_at?: string | null;
+  rate_usd_per_person_per_night?: number | null;
+  public_slug?: string | null;
+  payment_instructions?: string | null;
+  payment_token_hash?: string | null;
+  expiry_date?: string | null;
+};
+type InvoiceRow = {
+  id: string;
+  quote_id: string;
+  enquiry_id: string;
+  invoice_reference: string;
+  amount_usd: number;
+  eth_price_usd: number;
+  amount_eth: number;
+  wallet_address: string;
+  public_slug: string;
+  status: "awaiting_payment" | "payment_submitted" | "paid" | "cancelled";
+  retry_allowed_at: string | null;
+  retry_allowed_by: string | null;
+  created_at: string;
+  updated_at: string;
+};
+type PaymentSubmissionRow = {
+  id: string;
+  invoice_id: string;
+  quote_id: string;
+  enquiry_id: string;
+  submitted_at: string;
+  status: "submitted" | "verified" | "rejected";
+  reviewed_at: string | null;
+  reviewed_by: string | null;
+  review_note: string | null;
+  created_at: string;
+};
+type BookingRow = { id: string; enquiry_id: string | null; retreat_product_id: string; retreat_type_name: string; retreat_format: RetreatFormat; start_date: string; end_date: string | null; guest_count: number; retreat_event_id: string | null; quote_id: string | null; invoice_id: string | null; payment_submission_id: string | null; booking_reference: string; booking_status: BookingStatus; payment_status: PaymentStatus; booking_source: BookingSource; created_by: string | null; confirmed_at: string; confirmed_by: string | null; created_at: string; updated_at: string };
+type HoldRow = { id: string; quote_id: string; enquiry_id: string; retreat_product_id: string; retreat_format: RetreatFormat; start_date: string; end_date: string | null; guest_count: number; retreat_event_id: string | null; status: HoldStatus; expires_at: string | null; created_at: string; updated_at: string };
+
+type Table<Row, Insert = Partial<Row>, Update = Partial<Insert>> = { Row: Row; Insert: Insert; Update: Update; Relationships: [] };
+export type Database = {
+  public: {
+    Tables: {
+      admin_users: Table<{ user_id: string; created_at: string }, { user_id: string; created_at?: string }>;
+      retreat_products: Table<ProductRow, Omit<ProductRow, "id" | "created_at" | "updated_at"> & { id?: string; created_at?: string; updated_at?: string }>;
+      retreat_availability: Table<AvailabilityRow, Omit<AvailabilityRow, "id" | "created_at" | "updated_at"> & { id?: string; created_at?: string; updated_at?: string }>;
+      retreat_pricing: Table<PricingRow, Omit<PricingRow, "id" | "created_at" | "updated_at"> & { id?: string; created_at?: string; updated_at?: string }>;
+      retreat_events: Table<EventRow, Omit<EventRow, "id" | "created_at" | "updated_at"> & { id?: string; created_at?: string; updated_at?: string }>;
+      retreat_enquiries: Table<EnquiryRow, Omit<EnquiryRow, "id" | "created_at" | "updated_at" | "status" | "admin_notes"> & { id?: string; created_at?: string; updated_at?: string; status?: EnquiryStatus; admin_notes?: string | null }>;
+      retreat_quotes: Table<QuoteRow, QuoteInsert>;
+      retreat_invoices: Table<InvoiceRow, Omit<InvoiceRow, "id" | "created_at" | "updated_at"> & { id?: string; created_at?: string; updated_at?: string }>;
+      retreat_payment_submissions: Table<PaymentSubmissionRow, Omit<PaymentSubmissionRow, "id" | "created_at" | "submitted_at" | "status" | "reviewed_at" | "reviewed_by" | "review_note"> & { id?: string; created_at?: string; submitted_at?: string; status?: "submitted" | "verified" | "rejected"; reviewed_at?: string | null; reviewed_by?: string | null; review_note?: string | null }>;
+      retreat_bookings: Table<BookingRow, Omit<BookingRow, "id" | "created_at" | "updated_at"> & { id?: string; created_at?: string; updated_at?: string; booking_source?: BookingSource; created_by?: string | null; enquiry_id?: string | null; quote_id?: string | null }>;
+      retreat_holds: Table<HoldRow, never>;
+    };
+    Views: Record<string, never>;
+      Functions: {
+        get_public_event_by_slug: { Args: { p_slug: string }; Returns: { id: string; slug: string; title: string; retreat_product_id: string; start_date: string; end_date: string; capacity: number; available_places: number; effective_places_remaining: number; description: string | null }[] };
+        get_private_arrival_availability: { Args: { p_product_id: string; p_format: RetreatFormat; p_guest_count: number; p_nights: number; p_month_start: string; p_month_end: string }; Returns: { arrival_date: string }[] };
+        check_stay_availability: { Args: { p_product_id: string; p_format: RetreatFormat; p_arrival: string; p_nights: number; p_guest_count: number }; Returns: { available: boolean; state: string; arrival_date: string; nights: number; checkout_date: string; occupied_start: string; occupied_end: string }[] };
+        get_arrival_availability: { Args: { p_product_id: string; p_format: RetreatFormat; p_nights: number; p_guest_count: number; p_range_start: string; p_range_end: string }; Returns: { available: boolean; state: string; arrival_date: string; nights: number; checkout_date: string; occupied_start: string; occupied_end: string }[] };
+        list_public_retreat_events: { Args: Record<string, never>; Returns: { id: string; slug: string; title: string; retreat_product_id: string; start_date: string; end_date: string; capacity: number; available_places: number; effective_places_remaining: number; description: string | null }[] };
+      confirm_retreat_booking: { Args: { target_quote_id: string }; Returns: string };
+      create_manual_retreat_booking: { Args: { p_retreat_product_id: string; p_retreat_format: RetreatFormat; p_start_date: string; p_end_date: string | null; p_guest_count: number; p_booking_status: BookingStatus; p_payment_status: PaymentStatus; p_event_id: string | null }; Returns: string };
+      create_quote_with_hold: { Args: { p_reference: string; p_enquiry_id: string; p_start_date: string; p_end_date: string | null; p_duration_days: number | null; p_total_price: number; p_deposit_required: number; p_currency: string; p_expiry_date: string; p_notes: string | null; p_payment_instructions: string; p_payment_token_hash: string }; Returns: string };
+      expire_retreat_holds: { Args: Record<string, never>; Returns: number };
+      create_retreat_event: { Args: { p_title:string; p_product_id:string; p_start_date:string; p_end_date:string; p_capacity:number; p_status:string; p_description:string|null }; Returns:string };
+      update_retreat_event: { Args: { p_event_id:string; p_title:string; p_start_date:string; p_end_date:string; p_capacity:number; p_status:string; p_description:string|null }; Returns:undefined };
+        get_retreat_quote_by_token: { Args: { raw_token: string }; Returns: Array<{ reference: string; retreat_type_name: string; retreat_format: RetreatFormat; start_date: string; end_date: string | null; guest_name: string; guest_count: number; total_price: number; deposit_required: number; currency: string; expiry_date: string; notes: string | null; payment_instructions: string; quote_status: QuoteStatus; payment_status: PaymentStatus; eth_amount: number | null; eth_converted_at: string | null; payment_submitted_at: string | null; payment_verified_at: string | null; payment_tx_hash: string | null; retreat_event_id: string | null; event_title: string | null }> };
+        get_public_quote_by_slug: { Args: { p_public_slug: string }; Returns: Array<{ id: string; guest_name: string; retreat_type_name: string; retreat_format: RetreatFormat; guest_count: number; start_date: string; end_date: string | null; nights: number | null; total_price: number; rate_usd_per_person_per_night: number | null; currency: string; invoice_public_slug: string | null; created_at: string }> };
+        get_public_invoice_by_slug: { Args: { p_public_slug: string }; Returns: Array<{ invoice_reference: string; guest_name: string; retreat_type_name: string; retreat_format: RetreatFormat; guest_count: number; start_date: string; end_date: string | null; amount_usd: number; amount_eth: number; eth_price_usd: number; wallet_address: string; status: "awaiting_payment" | "payment_submitted" | "paid" | "cancelled"; retry_allowed: boolean; payment_issue: boolean; created_at: string }> };
+        submit_invoice_payment: { Args: { p_public_slug: string }; Returns: Array<{ submission_status: "payment_submitted"; submitted_at: string; hold_status: HoldStatus; hold_expires_at: string | null }> };
+        verify_invoice_payment: { Args: { p_invoice_id: string; p_review_note: string | null }; Returns: Array<{ submission_status: "verified" | "rejected"; invoice_status: "paid" | "awaiting_payment" | "payment_submitted"; reviewed_at: string; reviewed_by: string; hold_status: HoldStatus; hold_expires_at: string | null; review_note: string | null }> };
+        reject_invoice_payment: { Args: { p_invoice_id: string; p_review_note: string | null }; Returns: Array<{ submission_status: "verified" | "rejected"; invoice_status: "paid" | "awaiting_payment" | "payment_submitted"; reviewed_at: string; reviewed_by: string; hold_status: HoldStatus; hold_expires_at: string | null; review_note: string | null }> };
+        allow_invoice_payment_retry: { Args: { p_invoice_id: string }; Returns: Array<{ retry_allowed_at: string; retry_allowed_by: string; invoice_status: "awaiting_payment" }> };
+        confirm_verified_retreat_booking: { Args: { p_invoice_id: string }; Returns: Array<{ booking_id: string; booking_reference: string; booking_status: "confirmed"; invoice_status: "paid"; hold_status: HoldStatus; confirmed_at: string; confirmed_by: string }> };
+        create_public_invoice: { Args: { p_public_quote_slug: string; p_amount_usd: number; p_eth_price_usd: number; p_amount_eth: number; p_wallet_address: string; p_invoice_reference: string; p_public_slug: string }; Returns: Array<{ public_slug: string }> };
+        get_public_invoice_by_quote_slug: { Args: { p_public_quote_slug: string }; Returns: Array<{ public_slug: string }> };
+        submit_quote_payment: { Args: { raw_token: string; p_tx_hash?: string | null }; Returns: boolean };
+        verify_quote_payment: { Args: { p_quote_id: string; p_tx_hash?: string | null }; Returns: boolean };
+      submit_retreat_enquiry: {
+        Args: {
+          p_full_name: string;
+          p_email: string;
+          p_phone: string;
+          p_country: string;
+          p_retreat_product_id: string;
+          p_retreat_format: RetreatFormat;
+          p_guest_count: number;
+          p_selected_date: string | null;
+          p_alternative_date: string | null;
+          p_event_id: string | null;
+          p_message: string | null;
+          p_referral_code: string | null;
+          p_referral_source: string | null;
+        };
+        Returns: string;
+      };
+      submit_retreat_enquiry_with_dates: { Args: { p_full_name:string; p_email:string; p_phone:string; p_country:string; p_retreat_product_id:string; p_retreat_format:RetreatFormat; p_guest_count:number; p_selected_date:string|null; p_selected_end_date:string|null; p_alternative_date:string|null; p_event_id:string|null; p_message:string|null; p_referral_code:string|null; p_referral_source:string|null }; Returns:string };
+      submit_general_retreat_enquiry: { Args: { p_full_name:string; p_email:string; p_phone:string; p_country:string; p_message:string|null; p_referral_code:string|null; p_referral_source:string|null }; Returns:string };
+      update_retreat_booking: {
+        Args: { target_booking_id: string; target_booking_status: BookingStatus; target_payment_status: PaymentStatus };
+        Returns: undefined;
+      };
+    };
+    Enums: { retreat_format: RetreatFormat; enquiry_status: EnquiryStatus; quote_status: QuoteStatus; payment_status: PaymentStatus; booking_status: BookingStatus };
+    CompositeTypes: Record<string, never>;
+  };
+};

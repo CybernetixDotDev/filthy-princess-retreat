@@ -1,0 +1,3 @@
+import Image from "next/image";
+import Link from "next/link";
+export default function HomePage() { return <section className="hero page-shell"><div className="hero-copy"><p className="eyebrow">Private retreat experiences</p><h1>Filthy Princess</h1><p className="lead">A private world for curiosity, exploration and experiences that don&apos;t quite belong anywhere else.</p><div className="actions"><Link href="/retreat" className="button">Explore the Retreat</Link><Link href="/store" className="text-link">Store — Coming Soon</Link></div></div><Image className="hero-logo" src="/assets/FilthyPrincessLogo.png" alt="Filthy Princess" width={720} height={520} priority /></section>; }

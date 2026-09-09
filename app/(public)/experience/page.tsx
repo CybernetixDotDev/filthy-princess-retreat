@@ -1,0 +1,2 @@
+import Link from "next/link";
+export default function ExperiencePage() { return <section className="narrow-page"><p className="eyebrow">The experience</p><h1>Curiosity beyond ordinary life</h1><p className="lead">Filthy Princess is about curiosity, exploration, self-discovery, playfulness and the freedom to step outside ordinary life for a while.</p><Link className="button" href="/retreat">Explore the Retreat</Link></section>; }

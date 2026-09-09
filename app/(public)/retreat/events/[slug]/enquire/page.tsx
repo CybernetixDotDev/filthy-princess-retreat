@@ -1,0 +1,7 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { formatDate } from "@/lib/domain";
+import { retreatDatesFromInclusiveRange } from "@/lib/retreat-dates";
+import { EventEnquiryForm } from "@/components/event-enquiry-form";
+export default async function EventEnquiryPage({ params }: { params: Promise<{ slug: string }> }) { const { slug } = await params; const supabase = await createClient(); const { data: event } = await supabase.rpc("get_public_event_by_slug", { p_slug: slug }).maybeSingle(); if (!event || event.effective_places_remaining < 1) notFound(); const d = retreatDatesFromInclusiveRange(event.start_date, event.end_date); return <section className="narrow-page"><p className="eyebrow">Event enquiry</p><h1>{event.title}</h1><dl className="definition-list"><div><dt>Arrival</dt><dd>{formatDate(d.arrivalDate)}</dd></div><div><dt>Nights</dt><dd>{d.nights}</dd></div><div><dt>Checkout</dt><dd>{formatDate(d.checkoutDate)}</dd></div><div><dt>Places remaining</dt><dd>{event.effective_places_remaining}</dd></div></dl><p className="lead">Tell Cally how many places you are interested in. This enquiry does not reserve a place.</p><EventEnquiryForm eventId={event.id} placesRemaining={event.effective_places_remaining} /><p><Link className="text-link" href={`/retreat/events/${slug}`}>Back to Event</Link></p></section>; }
