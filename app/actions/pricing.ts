@@ -4,12 +4,33 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { quoteEthForUsd } from "@/lib/alchemy-pricing";
 import { requireAdmin } from "@/lib/auth";
+import { createClient } from "@/lib/supabase/server";
 import { calculateEventUsd, calculateRetreatUsd, normalizeUsd, type CurrentEthConversion, type EventPriceInput, type EventPriceResult, type RetreatPriceInput, type RetreatPriceResult } from "@/lib/pricing";
 import { PRIVATE_RETREAT_FORMATS } from "@/lib/retreat-availability";
 
 const usdSchema = z.string().trim().regex(/^\d{1,10}(?:\.\d{1,2})?$/);
 const retreatInputSchema = z.object({ productId: z.uuid(), format: z.enum(PRIVATE_RETREAT_FORMATS), guests: z.number().int().min(1).max(50), nights: z.number().int().min(1).max(31) });
 const eventInputSchema = z.object({ eventId: z.uuid(), guests: z.number().int().min(1).max(50) });
+const publicRetreatInputSchema = z.object({ productId: z.uuid(), format: z.enum(PRIVATE_RETREAT_FORMATS), guestCount: z.number().int().min(1).max(50) });
+
+export type PublicRetreatPrice = { currency: "USD"; nights: 3; guestCount: number; totalUsd: string };
+
+export async function getPublicRetreatPrice(input: { productId: string; format: RetreatPriceInput["format"]; guestCount: number }): Promise<{ price?: PublicRetreatPrice; error?: string }> {
+  const parsed = publicRetreatInputSchema.safeParse(input);
+  if (!parsed.success) return { error: "Price currently unavailable." };
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase.rpc("get_public_retreat_price", {
+      p_product_id: parsed.data.productId,
+      p_format: parsed.data.format,
+      p_guest_count: parsed.data.guestCount,
+    }).maybeSingle();
+    if (error || !data) return { error: "Price currently unavailable." };
+    return { price: { currency: data.currency, nights: data.nights, guestCount: data.guest_count, totalUsd: normalizeUsd(data.total_usd) } };
+  } catch {
+    return { error: "Price currently unavailable." };
+  }
+}
 
 async function pricingClient() {
   const state = await requireAdmin();

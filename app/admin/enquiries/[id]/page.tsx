@@ -2,11 +2,13 @@
 import { createQuote, updateEnquiry } from "@/app/actions/admin";
 import { allowInvoicePaymentRetry, confirmVerifiedRetreatBooking, createInvoiceForQuote, rejectInvoicePayment, verifyInvoicePayment } from "@/app/actions/invoices";
 import { QuoteLinkActions } from "@/components/quote-link-actions";
+import { GuestShareCard } from "@/components/guest-share-card";
 import { SubmitButton } from "@/components/submit-button";
 import { requireAdmin } from "@/lib/auth";
 import { ENQUIRY_STATUSES, formatDate, formatLabels, titleCaseStatus } from "@/lib/domain";
 import { formatUsd } from "@/lib/pricing";
 import { retreatDatesFromInclusiveRange } from "@/lib/retreat-dates";
+import { buildInvoiceReadyMessage, buildQuoteReadyMessage, siteUrl } from "@/lib/guest-communication";
 
 export default async function EnquiryDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const state = await requireAdmin();
@@ -22,6 +24,7 @@ export default async function EnquiryDetailPage({ params }: { params: Promise<{ 
   let paymentSubmissions: Array<{ id: string; status: "submitted" | "verified" | "rejected"; submitted_at: string; reviewed_at: string | null; reviewed_by: string | null; review_note: string | null }> = [];
   let paymentHold = null;
   let booking = null;
+  let preparation = null;
   if (quote?.id) {
     const { data } = await state.supabase.from("retreat_invoices").select("*").eq("quote_id", quote.id).maybeSingle();
     invoice = data;
@@ -34,6 +37,10 @@ export default async function EnquiryDetailPage({ params }: { params: Promise<{ 
       paymentHold = hold;
       const { data } = await state.supabase.from("retreat_bookings").select("*").eq("invoice_id", invoice.id).maybeSingle();
       booking = data;
+      if (booking) {
+        const result = await state.supabase.from("retreat_booking_preparation").select("preferred_contact_method, contact_detail").eq("booking_id", booking.id).maybeSingle();
+        preparation = result.data;
+      }
     }
   }
 
@@ -60,8 +67,8 @@ export default async function EnquiryDetailPage({ params }: { params: Promise<{ 
     }
   }
 
-  const publicUrl = quote?.public_slug ? `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/enquiry/quote/${quote.public_slug}` : null;
-  const invoiceUrl = invoice?.public_slug ? `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/invoice/${invoice.public_slug}` : null;
+  const publicUrl = quote?.public_slug ? siteUrl(`/enquiry/quote/${quote.public_slug}`) : null;
+  const invoiceUrl = invoice?.public_slug ? siteUrl(`/invoice/${invoice.public_slug}`) : null;
 
   return (
     <>
@@ -159,6 +166,7 @@ export default async function EnquiryDetailPage({ params }: { params: Promise<{ 
           <p><strong>Rate:</strong> {formatUsd(String(quote.rate_usd_per_person_per_night ?? 0))} / person / night</p>
           <p><strong>Total:</strong> {formatUsd(String(quote.total_price))} USD</p>
           {publicUrl && <QuoteLinkActions url={publicUrl} />}
+          {publicUrl && <GuestShareCard guestName={enquiry.full_name} message={buildQuoteReadyMessage(enquiry.full_name, publicUrl)} url={publicUrl} preferredContactMethod={preparation?.preferred_contact_method} contactDetail={preparation?.contact_detail} />}
 
           {!invoice ? (
             <form action={createInvoiceForQuote}>
@@ -172,6 +180,7 @@ export default async function EnquiryDetailPage({ params }: { params: Promise<{ 
               <p><strong>Locked ETH price:</strong> {formatUsd(String(invoice.eth_price_usd ?? 0))} USD / ETH</p>
               <p><strong>Wallet:</strong> {invoice.wallet_address}</p>
               {invoiceUrl && <QuoteLinkActions url={invoiceUrl} label="Invoice link" openText="Open Invoice" copyText="Copy Invoice Link" />}
+              {invoiceUrl && <GuestShareCard guestName={enquiry.full_name} message={buildInvoiceReadyMessage(enquiry.full_name, invoiceUrl)} url={invoiceUrl} preferredContactMethod={preparation?.preferred_contact_method} contactDetail={preparation?.contact_detail} />}
               {paymentSubmissions.length > 0 && (
                 <div className="notice success">
                   <h3>Payment Verification</h3>

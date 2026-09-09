@@ -9,6 +9,7 @@ import { calculateRetreatDates, dateOnlyMonthBounds, dateOnlyMonthGrid, dateOnly
 import { SubmitButton } from "./submit-button";
 
 type Product = { id: string; name: string; positioning: string; allowed_formats: RetreatFormat[] };
+type Presentation = "default" | "retreat-sales";
 
 const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -20,18 +21,34 @@ function privateFormats(product: Product | undefined) {
   return product?.allowed_formats.filter(isPrivateRetreatFormat) ?? [];
 }
 
-function EnquiryForm({ product, format, guestCount, stay, onAvailabilityChanged }: { product: Product; format: PrivateRetreatFormat; guestCount: number; stay: CalendarArrivalAvailability; onAvailabilityChanged: () => void }) {
+function stayRangeLabel(arrival: string, checkout: string) {
+  const arrivalDate = dateOnlyToUtc(arrival);
+  const checkoutDate = dateOnlyToUtc(checkout);
+  const differentYears = arrivalDate.getUTCFullYear() !== checkoutDate.getUTCFullYear();
+  const formatter = new Intl.DateTimeFormat("en-ZA", { day: "numeric", month: "long", ...(differentYears ? { year: "numeric" } : {}), timeZone: "UTC" });
+  return `${formatter.format(arrivalDate)} — ${formatter.format(checkoutDate)}`;
+}
+
+function partyLabel(format: PrivateRetreatFormat, guestCount: number) {
+  if (format === "solo") return "Just you";
+  if (format === "couples") return "The two of you";
+  const words = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
+  return `${words[guestCount] || guestCount} of you`;
+}
+
+function EnquiryForm({ product, format, guestCount, stay, onAvailabilityChanged, presentation = "default" }: { product: Product; format: PrivateRetreatFormat; guestCount: number; stay: CalendarArrivalAvailability; onAvailabilityChanged: () => void; presentation?: Presentation }) {
   const [state, action] = useActionState<EnquiryState, FormData>(submitEnquiry, {});
-  if (state.success && state.submitted) return <section className="success-panel enquiry-success" aria-live="polite">
-    <p className="eyebrow">Enquiry received</p><h2>Thank you. Cally will be in touch.</h2>
+  const retreatSales = presentation === "retreat-sales";
+  if (state.success && state.submitted) return <section className={`success-panel enquiry-success ${retreatSales ? "retreat-sales-enquiry-success" : ""}`} aria-live="polite">
+    <p className="eyebrow">{retreatSales ? "Cally has your note" : "Enquiry received"}</p><h2>{retreatSales ? "I'll be in touch." : "Thank you. Cally will be in touch."}</h2>
     <p><strong>{product.name}</strong> · {formatLabels[state.submitted.format]} · {state.submitted.guestCount} guest{state.submitted.guestCount === 1 ? "" : "s"}</p>
     <p>Arrival {formatDate(state.submitted.arrival)} · {state.submitted.nights} night{state.submitted.nights === 1 ? "" : "s"} · Checkout {formatDate(state.submitted.checkout)}</p>
     <p>Your enquiry has been received and Cally will review your retreat request. These requested dates are not reserved until your booking is confirmed.</p>
   </section>;
 
   const canonicalDates = calculateRetreatDates(stay.arrival, stay.nights);
-  return <section className="panel enquiry-panel">
-    <p className="eyebrow">Tell us about you</p><h2>Send your enquiry</h2><p className="muted enquiry-intro">Share the best way for Cally to contact you about this stay.</p>
+  return <section className={`panel enquiry-panel ${retreatSales ? "retreat-sales-enquiry" : ""}`}>
+    <p className="eyebrow">{retreatSales ? "The next step" : "Tell us about you"}</p><h2>{retreatSales ? "Tell Cally you're interested." : "Send your enquiry"}</h2><p className="muted enquiry-intro">{retreatSales ? "This is an enquiry, not a reservation. Your dates are only secured once the booking process is completed." : "Share the best way for Cally to contact you about this stay."}</p>
     <form action={action} className="form-grid">
       <input type="hidden" name="product_id" value={product.id} />
       <input type="hidden" name="retreat_format" value={format} />
@@ -45,25 +62,26 @@ function EnquiryForm({ product, format, guestCount, stay, onAvailabilityChanged 
       <label>WhatsApp / Phone<input name="phone" type="tel" autoComplete="tel" minLength={3} maxLength={100} required /></label>
       <label>Country<input name="country" autoComplete="country-name" minLength={2} maxLength={100} required /></label>
       <label className="full-span">Anything you&apos;d like Cally to know?<textarea name="message" rows={5} maxLength={2000} /></label>
-      <p className="muted full-span enquiry-submit-note">Sending an enquiry does not reserve these dates.</p>
+      {!retreatSales && <p className="muted full-span enquiry-submit-note">Sending an enquiry does not reserve these dates.</p>}
       {state.error && <div className="full-span" role="alert"><p className="form-error">{state.error}</p>{state.availabilityChanged && <button className="text-button" type="button" onClick={onAvailabilityChanged}>Refresh availability and choose another date</button>}</div>}
-      <div className="full-span"><SubmitButton>Send Enquiry</SubmitButton></div>
+      <div className="full-span"><SubmitButton>{retreatSales ? "Tell Cally I'm interested" : "Send Enquiry"}</SubmitButton></div>
     </form>
   </section>;
 }
 
-function GeneralEnquiryForm({ onChooseStay }: { onChooseStay: () => void }) {
+function GeneralEnquiryForm({ onChooseStay, presentation = "default" }: { onChooseStay: () => void; presentation?: Presentation }) {
   const [state, action] = useActionState<GeneralEnquiryState, FormData>(submitGeneralEnquiry, {});
+  const retreatSales = presentation === "retreat-sales";
 
-  if (state.success) return <section className="success-panel enquiry-success" aria-live="polite">
-    <p className="eyebrow">Enquiry received</p><h2>Thank you. Cally will be in touch.</h2>
-    <p>Your enquiry has been received. Cally will be in touch with more information.</p>
+  if (state.success) return <section id={retreatSales ? "retreat-sales-general-enquiry" : undefined} className={`success-panel enquiry-success ${retreatSales ? "retreat-sales-enquiry-success retreat-sales-general-success" : ""}`} aria-live="polite">
+    <p className="eyebrow">{retreatSales ? "Got you" : "Enquiry received"}</p><h2>{retreatSales ? "I'll send you a little more about the retreat." : "Thank you. Cally will be in touch."}</h2>
+    <p>{retreatSales ? "Cally has your note and will be in touch. Nothing has been booked or reserved." : "Your enquiry has been received. Cally will be in touch with more information."}</p>
   </section>;
 
-  return <section className="panel enquiry-panel general-enquiry-panel">
-    <button className="text-button general-enquiry-back" type="button" onClick={onChooseStay}>Choose a retreat instead</button>
-    <p className="eyebrow">General Enquiry</p><h2>Let&apos;s help you find your retreat</h2>
-    <p className="muted enquiry-intro">Not ready to choose your retreat yet? Tell us how to reach you and Cally will send you more information.</p>
+  return <section id={retreatSales ? "retreat-sales-general-enquiry" : undefined} className={`panel enquiry-panel general-enquiry-panel ${retreatSales ? "retreat-sales-enquiry retreat-sales-general-enquiry" : ""}`}>
+    {!retreatSales && <button className="text-button general-enquiry-back" type="button" onClick={onChooseStay}>Choose a retreat instead</button>}
+    <p className="eyebrow">{retreatSales ? "Tell me where to find you" : "General Enquiry"}</p><h2>{retreatSales ? "I'll tell you more." : "Let's help you find your retreat"}</h2>
+    <p className="muted enquiry-intro">{retreatSales ? "No dates or retreat decisions required. Just leave the best way to reach you." : "Not ready to choose your retreat yet? Tell us how to reach you and Cally will send you more information."}</p>
     <form action={action} className="form-grid">
       <label>Your Name<input name="full_name" autoComplete="name" minLength={2} maxLength={200} required /></label>
       <label>Email<input name="email" type="email" autoComplete="email" maxLength={320} required /></label>
@@ -71,19 +89,26 @@ function GeneralEnquiryForm({ onChooseStay }: { onChooseStay: () => void }) {
       <label>Country<input name="country" autoComplete="country-name" minLength={2} maxLength={100} required /></label>
       <label className="full-span">Anything you&apos;d like Cally to know?<textarea name="message" rows={5} maxLength={2000} /></label>
       {state.error && <p className="form-error full-span" role="alert">{state.error}</p>}
-      <div className="full-span"><SubmitButton>Send Enquiry</SubmitButton></div>
+      <div className="full-span"><SubmitButton>{retreatSales ? "Tell me more" : "Send Enquiry"}</SubmitButton></div>
     </form>
   </section>;
 }
 
-export function RetreatExplorer({ products, initialMonth }: { products: Product[]; initialMonth: string }) {
+export function RetreatExplorer({ products, initialMonth, initialProductId = "", initialFormat = "", initialNights = 1, initialPrivateGroupGuests = 1, presentation = "default", retreatSalesPriceLabel, retreatSalesPriceStatus = "loading", onRetreatSalesProductChange, onRetreatSalesFormatChange, onRetreatSalesGuestCountChange }: { products: Product[]; initialMonth: string; initialProductId?: string; initialFormat?: PrivateRetreatFormat | ""; initialNights?: number; initialPrivateGroupGuests?: number; presentation?: Presentation; retreatSalesPriceLabel?: string; retreatSalesPriceStatus?: "loading" | "ready" | "error"; onRetreatSalesProductChange?: (productId: string) => void; onRetreatSalesFormatChange?: (format: PrivateRetreatFormat) => void; onRetreatSalesGuestCountChange?: (guestCount: number) => void }) {
   const [mode, setMode] = useState<"stay" | "general">("stay");
-  const [productId, setProductId] = useState("");
+  const [localProductId, setLocalProductId] = useState(initialProductId);
+  const [localFormat, setLocalFormat] = useState<PrivateRetreatFormat | "">(initialFormat);
+  const [localNights, setLocalNights] = useState(initialNights);
+  const [localPrivateGroupGuests, setLocalPrivateGroupGuests] = useState(initialPrivateGroupGuests);
+  const [changingRetreat, setChangingRetreat] = useState(false);
+  const [generalEnquiryOpen, setGeneralEnquiryOpen] = useState(false);
+  const retreatSales = presentation === "retreat-sales";
+  const productId = retreatSales ? initialProductId : localProductId;
+  const format = retreatSales ? initialFormat : localFormat;
+  const nights = retreatSales ? 3 : localNights;
+  const privateGroupGuests = retreatSales ? initialPrivateGroupGuests : localPrivateGroupGuests;
   const product = products.find((item) => item.id === productId);
   const formats = privateFormats(product);
-  const [format, setFormat] = useState<PrivateRetreatFormat | "">("");
-  const [nights, setNights] = useState(1);
-  const [privateGroupGuests, setPrivateGroupGuests] = useState(1);
   const [month, setMonth] = useState(initialMonth);
   const [dates, setDates] = useState<CalendarArrivalAvailability[]>([]);
   const [selectedDate, setSelectedDate] = useState("");
@@ -130,21 +155,21 @@ export function RetreatExplorer({ products, initialMonth }: { products: Product[
   }, [selectedDate]);
 
   function chooseProduct(nextProductId: string) {
-    setProductId(nextProductId);
-    setFormat("");
+    if (retreatSales) onRetreatSalesProductChange?.(nextProductId);
+    else { setLocalProductId(nextProductId); setLocalFormat(""); }
     setSelectedDate("");
     setError("");
   }
 
   function chooseFormat(nextFormat: PrivateRetreatFormat) {
-    setFormat(nextFormat);
-    setPrivateGroupGuests(1);
+    if (retreatSales) onRetreatSalesFormatChange?.(nextFormat);
+    else { setLocalFormat(nextFormat); setLocalPrivateGroupGuests(1); }
     setSelectedDate("");
     setError("");
   }
 
   function changeNights(nextNights: number) {
-    setNights(nextNights);
+    setLocalNights(nextNights);
     setSelectedDate("");
     setError("");
   }
@@ -163,8 +188,8 @@ export function RetreatExplorer({ products, initialMonth }: { products: Product[
 
   if (mode === "general") return <div className="retreat-flow"><GeneralEnquiryForm onChooseStay={() => setMode("stay")} /></div>;
 
-  return <div className="retreat-flow">
-    <div className="step-grid">
+  return <div className={`retreat-flow ${retreatSales ? "retreat-sales-flow" : ""}`}>
+    {!retreatSales && <div className="step-grid">
       <section className="panel">
         <span className="step-number">1</span><h2>Choose retreat</h2>
         <div className="choice-list">{products.map((item) => <button type="button" key={item.id} className={`choice ${productId === item.id ? "selected" : ""}`} onClick={() => chooseProduct(item.id)} aria-pressed={productId === item.id}><strong>{item.name}</strong><span>{item.positioning}</span></button>)}</div>
@@ -178,22 +203,39 @@ export function RetreatExplorer({ products, initialMonth }: { products: Product[
         <div className="format-grid">{formats.map((item) => <button type="button" key={item} className={`choice compact ${format === item ? "selected" : ""}`} onClick={() => chooseFormat(item)} aria-pressed={format === item}>{formatLabels[item]}</button>)}</div>
         {format === "solo" && <p className="selection-note">1 guest</p>}
         {format === "couples" && <p className="selection-note">2 guests</p>}
-        {format === "private_group" && <label>Guests<input type="number" min={1} max={50} value={privateGroupGuests} onChange={(event) => { setPrivateGroupGuests(Number(event.target.value)); setSelectedDate(""); setError(""); }} /></label>}
+        {format === "private_group" && <label>Guests<input type="number" min={1} max={50} value={privateGroupGuests} onChange={(event) => { setLocalPrivateGroupGuests(Number(event.target.value)); setSelectedDate(""); setError(""); }} /></label>}
       </section>
-    </div>
+    </div>}
 
-    <section className="panel availability-panel">
+    {retreatSales && <section className="retreat-sales-summary">
+      <p className="eyebrow">Your Escape</p>
+      {product && format ? <><h2>{product.name}</h2><p className="retreat-sales-guests">{format === "solo" ? "Just you" : format === "couples" ? "The two of you" : `${guestCount} of you`} <span>·</span> Three nights</p>{retreatSalesPriceStatus === "ready" && retreatSalesPriceLabel ? <p className="retreat-sales-price">{retreatSalesPriceLabel}</p> : retreatSalesPriceStatus === "error" ? <p className="retreat-sales-price-note">Price currently unavailable — Cally can confirm it with you.</p> : <p className="retreat-sales-price-note" role="status">Finding your current price…</p>}<button className="retreat-sales-change" type="button" onClick={() => setChangingRetreat((value) => !value)} aria-expanded={changingRetreat}>{changingRetreat ? "Close" : "Change"}</button></> : <><h2>Choose your escape</h2><p className="retreat-sales-price-note">Choose an experience and how you&apos;d like to come.</p></>}
+      {(changingRetreat || !product || !format) && <div className="retreat-sales-editor">
+        <fieldset><legend>Experience</legend><div className="retreat-sales-options">{products.map((item) => <button type="button" key={item.id} className={productId === item.id ? "selected" : ""} aria-pressed={productId === item.id} onClick={() => chooseProduct(item.id)}>{item.name}</button>)}</div></fieldset>
+        <fieldset><legend>Coming</legend><div className="retreat-sales-options retreat-sales-format-options">{formats.map((item) => <button type="button" key={item} className={format === item ? "selected" : ""} aria-pressed={format === item} onClick={() => chooseFormat(item)}>{formatLabels[item]}</button>)}</div></fieldset>
+        {format === "private_group" && <label className="retreat-sales-guest-count">Guests<input type="number" min={1} max={50} value={privateGroupGuests} onChange={(event) => { const value = Number(event.target.value); onRetreatSalesGuestCountChange?.(value); setSelectedDate(""); setError(""); }} /></label>}
+        {product && format && <button className="retreat-sales-done" type="button" onClick={() => setChangingRetreat(false)}>Done</button>}
+      </div>}
+    </section>}
+
+    <section className={`panel availability-panel ${retreatSales ? "retreat-sales-availability" : ""}`}>
       <div className="availability-heading">
-        <div><span className="step-number">3</span><h2>When would you like to come?</h2><p className="muted">Choose the number of nights, then select any available arrival date. Dates inside the 14-day notice period are unavailable.</p></div>
-        <label>Nights<select value={nights} onChange={(event) => changeNights(Number(event.target.value))}><option value={1}>1 night</option><option value={2}>2 nights</option><option value={3}>3 nights</option><option value={5}>5 nights</option></select></label>
+        <div>{!retreatSales && <span className="step-number">3</span>}<h2>{retreatSales ? "Choose when you'd like to arrive." : "When would you like to come?"}</h2><p className="muted">{retreatSales ? "Available arrival dates are shown below." : "Choose the number of nights, then select any available arrival date. Dates inside the 14-day notice period are unavailable."}</p></div>
+        {!retreatSales && <label>Nights<select value={nights} onChange={(event) => changeNights(Number(event.target.value))}><option value={1}>1 night</option><option value={2}>2 nights</option><option value={3}>3 nights</option><option value={5}>5 nights</option></select></label>}
       </div>
+
+      {retreatSales && <aside className="retreat-sales-soft-conversion">
+        <div><p className="eyebrow">Not ready to choose a date?</p><h3>That&apos;s okay.</h3><p>If you&apos;re curious but not ready to disappear just yet, tell me where to find you.</p></div>
+        <button className="retreat-sales-soft-cta" type="button" onClick={() => setGeneralEnquiryOpen((value) => !value)} aria-expanded={generalEnquiryOpen} aria-controls="retreat-sales-general-enquiry">{generalEnquiryOpen ? "Close" : "I'm not sure yet — send me more information"}</button>
+      </aside>}
+      {retreatSales && generalEnquiryOpen && <GeneralEnquiryForm presentation="retreat-sales" onChooseStay={() => setGeneralEnquiryOpen(false)} />}
 
       {!ready && <div className="calendar-prompt"><p>Choose a retreat and private format to view availability.</p></div>}
       {ready && <div className="public-calendar" aria-busy={loading}>
         <div className="calendar-toolbar">
-          <button className="button small secondary" type="button" onClick={() => navigateMonth(-1)} disabled={month <= initialMonth}>Previous</button>
+          <button className="button small secondary" type="button" onClick={() => navigateMonth(-1)} disabled={month <= initialMonth}>{retreatSales ? "← Previous" : "Previous"}</button>
           <div><h3>{monthLabel(month)}</h3><p className="muted">Each date reflects availability for the complete {nights}-night stay.</p></div>
-          <button className="button small secondary" type="button" onClick={() => navigateMonth(1)}>Next</button>
+          <button className="button small secondary" type="button" onClick={() => navigateMonth(1)}>{retreatSales ? "Next →" : "Next"}</button>
         </div>
         <div className="public-calendar-legend" aria-label="Calendar legend"><span><i className="calendar-dot state-available" />Available</span><span><i className="calendar-dot state-none" />Unavailable</span><span><i className="calendar-selected-mark" />Selected</span></div>
         <div className="public-calendar-grid" role="grid" aria-label={monthLabel(month)}>
@@ -216,11 +258,16 @@ export function RetreatExplorer({ products, initialMonth }: { products: Product[
       </div>}
     </section>
 
-    {selected && product && format && <section ref={selectedStayRef} className="panel selected-stay" aria-live="polite" tabIndex={-1}>
+    {selected && product && format && (retreatSales ? <section ref={selectedStayRef} className="retreat-sales-selected-stay" aria-live="polite" tabIndex={-1}>
+      <p className="eyebrow">This could be yours</p><h2>{stayRangeLabel(selected.arrival, selected.checkout)}</h2>
+      <p className="retreat-sales-selected-experience">{product.name}</p>
+      <p className="retreat-sales-selected-party">{partyLabel(format, guestCount)} <span>·</span> Three nights</p>
+      {retreatSalesPriceStatus === "ready" && retreatSalesPriceLabel ? <p className="retreat-sales-selected-price">{retreatSalesPriceLabel}</p> : retreatSalesPriceStatus === "error" ? <p className="retreat-sales-selected-price-note">Price currently unavailable — Cally can confirm it with you.</p> : <p className="retreat-sales-selected-price-note" role="status">Finding your current price…</p>}
+    </section> : <section ref={selectedStayRef} className="panel selected-stay" aria-live="polite" tabIndex={-1}>
       <p className="eyebrow">Your retreat request</p><h2>Selected Stay</h2>
       <p className="selected-stay-context"><strong>{product.name}</strong><span>{formatLabels[format]}</span></p>
       <dl className="stay-summary"><div><dt>Arrival</dt><dd>{formatDate(selected.arrival)}</dd></div><div><dt>Nights</dt><dd>{selected.nights}</dd></div><div><dt>Checkout</dt><dd>{formatDate(selected.checkout)}</dd></div><div><dt>Guests</dt><dd>{guestCount}</dd></div></dl>
-    </section>}
-    {selected && product && format && <EnquiryForm key={`${product.id}:${format}:${guestCount}:${selected.arrival}:${selected.nights}`} product={product} format={format} guestCount={guestCount} stay={selected} onAvailabilityChanged={refreshAfterAvailabilityChange} />}
+    </section>)}
+    {selected && product && format && <EnquiryForm key={`${product.id}:${format}:${guestCount}:${selected.arrival}:${selected.nights}`} product={product} format={format} guestCount={guestCount} stay={selected} onAvailabilityChanged={refreshAfterAvailabilityChange} presentation={presentation} />}
   </div>;
 }

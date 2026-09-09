@@ -20,6 +20,232 @@ p { line-height: 1.7; }
 .public-links a, .link-button { border: 0; background: none; cursor: pointer; font-size: .88rem; letter-spacing: .05em; padding: .45rem 0; }
 .public-links a:hover, .text-link:hover, .link-button:hover { color: var(--accent); }
 .public-main { min-height: calc(100vh - 140px); }
+.retreat-wireframe {
+  --wire-bg: #120f11;
+  --wire-surface: #191416;
+  --wire-surface-raised: #21191c;
+  --wire-ivory: #f5eee8;
+  --wire-muted: #c7b9b5;
+  --wire-rose: #d49aaa;
+  --wire-copper: #b77b70;
+  --wire-line: rgba(222, 172, 181, .22);
+  background: var(--wire-bg);
+  color: var(--wire-ivory);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  overflow: hidden;
+}
+body:has(.retreat-wireframe) .public-header { background: rgba(18, 15, 17, .97); border-bottom-color: rgba(222, 172, 181, .16); color: #f5eee8; }
+body:has(.retreat-wireframe) .site-footer { background: #120f11; border-top-color: rgba(222, 172, 181, .16); color: #a99a98; }
+.retreat-wireframe h1, .retreat-wireframe h2, .retreat-wireframe h3, .retreat-wireframe .lead, .wire-question, .wire-line, .wire-summary-line, .wire-price-reveal strong, .wire-faq summary {
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Baskerville, Georgia, serif;
+}
+.retreat-wireframe h1, .retreat-wireframe h2, .retreat-wireframe h3 { color: var(--wire-ivory); font-weight: 400; letter-spacing: -.035em; }
+.retreat-wireframe h2 { font-size: clamp(3rem, 7vw, 6.6rem); line-height: .96; margin-bottom: clamp(2rem, 5vw, 4.5rem); max-width: 900px; }
+.retreat-wireframe h3 { line-height: 1.08; }
+.retreat-wireframe p { color: var(--wire-muted); }
+.retreat-wireframe .lead { color: var(--wire-ivory); font-size: clamp(1.45rem, 2.6vw, 2.15rem); font-weight: 400; line-height: 1.42; }
+.retreat-wireframe .eyebrow { color: var(--wire-rose); font-size: .7rem; letter-spacing: .25em; margin-bottom: 1.75rem; }
+.wire-section { margin: auto; max-width: 1240px; padding: clamp(7rem, 12vw, 11rem) 1.5rem; }
+.wire-section + .wire-section { border-top: 1px solid rgba(255, 255, 255, .035); }
+.wire-hero { min-height: calc(100svh - 76px); }
+.wire-hero-real { isolation: isolate; max-width: none; overflow: hidden; position: relative; }
+.wire-hero-background { object-fit: cover; object-position: 52% 53%; z-index: -3; }
+.wire-hero-shade { background: linear-gradient(90deg, rgba(11, 8, 10, .9) 0%, rgba(11, 8, 10, .7) 39%, rgba(11, 8, 10, .22) 70%, rgba(11, 8, 10, .42) 100%), linear-gradient(0deg, rgba(11, 8, 10, .7) 0%, transparent 35%, rgba(11, 8, 10, .12) 100%); inset: 0; position: absolute; z-index: -2; }
+.wire-hero-inner { align-items: center; display: grid; gap: clamp(3rem, 8vw, 8rem); grid-template-columns: minmax(0, 1.05fr) minmax(300px, .75fr); margin: auto; max-width: 1240px; min-height: calc(100svh - 76px); padding: clamp(5rem, 10vh, 8rem) 1.5rem; width: 100%; }
+.wire-hero-copy { align-self: end; max-width: 660px; padding-bottom: clamp(1rem, 7vh, 5rem); text-shadow: 0 2px 30px rgba(0, 0, 0, .55); }
+.wire-hero h1 { font-size: clamp(4rem, 8vw, 7.5rem); line-height: .88; max-width: 760px; }
+.wire-hero .lead { color: #f1e5df; max-width: 560px; }
+.wire-hero-copy > p:not(.eyebrow):not(.lead):not(.wire-question) { color: #e2d4cf; }
+.wire-question { color: #f0bac7 !important; font-size: clamp(1.6rem, 3vw, 2.7rem); line-height: 1.2 !important; margin: clamp(2.5rem, 6vh, 4.5rem) 0 1.75rem; max-width: 520px; }
+.wire-logo-stage { align-items: flex-start; align-self: stretch; display: flex; justify-content: center; padding-top: clamp(2rem, 9vh, 7rem); }
+.wire-logo { filter: drop-shadow(0 12px 28px rgba(0, 0, 0, .55)); height: auto; max-width: 440px; object-fit: contain; width: min(100%, 440px); }
+.retreat-wireframe .wire-editorial-cta, .retreat-wireframe .wire-cally .button, .retreat-wireframe .wire-return { background: rgba(31, 20, 24, .42); border: 1px solid rgba(231, 179, 190, .62); border-radius: 0; color: var(--wire-ivory); font-size: .76rem; letter-spacing: .16em; padding: 1rem 1.5rem; text-transform: uppercase; }
+.retreat-wireframe .wire-editorial-cta:hover, .retreat-wireframe .wire-cally .button:hover, .retreat-wireframe .wire-return:hover { background: rgba(212, 154, 170, .14); border-color: var(--wire-rose); color: #fff; }
+.retreat-wireframe .wire-editorial-cta:focus-visible, .retreat-wireframe .wire-cally .button:focus-visible, .retreat-wireframe .wire-return:focus-visible, .wire-choice:focus-visible, .wire-format:focus-visible { outline: 2px solid #f1cad2; outline-offset: 4px; }
+.wire-reveal { padding-bottom: clamp(8rem, 15vw, 14rem); padding-top: clamp(9rem, 16vw, 15rem); }
+.wire-two-column, .wire-cally { align-items: center; display: grid; gap: clamp(3rem, 9vw, 8rem); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.wire-two-column > *, .wire-cally > * { max-width: 560px; }
+.wire-line { color: #e5b1bd !important; font-size: clamp(1.55rem, 2.8vw, 2.35rem); line-height: 1.3 !important; margin-top: 2.5rem; }
+.wire-cally { background: linear-gradient(120deg, rgba(61, 38, 44, .28), rgba(18, 15, 17, 0) 60%); max-width: none; padding-left: max(1.5rem, calc((100vw - 1240px) / 2)); padding-right: max(1.5rem, calc((100vw - 1240px) / 2)); }
+.wire-portrait-real { background: #100c0e; border: 1px solid rgba(210, 150, 159, .62); box-shadow: 0 28px 70px rgba(0, 0, 0, .38), inset 0 0 0 7px #171113, inset 0 0 0 8px rgba(210, 150, 159, .2); max-height: 700px; overflow: hidden; padding: 8px; position: relative; }
+.wire-portrait-real::after { border: 1px solid rgba(238, 191, 197, .24); content: ""; inset: 14px; pointer-events: none; position: absolute; }
+.wire-portrait-real img { display: block; height: auto; max-height: 682px; object-fit: cover; width: 100%; }
+.wire-choice-grid { display: grid; gap: clamp(1rem, 2.5vw, 2rem); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.wire-choice, .wire-format { background: linear-gradient(145deg, rgba(42, 31, 35, .86), rgba(25, 20, 22, .96)); border: 1px solid var(--wire-line); border-radius: 0; color: var(--wire-ivory); cursor: pointer; padding: clamp(1.8rem, 4vw, 3.7rem); position: relative; text-align: left; transition: background-color .2s ease, border-color .2s ease, box-shadow .2s ease, transform .2s ease; }
+.wire-choice { min-height: 430px; }
+.wire-choice::after, .wire-format::after { background: var(--wire-rose); bottom: -1px; content: ""; height: 2px; left: 0; position: absolute; transform: scaleX(0); transform-origin: left; transition: transform .2s ease; width: 100%; }
+.wire-choice:hover, .wire-format:hover { background: linear-gradient(145deg, rgba(52, 37, 42, .94), rgba(29, 22, 25, .98)); border-color: rgba(212, 154, 170, .42); transform: translateY(-2px); }
+.wire-choice.selected, .wire-format.selected { background: linear-gradient(145deg, rgba(66, 41, 49, .9), rgba(32, 23, 27, .98)); border-color: rgba(212, 154, 170, .55); box-shadow: inset 0 0 0 1px rgba(212, 154, 170, .08), 0 20px 50px rgba(0, 0, 0, .22); }
+.wire-choice.selected::after, .wire-format.selected::after { transform: scaleX(1); }
+.wire-choice-number { color: var(--wire-rose); display: block; font-size: .72rem; letter-spacing: .22em; margin-bottom: clamp(4rem, 8vw, 7rem); }
+.wire-choice h3 { font-size: clamp(2rem, 4vw, 3.4rem); }
+.wire-choice strong, .wire-format strong { color: #ead7d8; display: block; font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Baskerville, Georgia, serif; font-size: 1.35rem; font-weight: 400; margin: 1.25rem 0; }
+.wire-choice p, .wire-format p { color: var(--wire-muted); }
+.wire-choice-cta { color: #e5a8b6; display: block; font-size: .76rem; font-weight: 700; letter-spacing: .1em; margin-top: 2.5rem; text-transform: uppercase; }
+.wire-format-grid { display: grid; gap: 1rem; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.wire-format { min-height: 250px; padding: clamp(1.6rem, 3vw, 2.6rem); }
+.wire-format h3 { font-size: clamp(1.65rem, 3vw, 2.4rem); }
+.wire-group-count { background: var(--wire-surface-raised); border: 1px solid rgba(212, 154, 170, .45); color: var(--wire-ivory); display: grid; gap: .75rem; margin: 1rem 0 0 auto; max-width: calc((100% - 2rem) / 3); min-width: 240px; padding: 1.25rem 1.5rem; }
+.wire-group-count input { background: #100d0f; border-color: rgba(212, 154, 170, .35); color: var(--wire-ivory); }
+.wire-summary { background: radial-gradient(circle at 50% 45%, rgba(79, 46, 55, .2), transparent 55%); max-width: none; padding-bottom: clamp(12rem, 19vw, 18rem); padding-top: clamp(11rem, 18vw, 17rem); text-align: center; }
+.wire-summary > * { margin-left: auto; margin-right: auto; max-width: 780px; }
+.wire-summary-line { color: var(--wire-ivory) !important; font-size: clamp(2rem, 5vw, 4.2rem); line-height: 1.28 !important; }
+.wire-price-reveal { display: grid; gap: .75rem; margin-top: clamp(4rem, 8vw, 7rem); padding: 0; }
+.wire-price-reveal::before { background: var(--wire-copper); content: ""; height: 1px; margin: 0 auto 1.25rem; opacity: .7; width: 72px; }
+.wire-price-reveal span { color: var(--wire-muted); font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; }
+.wire-price-reveal strong { color: #edc1c8; font-size: clamp(2.25rem, 6vw, 5rem); font-weight: 400; }
+.wire-price-status { color: var(--wire-muted) !important; font-size: clamp(1rem, 2vw, 1.25rem); margin: .5rem 0; }
+.wire-price-reveal small { color: var(--wire-muted); font-size: 1rem; }
+.wire-note { color: #9f9190 !important; font-size: .76rem; font-style: italic; margin-bottom: 0; margin-top: 2.5rem; }
+.wire-escape-intro { padding-bottom: clamp(8rem, 13vw, 12rem); padding-top: clamp(3.5rem, 6vw, 5.5rem); text-align: center; }
+.wire-escape-intro > * { margin-left: auto; margin-right: auto; max-width: 720px; }
+.wire-escape-intro .lead { color: #edb7c3; font-size: clamp(2rem, 4vw, 3.2rem); margin-bottom: .5rem; }
+.wire-escape-intro h2:last-of-type { margin-bottom: 2rem; margin-top: clamp(4rem, 8vw, 7rem); }
+.wire-commercial { background: var(--wire-bg); border-bottom: 1px solid rgba(222, 172, 181, .1); border-top: 1px solid rgba(222, 172, 181, .1); color: var(--wire-ivory); padding: clamp(4rem, 8vw, 7rem) 0 clamp(6rem, 10vw, 9rem); }
+.wire-commercial .retreat-page { padding-top: 1rem; }
+.retreat-sales-flow { gap: 0; margin: auto; max-width: 1240px; padding: 0 1.5rem; }
+.retreat-sales-summary { max-width: 760px; padding: 0 0 clamp(5rem, 9vw, 8rem); }
+.retreat-sales-summary .eyebrow, .retreat-sales-availability .eyebrow { color: var(--wire-rose); font-size: .7rem; letter-spacing: .25em; margin-bottom: 1.5rem; }
+.retreat-sales-summary h2 { color: var(--wire-ivory); font-size: clamp(2.8rem, 6vw, 5.3rem); margin-bottom: 1.25rem; }
+.retreat-sales-guests { color: var(--wire-muted) !important; font-size: clamp(1.15rem, 2vw, 1.45rem); margin: 0 0 1.75rem; }
+.retreat-sales-guests span { color: var(--wire-rose); margin: 0 .35rem; }
+.retreat-sales-price { color: #edc1c8 !important; font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Baskerville, Georgia, serif; font-size: clamp(2rem, 4vw, 3.25rem); line-height: 1; margin: 0 0 1.5rem; }
+.retreat-sales-price-note { color: var(--wire-muted) !important; margin: 0 0 1.5rem; }
+.retreat-sales-change, .retreat-sales-done { background: none; border: 0; border-bottom: 1px solid rgba(212, 154, 170, .62); color: var(--wire-rose); cursor: pointer; font-size: .76rem; letter-spacing: .14em; padding: .35rem 0; text-transform: uppercase; }
+.retreat-sales-change:hover, .retreat-sales-done:hover { border-color: #f1cad2; color: #f1cad2; }
+.retreat-sales-change:focus-visible, .retreat-sales-done:focus-visible, .retreat-sales-options button:focus-visible { outline: 2px solid #f1cad2; outline-offset: 4px; }
+.retreat-sales-editor { border-bottom: 1px solid var(--wire-line); border-top: 1px solid var(--wire-line); display: grid; gap: 1.75rem; margin-top: 2rem; padding: 2rem 0; }
+.retreat-sales-editor fieldset { border: 0; margin: 0; padding: 0; }
+.retreat-sales-editor legend, .retreat-sales-guest-count { color: var(--wire-muted); display: block; font-size: .72rem; font-weight: 700; letter-spacing: .15em; margin-bottom: .8rem; text-transform: uppercase; }
+.retreat-sales-options { display: grid; gap: .65rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.retreat-sales-format-options { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.retreat-sales-options button { background: rgba(34, 26, 29, .78); border: 1px solid var(--wire-line); color: var(--wire-ivory); cursor: pointer; min-height: 52px; padding: .75rem 1rem; text-align: left; }
+.retreat-sales-options button:hover { border-color: rgba(212, 154, 170, .55); }
+.retreat-sales-options button.selected { background: rgba(83, 49, 59, .55); border-color: var(--wire-rose); box-shadow: inset 0 -2px var(--wire-rose); }
+.retreat-sales-guest-count { margin: 0; max-width: 220px; }
+.retreat-sales-guest-count input { background: #100d0f; border-color: var(--wire-line); color: var(--wire-ivory); margin-top: .75rem; }
+.retreat-sales-done { justify-self: start; }
+.retreat-sales-general { color: var(--wire-muted); margin: 1.25rem 0 0; }
+.retreat-sales-general:hover { color: var(--wire-rose); }
+.retreat-sales-availability.panel { background: transparent; border: 0; border-radius: 0; color: var(--wire-ivory); padding: 0; }
+.retreat-sales-availability .availability-heading { display: block; }
+.retreat-sales-availability .availability-heading h2 { color: var(--wire-ivory); font-size: clamp(2.8rem, 6vw, 5.5rem); margin-bottom: 1.25rem; max-width: 880px; }
+.retreat-sales-availability .availability-heading .muted { color: var(--wire-muted); font-size: 1rem; }
+.retreat-sales-soft-conversion { align-items: center; border-bottom: 1px solid var(--wire-line); border-top: 1px solid var(--wire-line); display: flex; gap: 2rem; justify-content: space-between; margin-top: clamp(2rem, 4vw, 3rem); padding: 1.5rem 0; }
+.retreat-sales-soft-conversion > div { max-width: 620px; }
+.retreat-sales-soft-conversion .eyebrow { margin-bottom: .6rem; }
+.retreat-sales-soft-conversion h3 { color: var(--wire-ivory); font-size: clamp(1.5rem, 3vw, 2rem); margin-bottom: .35rem; }
+.retreat-sales-soft-conversion p:last-child { color: var(--wire-muted); margin: 0; }
+.retreat-sales-soft-cta { background: transparent; border: 1px solid rgba(212, 154, 170, .46); color: var(--wire-ivory); cursor: pointer; flex: 0 0 auto; font-size: .75rem; letter-spacing: .08em; max-width: 285px; min-height: 48px; padding: .8rem 1rem; text-align: left; }
+.retreat-sales-soft-cta:hover { background: rgba(212, 154, 170, .1); border-color: var(--wire-rose); }
+.retreat-sales-soft-cta:focus-visible { outline: 2px solid #f1cad2; outline-offset: 4px; }
+.retreat-sales-availability .calendar-prompt { background: rgba(31, 24, 27, .68); border-color: var(--wire-line); color: var(--wire-muted); }
+.retreat-sales-availability .public-calendar { margin-top: clamp(2.5rem, 6vw, 4.5rem); }
+.retreat-sales-availability .calendar-toolbar { border-bottom: 1px solid var(--wire-line); margin-bottom: 1.5rem; padding-bottom: 1.5rem; }
+.retreat-sales-availability .calendar-toolbar h3 { color: var(--wire-ivory); font-size: clamp(1.7rem, 3vw, 2.4rem); margin: 0; }
+.retreat-sales-availability .calendar-toolbar p { color: var(--wire-muted); }
+.retreat-sales-availability .calendar-toolbar .button { background: transparent; border-color: rgba(212, 154, 170, .5); border-radius: 0; color: var(--wire-ivory); min-height: 44px; }
+.retreat-sales-availability .calendar-toolbar .button:hover:not(:disabled) { background: rgba(212, 154, 170, .1); border-color: var(--wire-rose); }
+.retreat-sales-availability .public-calendar-legend { color: var(--wire-muted); margin: 1rem 0 1.25rem; }
+.retreat-sales-availability .public-calendar-grid { border-color: var(--wire-line); }
+.retreat-sales-availability .calendar-weekday { color: var(--wire-muted); }
+.retreat-sales-availability .public-calendar-day { background: #171214; border-color: var(--wire-line); color: var(--wire-ivory); min-height: 92px; }
+.retreat-sales-availability .public-calendar-day span { color: #9f9293; }
+.retreat-sales-availability .public-calendar-day.available { background: rgba(74, 45, 53, .64); color: #fff8f4; }
+.retreat-sales-availability .public-calendar-day.available span { color: #efbdc8; }
+.retreat-sales-availability .public-calendar-day.available:hover { background: rgba(104, 58, 71, .78); box-shadow: inset 0 0 0 1px rgba(239, 189, 200, .55); }
+.retreat-sales-availability .public-calendar-day.unavailable { background: #151113; color: #766b6e; }
+.retreat-sales-availability .public-calendar-day.outside-month { background: #100d0f; color: #51494c; }
+.retreat-sales-availability .public-calendar-day.selected { background: #9b5367; box-shadow: inset 0 0 0 3px #f0c1ca; color: #fff; }
+.retreat-sales-availability .public-calendar-day.selected span { color: #fff4f5; }
+.retreat-sales-availability .public-calendar-day:focus-visible { outline: 2px solid #f1cad2; outline-offset: 2px; position: relative; z-index: 1; }
+.retreat-sales-availability .calendar-selected-mark { border-color: var(--wire-rose); }
+.retreat-sales-availability .calendar-feedback { color: var(--wire-muted); }
+.retreat-sales-selected-stay { border-bottom: 1px solid var(--wire-line); border-top: 1px solid var(--wire-line); margin-top: clamp(5rem, 10vw, 9rem); padding: clamp(6rem, 11vw, 10rem) 0; }
+.retreat-sales-selected-stay:focus { outline: 2px solid rgba(241, 202, 210, .7); outline-offset: 5px; }
+.retreat-sales-selected-stay .eyebrow { color: var(--wire-rose); font-size: .7rem; letter-spacing: .25em; margin-bottom: 2rem; }
+.retreat-sales-selected-stay h2 { color: var(--wire-ivory); font-size: clamp(3.25rem, 8vw, 7.3rem); line-height: .96; margin-bottom: clamp(3rem, 6vw, 5rem); max-width: 980px; }
+.retreat-sales-selected-experience { color: var(--wire-ivory) !important; font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Baskerville, Georgia, serif; font-size: clamp(1.7rem, 3.5vw, 2.8rem); line-height: 1.18 !important; margin: 0 0 .8rem; max-width: 760px; }
+.retreat-sales-selected-party { color: var(--wire-muted) !important; font-size: clamp(1rem, 2vw, 1.3rem); margin: 0 0 2.5rem; }
+.retreat-sales-selected-party span { color: var(--wire-rose); margin: 0 .35rem; }
+.retreat-sales-selected-price { color: #edc1c8 !important; font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Baskerville, Georgia, serif; font-size: clamp(2rem, 4vw, 3.3rem); line-height: 1 !important; margin: 0; }
+.retreat-sales-selected-price-note { color: var(--wire-muted) !important; margin: 0; }
+.retreat-sales-enquiry.panel { background: linear-gradient(145deg, rgba(35, 27, 30, .8), rgba(23, 18, 20, .92)); border: 1px solid var(--wire-line); border-radius: 0; color: var(--wire-ivory); margin-top: clamp(4rem, 8vw, 7rem); padding: clamp(2rem, 5vw, 4.5rem); }
+.retreat-sales-enquiry .eyebrow { color: var(--wire-rose); font-size: .7rem; letter-spacing: .25em; margin-bottom: 1.5rem; }
+.retreat-sales-enquiry h2 { color: var(--wire-ivory); font-size: clamp(2.7rem, 6vw, 5rem); margin-bottom: 1.5rem; max-width: 760px; }
+.retreat-sales-enquiry .enquiry-intro { color: var(--wire-muted); font-size: 1rem; margin: 0 0 2.5rem; max-width: 700px; }
+.retreat-sales-enquiry .form-grid { gap: 1.35rem; }
+.retreat-sales-enquiry label { color: #d9cbca; font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; }
+.retreat-sales-enquiry input, .retreat-sales-enquiry textarea { background: rgba(12, 9, 11, .72); border: 1px solid rgba(212, 154, 170, .28); border-radius: 0; color: var(--wire-ivory); margin-top: .65rem; min-height: 50px; }
+.retreat-sales-enquiry textarea { min-height: 140px; }
+.retreat-sales-enquiry input:focus, .retreat-sales-enquiry textarea:focus { border-color: var(--wire-rose); outline: 2px solid rgba(212, 154, 170, .24); outline-offset: 2px; }
+.retreat-sales-enquiry .button { background: transparent; border: 1px solid rgba(231, 179, 190, .62); border-radius: 0; color: var(--wire-ivory); font-size: .76rem; letter-spacing: .14em; min-height: 50px; padding: 1rem 1.5rem; text-transform: uppercase; }
+.retreat-sales-enquiry .button:hover { background: rgba(212, 154, 170, .13); border-color: var(--wire-rose); }
+.retreat-sales-enquiry .button:focus-visible, .retreat-sales-enquiry .text-button:focus-visible { outline: 2px solid #f1cad2; outline-offset: 4px; }
+.retreat-sales-enquiry .form-error { color: #f0b8c2 !important; }
+.retreat-sales-enquiry .text-button { color: #efbdc8; margin-left: 0; }
+.retreat-sales-enquiry-success.success-panel { background: radial-gradient(circle at 15% 10%, rgba(83, 49, 59, .5), transparent 55%), #191416; border: 1px solid var(--wire-line); border-radius: 0; color: var(--wire-ivory); margin-top: clamp(4rem, 8vw, 7rem); padding: clamp(3rem, 7vw, 6rem); }
+.retreat-sales-enquiry-success .eyebrow { color: var(--wire-rose); font-size: .7rem; letter-spacing: .25em; margin-bottom: 1.5rem; }
+.retreat-sales-enquiry-success h2 { color: var(--wire-ivory); font-size: clamp(3rem, 7vw, 6rem); margin-bottom: 2rem; }
+.retreat-sales-enquiry-success p { color: var(--wire-muted) !important; max-width: 760px; }
+.retreat-sales-enquiry-success p strong { color: var(--wire-ivory); }
+.retreat-sales-general-enquiry.panel { margin: 2rem 0 0; }
+.retreat-sales-general-success.success-panel { margin: 2rem 0 0; }
+.retreat-sales-general-success h2 { font-size: clamp(2.5rem, 5vw, 4.25rem); }
+.wire-commercial .general-enquiry-panel:not(.retreat-sales-general-enquiry) { color: var(--ink); margin: 0 auto; max-width: 1240px; }
+.wire-commercial .general-enquiry-panel:not(.retreat-sales-general-enquiry) h2 { color: var(--ink); font-family: Georgia, "Times New Roman", serif; }
+.wire-commercial .general-enquiry-panel:not(.retreat-sales-general-enquiry) p { color: inherit; }
+.wire-commercial .general-enquiry-panel:not(.retreat-sales-general-enquiry) .eyebrow { color: var(--accent); font-size: .76rem; letter-spacing: .18em; margin-bottom: 1.2rem; }
+.wire-list { display: grid; gap: 0; grid-template-columns: repeat(3, 1fr); margin: 4rem 0; }
+.wire-list span { border-bottom: 1px solid var(--wire-line); color: var(--wire-muted); padding: 1.2rem .5rem 1.2rem 0; }
+.wire-faq { max-width: 820px; }
+.wire-faq details { border-bottom: 1px solid var(--wire-line); padding: 1.5rem 0; }
+.wire-faq summary { color: var(--wire-ivory); cursor: pointer; font-size: 1.4rem; }
+.wire-faq p { color: var(--wire-muted); margin-bottom: 0; }
+.wire-return { margin-top: 3rem; }
+@media (max-width: 760px) {
+  .retreat-wireframe h2 { font-size: clamp(2.7rem, 14vw, 4.5rem); margin-bottom: 2.5rem; }
+  .wire-section { padding: clamp(5.5rem, 22vw, 8rem) 1.25rem; }
+  .wire-hero { min-height: max(720px, calc(100svh - 76px)); }
+  .wire-hero-background { object-position: 60% center; }
+  .wire-hero-shade { background: linear-gradient(0deg, rgba(10, 7, 9, .94) 0%, rgba(10, 7, 9, .72) 48%, rgba(10, 7, 9, .26) 100%); }
+  .wire-hero-inner { align-content: space-between; gap: 2rem; grid-template-columns: 1fr; min-height: max(720px, calc(100svh - 76px)); padding: 2.25rem 1.25rem 3.5rem; }
+  .wire-logo-stage { justify-content: flex-end; order: -1; padding-top: 0; }
+  .wire-logo { max-width: 230px; width: 58vw; }
+  .wire-hero-copy { align-self: end; padding-bottom: 0; }
+  .wire-hero h1 { font-size: clamp(3.6rem, 17vw, 5.5rem); max-width: 520px; }
+  .wire-question { font-size: clamp(1.5rem, 7vw, 2rem); margin-top: 2.25rem; }
+  .wire-two-column, .wire-cally { grid-template-columns: 1fr; }
+  .wire-cally { padding-left: 1.25rem; padding-right: 1.25rem; }
+  .wire-portrait-real { margin-bottom: 1rem; max-height: none; }
+  .wire-portrait-real img { max-height: none; }
+  .wire-choice-grid, .wire-format-grid { grid-template-columns: 1fr; }
+  .wire-choice { min-height: 350px; }
+  .wire-choice-number { margin-bottom: 4rem; }
+  .wire-format { min-height: 0; }
+  .wire-group-count { margin-left: 0; max-width: none; min-width: 0; width: 100%; }
+  .wire-summary { padding-bottom: clamp(8rem, 30vw, 11rem); padding-top: clamp(8rem, 30vw, 11rem); }
+  .wire-price-reveal { margin-top: 3.5rem; }
+  .wire-escape-intro { padding-bottom: 7rem; padding-top: 4rem; }
+  .wire-commercial { padding-bottom: 6rem; padding-top: 4rem; }
+  .retreat-sales-flow { padding: 0 1rem; }
+  .retreat-sales-summary { padding-bottom: 5rem; }
+  .retreat-sales-summary h2, .retreat-sales-availability .availability-heading h2 { font-size: clamp(2.5rem, 12vw, 4rem); }
+  .retreat-sales-options, .retreat-sales-format-options { grid-template-columns: 1fr; }
+  .retreat-sales-options button { min-height: 50px; }
+  .retreat-sales-availability .public-calendar { margin-top: 2.5rem; }
+  .retreat-sales-availability .public-calendar-day { min-height: 62px; padding: .45rem; }
+  .retreat-sales-soft-conversion { align-items: stretch; flex-direction: column; gap: 1.25rem; }
+  .retreat-sales-soft-cta { max-width: none; width: 100%; }
+  .retreat-sales-general-enquiry.panel, .retreat-sales-general-success.success-panel { margin-top: 1.5rem; }
+  .retreat-sales-selected-stay { margin-top: 4.5rem; padding: 5rem 0; }
+  .retreat-sales-selected-stay h2 { font-size: clamp(2.8rem, 13vw, 4.6rem); margin-bottom: 3rem; }
+  .retreat-sales-enquiry.panel { margin-top: 3.5rem; padding: 2rem 1.25rem; }
+  .retreat-sales-enquiry h2 { font-size: clamp(2.6rem, 12vw, 4rem); }
+  .retreat-sales-enquiry .button { width: 100%; }
+  .retreat-sales-enquiry-success.success-panel { margin-top: 3.5rem; padding: 3rem 1.5rem; }
+  .wire-list { grid-template-columns: repeat(2, 1fr); margin: 3rem 0; }
+}
 .page-shell { margin: auto; max-width: 1240px; padding: clamp(4rem, 8vw, 8rem) 1.5rem; }
 .narrow-page { margin: auto; max-width: 780px; min-height: calc(100vh - 140px); padding: clamp(6rem, 12vw, 10rem) 1.5rem; }
 .eyebrow { color: var(--accent); font-size: .76rem; font-weight: 700; letter-spacing: .18em; margin: 0 0 1.2rem; text-transform: uppercase; }
