@@ -38,6 +38,15 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local agent/tool configuration
+/.mcp.json
+/.codex/
+/.claude/settings.local.json
+
+# unused local visual references
+/public/assets/heroimage2.png
+/public/assets/sunsetRetreat.png
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
