@@ -96,7 +96,7 @@ function GeneralEnquiryForm({ onChooseStay, presentation = "default", onRetreatS
   </section>;
 }
 
-export function RetreatExplorer({ products, initialMonth, initialProductId = "", initialFormat = "", initialNights = 1, initialPrivateGroupGuests = 1, presentation = "default", retreatSalesPriceLabel, retreatSalesPriceStatus = "loading", onRetreatSalesProductChange, onRetreatSalesFormatChange, onRetreatSalesNotReady, onRetreatSalesEnquirySuccess, onRetreatSalesTakePeek }: { products: Product[]; initialMonth: string; initialProductId?: string; initialFormat?: PrivateRetreatFormat | ""; initialNights?: number; initialPrivateGroupGuests?: number; presentation?: Presentation; retreatSalesPriceLabel?: string; retreatSalesPriceStatus?: "loading" | "ready" | "error"; onRetreatSalesProductChange?: (productId: string) => void; onRetreatSalesFormatChange?: (format: PrivateRetreatFormat) => void; onRetreatSalesGuestCountChange?: (guestCount: number) => void; onRetreatSalesNotReady?: () => void; onRetreatSalesEnquirySuccess?: () => void; onRetreatSalesTakePeek?: () => void }) {
+export function RetreatExplorer({ products, initialMonth, initialProductId = "", initialFormat = "", initialNights = 1, initialPrivateGroupGuests = 1, presentation = "default", retreatSalesPriceLabel, retreatSalesPriceStatus = "loading", onRetreatSalesProductChange, onRetreatSalesFormatChange, onRetreatSalesGuestCountChange, onRetreatSalesNotReady, onRetreatSalesEnquirySuccess, onRetreatSalesTakePeek }: { products: Product[]; initialMonth: string; initialProductId?: string; initialFormat?: PrivateRetreatFormat | ""; initialNights?: number; initialPrivateGroupGuests?: number; presentation?: Presentation; retreatSalesPriceLabel?: string; retreatSalesPriceStatus?: "loading" | "ready" | "error"; onRetreatSalesProductChange?: (productId: string) => void; onRetreatSalesFormatChange?: (format: PrivateRetreatFormat) => void; onRetreatSalesGuestCountChange?: (guestCount: number) => void; onRetreatSalesNotReady?: () => void; onRetreatSalesEnquirySuccess?: () => void; onRetreatSalesTakePeek?: () => void }) {
   const [mode, setMode] = useState<"stay" | "general">("stay");
   const [localProductId, setLocalProductId] = useState(initialProductId);
   const [localFormat, setLocalFormat] = useState<PrivateRetreatFormat | "">(initialFormat);
@@ -105,6 +105,7 @@ export function RetreatExplorer({ products, initialMonth, initialProductId = "",
   const [changingRetreat, setChangingRetreat] = useState(false);
   const [draftProductId, setDraftProductId] = useState(initialProductId);
   const [draftFormat, setDraftFormat] = useState<PrivateRetreatFormat | "">(initialFormat);
+  const [draftPrivateGroupGuests, setDraftPrivateGroupGuests] = useState(String(initialPrivateGroupGuests));
   const [generalEnquiryOpen, setGeneralEnquiryOpen] = useState(false);
   const retreatSales = presentation === "retreat-sales";
   const productId = retreatSales ? initialProductId : localProductId;
@@ -115,6 +116,7 @@ export function RetreatExplorer({ products, initialMonth, initialProductId = "",
   const formats = privateFormats(product);
   const draftProduct = products.find((item) => item.id === draftProductId);
   const draftFormats = privateFormats(draftProduct);
+  const draftGroupGuestsValid = /^\d+$/.test(draftPrivateGroupGuests) && Number(draftPrivateGroupGuests) >= 1 && Number(draftPrivateGroupGuests) <= 50;
   const [month, setMonth] = useState(initialMonth);
   const [dates, setDates] = useState<CalendarArrivalAvailability[]>([]);
   const [selectedDate, setSelectedDate] = useState("");
@@ -198,6 +200,7 @@ export function RetreatExplorer({ products, initialMonth, initialProductId = "",
   function openRetreatEditor() {
     setDraftProductId(productId);
     setDraftFormat(format);
+    setDraftPrivateGroupGuests(String(privateGroupGuests));
     setChangingRetreat(true);
   }
 
@@ -209,8 +212,10 @@ export function RetreatExplorer({ products, initialMonth, initialProductId = "",
 
   function updateRetreat() {
     if (!draftProductId || !draftFormat) return;
+    if (draftFormat === "private_group" && !draftGroupGuestsValid) return;
     onRetreatSalesProductChange?.(draftProductId);
     onRetreatSalesFormatChange?.(draftFormat);
+    if (draftFormat === "private_group") onRetreatSalesGuestCountChange?.(Number(draftPrivateGroupGuests));
     setChangingRetreat(false);
     setError("");
   }
@@ -289,7 +294,8 @@ export function RetreatExplorer({ products, initialMonth, initialProductId = "",
       {changingRetreat && <div className="retreat-sales-editor">
         <fieldset><legend>Experience</legend><div className="retreat-sales-options">{products.map((item) => <button type="button" key={item.id} className={draftProductId === item.id ? "selected" : ""} aria-pressed={draftProductId === item.id} onClick={() => chooseDraftProduct(item.id)}>{item.name}</button>)}</div></fieldset>
         <fieldset><legend>Coming</legend><div className="retreat-sales-options retreat-sales-format-options">{draftFormats.map((item) => <button type="button" key={item} className={draftFormat === item ? "selected" : ""} aria-pressed={draftFormat === item} onClick={() => setDraftFormat(item)}>{formatLabels[item]}</button>)}</div></fieldset>
-        <button className="retreat-sales-done" type="button" onClick={updateRetreat} disabled={!draftProductId || !draftFormat}>Update</button>
+        {draftFormat === "private_group" && <label className="retreat-sales-guest-count">Guests<input type="number" min={1} max={50} value={draftPrivateGroupGuests} onChange={(event) => setDraftPrivateGroupGuests(event.target.value)} aria-invalid={!draftGroupGuestsValid} required /></label>}
+        <button className="retreat-sales-done" type="button" onClick={updateRetreat} disabled={!draftProductId || !draftFormat || (draftFormat === "private_group" && !draftGroupGuestsValid)}>Update</button>
       </div>}
       {loading && <p className="retreat-sales-date-status" role="status">Checking this date for your updated retreat…</p>}
       {retainedDateUnavailable && <p className="retreat-sales-date-status form-error" role="alert">This retreat is not available for your selected date. Please choose another available date.</p>}
