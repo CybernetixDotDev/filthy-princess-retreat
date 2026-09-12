@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { ReactNode } from "react";
 import { CallyDiscovery } from "@/components/cally-discovery";
 
@@ -15,7 +16,7 @@ function CallyPortraitFrame({ className, children }: { className: string; childr
 export default function CallyPage() {
   return <div className="cally-page">
     <section className="cally-movement cally-princess"><div className="cally-shell cally-princess-layout">
-      <div className="cally-princess-copy"><p className="eyebrow">The Princess</p><h1>And then there&apos;s Cally.</h1><p>Pretty things. Bows. Lipstick. Ridiculous amounts of pink.</p><p>Princess by choice.</p><p className="cally-emphasis"><strong>Filthy by reputation.</strong></p><p>There is rather more to her than that.</p></div>
+      <div className="cally-princess-copy"><p className="eyebrow">The Princess</p><h1>So. You came to meet me.</h1><p>Pretty things. Bows. Lipstick. Ridiculous amounts of pink.</p><p>Princess by choice.</p><p className="cally-emphasis"><strong>Filthy by reputation.</strong></p><p>There is rather more to her than that.</p></div>
       <CallyPortraitFrame className="cally-image-portrait"><Image src="/assets/callyHeroImage.png" alt="Cally in her Filthy Princess world" width={1024} height={1536} sizes="(max-width: 800px) min(100vw - 2rem, 620px), min(50vw, 680px)" priority /></CallyPortraitFrame>
     </div></section>
 
@@ -32,6 +33,6 @@ export default function CallyPage() {
 
     <section className="cally-movement cally-distracting"><Image className="cally-distracting-background" src="/assets/picnicCally.png" alt="" fill sizes="100vw" /><div className="cally-distracting-shade" aria-hidden="true" /><div className="cally-shell cally-distracting-content"><p className="eyebrow">You&apos;re distracting me</p><div className="cally-scene"><p>I&apos;m trying to get ready.</p><p>We&apos;re supposed to be going on a picnic.</p><p><strong>You&apos;re supposed to be helping.</strong></p><p>Instead, you&apos;ve discovered I&apos;m terribly easy to distract when you make me feel a certain way.</p><p>I&apos;m trying to do my makeup.</p><p>You&apos;re testing me.</p><p>I&apos;m pretending you&apos;re not getting to me.</p><p>You absolutely are.</p><p><strong>We really do need to leave.</strong></p><p>…</p><p>Stop looking at me like that.</p><p><strong>You naughty person.</strong></p><p>Anyway.</p><p><strong>Picnic.</strong></p></div></div></section>
 
-    <section className="cally-movement cally-curious"><div className="cally-shell cally-text-column"><p className="eyebrow">Now I&apos;m curious about you</p><h2>You&apos;ve been looking at me for quite a while now.</h2><p>You know what I call myself.</p><p>You&apos;ve seen some of the things I love.</p><p>I&apos;ve told you rather more than I intended to.</p><p>Typical.</p><p>But there&apos;s something slightly unfair about all of this.</p><p className="cally-emphasis"><strong>I don&apos;t know anything about you.</strong></p><div className="cally-questions"><p>What makes you curious?</p><p>What do you think about when nobody is listening?</p><p>What do you wish people would stop assuming about you?</p><p>What would you tell me if you knew I wasn&apos;t going to laugh?</p><p><strong>What are you really looking for?</strong></p></div><p className="cally-final-line"><strong>I wonder if you&apos;ll let me meet you.</strong></p></div></section>
+    <section className="cally-movement cally-curious"><div className="cally-shell cally-text-column"><p className="eyebrow">Now I&apos;m curious about you</p><h2>You&apos;ve been looking at me for quite a while now.</h2><p>You know what I call myself.</p><p>You&apos;ve seen some of the things I love.</p><p>I&apos;ve told you rather more than I intended to.</p><p>Typical.</p><p>But there&apos;s something slightly unfair about all of this.</p><p className="cally-emphasis"><strong>I don&apos;t know anything about you.</strong></p><div className="cally-questions"><p>What makes you curious?</p><p>What do you think about when nobody is listening?</p><p>What do you wish people would stop assuming about you?</p><p>What would you tell me if you knew I wasn&apos;t going to laugh?</p><p><strong>What are you really looking for?</strong></p></div><p className="cally-final-line"><strong>I wonder if you&apos;ll let me meet you.</strong></p><p className="cally-after-final">Not the version you show everyone.</p><p className="cally-curious-one">The curious one.</p><Link className="cally-next-link" href="/experience">Let me show you →</Link></div></section>
   </div>;
 }

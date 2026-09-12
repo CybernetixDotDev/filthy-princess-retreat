@@ -24,8 +24,84 @@ p { line-height: 1.7; }
 .public-links a:hover, .public-header .link-button:hover { color: #f1cad2; }
 .public-links a:hover::after, .public-links a[aria-current="page"]::after { transform: scaleX(1); }
 .public-links a[aria-current="page"] { color: #f5eee8; }
+.public-links-home a:not([aria-current="page"]) { opacity: .36; }
+.public-links-home a:not([aria-current="page"]):hover, .public-links-home a:not([aria-current="page"]):focus-visible { opacity: 1; }
 .public-links a:focus-visible, .brand-mark:focus-visible, .public-header .link-button:focus-visible { color: #f5eee8; outline: 2px solid #f1cad2; outline-offset: 5px; }
 .public-main { min-height: calc(100vh - 140px); }
+
+/* Home Chapter I */
+.home-story {
+  --home-bg: #100d0f;
+  --home-plum: #1d1519;
+  --home-ivory: #f5eee8;
+  --home-muted: #c4b5b2;
+  --home-rose: #d69bab;
+  --home-gold: #b98975;
+  --home-line: rgba(230, 180, 190, .2);
+  background: var(--home-bg);
+  color: var(--home-ivory);
+  overflow: hidden;
+}
+.home-story h1, .home-story h2, .home-story p, .home-cally-link { font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Baskerville, Georgia, serif; font-weight: 400; }
+.home-story p { color: var(--home-muted); font-size: clamp(1.3rem, 2.4vw, 2rem); line-height: 1.35; margin: 0 0 1rem; }
+.home-beat { min-height: 82svh; position: relative; }
+.home-shell { margin: auto; max-width: 1240px; padding-left: 1.5rem; padding-right: 1.5rem; width: 100%; }
+.home-hero { align-items: stretch; display: flex; isolation: isolate; min-height: calc(100svh - 76px); }
+.home-hero-image { inset: 0; min-height: 100%; position: absolute; z-index: -3; }
+.home-hero-shade { background: radial-gradient(circle at 74% 22%, rgba(130, 77, 91, .28), transparent 34%), linear-gradient(90deg, rgba(10, 7, 9, .94) 0%, rgba(10, 7, 9, .73) 48%, rgba(10, 7, 9, .4) 100%); inset: 0; position: absolute; z-index: -2; }
+.home-hero-copy { align-self: stretch; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: clamp(4rem, 9vh, 7rem); padding-top: clamp(4rem, 9vh, 7rem); }
+.home-kicker { color: var(--home-rose) !important; font-family: Inter, ui-sans-serif, system-ui, sans-serif !important; font-size: .72rem !important; font-weight: 700 !important; letter-spacing: .24em; margin-bottom: 1.5rem !important; text-transform: uppercase; }
+.home-story h1 { color: var(--home-ivory); font-size: clamp(4.8rem, 13vw, 12rem); letter-spacing: -.07em; line-height: .82; margin: 0 0 2rem; max-width: 1000px; text-transform: uppercase; }
+.home-hero-copy > p:not(.home-kicker) { color: #f0dfdb; font-size: clamp(1.45rem, 3vw, 2.45rem); max-width: 620px; }
+.home-scroll { align-self: flex-start; color: var(--home-rose); font-size: .8rem; letter-spacing: .16em; margin-top: clamp(3rem, 8vh, 5rem); text-transform: uppercase; }
+.home-scroll:hover, .home-cally-link:hover { color: #f4c7d0; }
+.home-disruption, .home-reveal { background: radial-gradient(circle at 18% 20%, rgba(106, 58, 72, .16), transparent 36%), var(--home-bg); }
+.home-split, .home-cally-layout { align-items: center; display: grid; gap: clamp(3rem, 9vw, 8rem); grid-template-columns: repeat(2, minmax(0, 1fr)); min-height: 82svh; padding-bottom: clamp(5rem, 9vw, 8rem); padding-top: clamp(5rem, 9vw, 8rem); }
+.home-split-reverse > :first-child { order: 2; }
+.home-image-placeholder { align-items: center; background: linear-gradient(145deg, rgba(58, 41, 47, .72), rgba(18, 13, 16, .92)); border: 1px solid var(--home-line); color: rgba(245, 238, 232, .58); display: flex; justify-content: center; letter-spacing: .18em; overflow: hidden; text-align: center; text-transform: uppercase; }
+.home-image-placeholder span { background: rgba(16, 13, 15, .54); border: 1px solid rgba(230, 180, 190, .16); font-size: .68rem; padding: .65rem .85rem; }
+.home-detail-image { aspect-ratio: 4 / 5; }
+.home-evidence-image { aspect-ratio: 5 / 4; }
+.home-cally-image { aspect-ratio: 4 / 5.7; min-height: 520px; }
+.home-statement p { color: var(--home-ivory); font-size: clamp(2rem, 5.5vw, 5.4rem); letter-spacing: -.045em; line-height: 1.02; max-width: 690px; }
+.home-statement .home-turn { color: var(--home-rose); margin-top: clamp(4rem, 10vw, 8rem); }
+.home-provocation { background: linear-gradient(180deg, #120f11, #1a1216); display: flex; min-height: 100svh; }
+.home-text-column { align-self: center; padding-bottom: clamp(6rem, 10vw, 10rem); padding-top: clamp(6rem, 10vw, 10rem); }
+.home-text-column > p { max-width: 780px; }
+.home-fragment { border-left: 1px solid var(--home-line); margin: clamp(4rem, 8vw, 7rem) 0; padding-left: clamp(1.5rem, 4vw, 3.5rem); }
+.home-fragment p { color: #e4d2ce; margin-bottom: .7rem; }
+.home-first-voice { color: var(--home-rose) !important; font-size: clamp(3rem, 8vw, 7.4rem) !important; letter-spacing: -.05em; line-height: .95 !important; margin-top: clamp(4rem, 8vw, 7rem) !important; }
+.home-evidence { background: linear-gradient(140deg, #1c1418, #100d0f 72%); }
+.home-human-copy p { color: var(--home-ivory); font-size: clamp(2rem, 5vw, 4.8rem); letter-spacing: -.045em; line-height: 1.02; }
+.home-human-copy p + p { color: var(--home-rose); margin-top: 2rem; }
+.home-simple { color: var(--home-ivory) !important; font-size: clamp(3rem, 8vw, 7rem) !important; letter-spacing: -.05em; line-height: .92 !important; margin-bottom: clamp(4rem, 8vw, 7rem) !important; }
+.home-about { margin-top: clamp(5rem, 10vw, 8rem); }
+.home-about p { color: #dbc7c2; font-size: clamp(2.2rem, 6vw, 5.6rem); letter-spacing: -.05em; line-height: 1; margin-bottom: .5rem; }
+.home-about p:last-child { color: var(--home-rose); font-size: clamp(3.4rem, 9vw, 8rem); }
+.home-cally-reveal { background: radial-gradient(circle at 72% 45%, rgba(120, 70, 84, .23), transparent 36%), #120f11; }
+.home-cally-copy h2 { color: var(--home-ivory); font-size: clamp(3.4rem, 8vw, 7.2rem); letter-spacing: -.055em; line-height: .9; margin: 0 0 clamp(2rem, 4vw, 3.5rem); }
+.home-cally-copy p { max-width: 620px; }
+.home-cally-link { border-bottom: 1px solid rgba(214, 155, 171, .65); color: var(--home-ivory); display: inline-block; font-size: clamp(1.7rem, 3.5vw, 3rem); line-height: 1.1; margin-top: clamp(2rem, 5vw, 4rem); padding-bottom: .35rem; }
+@keyframes home-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+.home-hero-copy > *, .home-statement, .home-text-column, .home-human-copy, .home-cally-copy { animation: home-rise .7s ease both; }
+@media (prefers-reduced-motion: reduce) { .home-hero-copy > *, .home-statement, .home-text-column, .home-human-copy, .home-cally-copy { animation: none; } }
+@media (max-width: 760px) {
+  .public-links-home { gap: .75rem; }
+  .public-links-home a:not([aria-current="page"]) { opacity: .24; }
+  .home-beat { min-height: auto; }
+  .home-hero, .home-hero-copy { min-height: max(640px, calc(100svh - 76px)); }
+  .home-shell { padding-left: 1.1rem; padding-right: 1.1rem; }
+  .home-story h1 { font-size: clamp(4.1rem, 19vw, 6rem); }
+  .home-split, .home-cally-layout { grid-template-columns: 1fr; min-height: auto; padding-bottom: 5rem; padding-top: 5rem; }
+  .home-split-reverse > :first-child { order: initial; }
+  .home-detail-image, .home-evidence-image { aspect-ratio: 4 / 3; }
+  .home-cally-image { aspect-ratio: 4 / 5; min-height: 360px; }
+  .home-text-column { padding-bottom: 5rem; padding-top: 5rem; }
+  .home-statement p, .home-human-copy p { font-size: clamp(2.4rem, 13vw, 4.2rem); }
+  .home-first-voice { font-size: clamp(3.4rem, 17vw, 5.5rem) !important; }
+  .home-about p:last-child { font-size: clamp(3.2rem, 16vw, 5.8rem); }
+}
+
 .retreat-wireframe {
   --wire-bg: #120f11;
   --wire-surface: #191416;
@@ -124,9 +200,10 @@ p { line-height: 1.7; }
 .retreat-sales-guests span { color: var(--wire-rose); margin: 0 .35rem; }
 .retreat-sales-price { color: #edc1c8 !important; font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Baskerville, Georgia, serif; font-size: clamp(2rem, 4vw, 3.25rem); line-height: 1; margin: 0 0 1.5rem; }
 .retreat-sales-price-note { color: var(--wire-muted) !important; margin: 0 0 1.5rem; }
-.retreat-sales-change, .retreat-sales-done { background: none; border: 0; border-bottom: 1px solid rgba(212, 154, 170, .62); color: var(--wire-rose); cursor: pointer; font-size: .76rem; letter-spacing: .14em; padding: .35rem 0; text-transform: uppercase; }
-.retreat-sales-change:hover, .retreat-sales-done:hover { border-color: #f1cad2; color: #f1cad2; }
-.retreat-sales-change:focus-visible, .retreat-sales-done:focus-visible, .retreat-sales-options button:focus-visible { outline: 2px solid #f1cad2; outline-offset: 4px; }
+.retreat-sales-change, .retreat-sales-done, .retreat-sales-not-ready { background: none; border: 0; border-bottom: 1px solid rgba(212, 154, 170, .62); color: var(--wire-rose); cursor: pointer; font-size: .76rem; letter-spacing: .14em; padding: .35rem 0; text-transform: uppercase; }
+.retreat-sales-change:hover, .retreat-sales-done:hover, .retreat-sales-not-ready:hover { border-color: #f1cad2; color: #f1cad2; }
+.retreat-sales-change:focus-visible, .retreat-sales-done:focus-visible, .retreat-sales-not-ready:focus-visible, .retreat-sales-options button:focus-visible { outline: 2px solid #f1cad2; outline-offset: 4px; }
+.retreat-sales-not-ready { color: var(--wire-muted); }
 .retreat-sales-editor { border-bottom: 1px solid var(--wire-line); border-top: 1px solid var(--wire-line); display: grid; gap: 1.75rem; margin-top: 2rem; padding: 2rem 0; }
 .retreat-sales-editor fieldset { border: 0; margin: 0; padding: 0; }
 .retreat-sales-editor legend, .retreat-sales-guest-count { color: var(--wire-muted); display: block; font-size: .72rem; font-weight: 700; letter-spacing: .15em; margin-bottom: .8rem; text-transform: uppercase; }
@@ -213,6 +290,9 @@ p { line-height: 1.7; }
 .retreat-sales-general-enquiry.panel { margin: 2rem 0 0; }
 .retreat-sales-general-success.success-panel { margin: 2rem 0 0; }
 .retreat-sales-general-success h2 { font-size: clamp(2.5rem, 5vw, 4.25rem); }
+.retreat-sales-inner-continuation { border-top: 1px solid var(--wire-line); margin-top: 2rem; padding-top: 1.5rem; }
+.retreat-sales-inner-continuation p { margin-bottom: .45rem; }
+.retreat-sales-inner-continuation button { margin-top: 1rem; }
 .wire-commercial .general-enquiry-panel:not(.retreat-sales-general-enquiry) { color: var(--ink); margin: 0 auto; max-width: 1240px; }
 .wire-commercial .general-enquiry-panel:not(.retreat-sales-general-enquiry) h2 { color: var(--ink); font-family: Georgia, "Times New Roman", serif; }
 .wire-commercial .general-enquiry-panel:not(.retreat-sales-general-enquiry) p { color: inherit; }
@@ -224,6 +304,23 @@ p { line-height: 1.7; }
 .wire-faq summary { color: var(--wire-ivory); cursor: pointer; font-size: 1.4rem; }
 .wire-faq p { color: var(--wire-muted); margin-bottom: 0; }
 .wire-return { margin-top: 3rem; }
+.retreat-epilogue { background: radial-gradient(circle at 50% 0%, rgba(85, 49, 61, .22), transparent 42%), #100d0f; min-height: 86svh; padding-bottom: clamp(8rem, 14vw, 13rem); padding-top: clamp(8rem, 14vw, 13rem); }
+.retreat-epilogue > div { margin: auto; max-width: 840px; }
+.retreat-epilogue h2 { max-width: 780px; }
+.retreat-epilogue p:not(.eyebrow) { color: var(--wire-muted); font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Baskerville, Georgia, serif; font-size: clamp(1.35rem, 3vw, 2.25rem); line-height: 1.35; margin-bottom: .75rem; }
+.retreat-epilogue-emphasis { color: #edc1c8 !important; font-size: clamp(1.8rem, 4vw, 3.2rem) !important; margin-top: 2rem !important; }
+.retreat-epilogue-link { background: transparent; border: 0; border-bottom: 1px solid rgba(212, 154, 170, .68); color: var(--wire-ivory); cursor: pointer; font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Baskerville, Georgia, serif; font-size: clamp(1.6rem, 3.4vw, 2.7rem); margin-top: clamp(3rem, 6vw, 5rem); padding: 0 0 .35rem; }
+.retreat-epilogue-link:hover { color: #f1cad2; }
+.retreat-epilogue-link:focus-visible { outline: 2px solid #f1cad2; outline-offset: 6px; }
+.sanctum-reveal-layer { align-items: center; background: rgba(6, 4, 6, .78); display: flex; inset: 0; justify-content: center; padding: 1.25rem; position: fixed; z-index: 80; }
+.sanctum-reveal-modal { background: radial-gradient(circle at 72% 0%, rgba(112, 60, 78, .2), transparent 42%), #171113; border: 1px solid rgba(212, 154, 170, .34); box-shadow: 0 30px 90px rgba(0, 0, 0, .58); color: var(--wire-ivory); max-height: min(820px, calc(100svh - 2.5rem)); max-width: 760px; overflow-y: auto; padding: clamp(2rem, 6vw, 4rem); position: relative; width: min(100%, 760px); }
+.sanctum-reveal-close { align-items: center; background: transparent; border: 1px solid rgba(212, 154, 170, .28); color: var(--wire-muted); cursor: pointer; display: flex; font-size: 1.5rem; height: 2.4rem; justify-content: center; position: absolute; right: 1rem; top: 1rem; width: 2.4rem; }
+.sanctum-reveal-close:hover, .sanctum-reveal-close:focus-visible { border-color: var(--wire-rose); color: var(--wire-ivory); outline: none; }
+.sanctum-reveal-modal h2 { color: var(--wire-ivory); font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Baskerville, Georgia, serif; font-size: clamp(2.5rem, 6vw, 4.8rem); line-height: .96; margin-bottom: 2rem; max-width: 640px; }
+.sanctum-reveal-copy p { color: var(--wire-muted); font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Baskerville, Georgia, serif; font-size: clamp(1.15rem, 2.3vw, 1.55rem); line-height: 1.45; margin-bottom: 1.25rem; }
+.sanctum-reveal-copy .sanctum-reveal-close-line { color: #edc1c8; font-size: clamp(1.9rem, 5vw, 3.4rem); line-height: 1.08; margin: 2rem 0 2.5rem; }
+.sanctum-reveal-cta { border-bottom: 1px solid rgba(212, 154, 170, .68); color: var(--wire-ivory); display: inline-block; font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Baskerville, Georgia, serif; font-size: clamp(1.4rem, 3vw, 2.25rem); padding-bottom: .35rem; }
+.sanctum-reveal-cta:hover, .sanctum-reveal-cta:focus-visible { color: #f1cad2; outline: none; }
 @media (max-width: 760px) {
   .retreat-wireframe h2 { font-size: clamp(2.7rem, 14vw, 4.5rem); margin-bottom: 2.5rem; }
   .wire-section { padding: clamp(5.5rem, 22vw, 8rem) 1.25rem; }
@@ -267,6 +364,9 @@ p { line-height: 1.7; }
   .retreat-sales-enquiry .button { width: 100%; }
   .retreat-sales-enquiry-success.success-panel { margin-top: 3.5rem; padding: 3rem 1.5rem; }
   .wire-list { grid-template-columns: repeat(2, 1fr); margin: 3rem 0; }
+  .retreat-epilogue { min-height: auto; }
+  .sanctum-reveal-layer { align-items: stretch; padding: .8rem; }
+  .sanctum-reveal-modal { max-height: calc(100svh - 1.6rem); padding: 3.5rem 1.25rem 2rem; }
 }
 .page-shell { margin: auto; max-width: 1240px; padding: clamp(4rem, 8vw, 8rem) 1.5rem; }
 .narrow-page { margin: auto; max-width: 780px; min-height: calc(100vh - 140px); padding: clamp(6rem, 12vw, 10rem) 1.5rem; }
@@ -423,7 +523,7 @@ td a { color: var(--accent); font-weight: 650; }
   color: var(--cally-ivory);
   overflow: hidden;
 }
-.cally-page h1, .cally-page h2, .cally-page .cally-emphasis, .cally-final-line {
+.cally-page h1, .cally-page h2, .cally-page .cally-emphasis, .cally-final-line, .cally-curious-one, .cally-next-link {
   color: var(--cally-ivory);
   font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Baskerville, Georgia, serif;
   font-weight: 400;
@@ -494,6 +594,10 @@ td a { color: var(--accent); font-weight: 650; }
 .cally-questions p { color: var(--cally-ivory); font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Baskerville, Georgia, serif; font-size: clamp(1.3rem, 2.8vw, 2rem); margin: 0 0 1rem; }
 .cally-questions p:last-child { margin-bottom: 0; margin-top: 2rem; }
 .cally-final-line { color: #edbdc7 !important; font-size: clamp(2rem, 4.5vw, 3.8rem); line-height: 1.12 !important; margin: 0; }
+.cally-after-final { margin-top: clamp(2rem, 4vw, 3rem); }
+.cally-curious-one { color: #edbdc7 !important; font-size: clamp(2.2rem, 5vw, 4.4rem); line-height: 1.05 !important; margin: .4rem 0 clamp(3rem, 6vw, 5rem); }
+.cally-next-link { border-bottom: 1px solid rgba(212,154,170,.65); color: var(--cally-ivory); display: inline-block; font-size: clamp(1.35rem, 2.8vw, 2.2rem); line-height: 1.15; padding-bottom: .35rem; }
+.cally-next-link:hover { color: #f1cad2; }
 
 @media (max-width: 800px) {
   .cally-movement { padding: 6rem 0; }

@@ -83,12 +83,13 @@ export async function createInvoiceForPublicQuote(_: PublicInvoiceCreationState,
   if (quoteError || !quote?.[0]) return { error: "This quote is no longer available." };
   const existing = await supabase.rpc("get_public_invoice_by_quote_slug", { p_public_quote_slug: quoteSlug });
   if (!existing.error && existing.data?.[0]?.public_slug) redirect(`/invoice/${existing.data[0].public_slug}`);
+  let publicSlug: string;
   try {
-    const publicSlug = await createInvoiceSnapshot({ totalPrice: Number(quote[0].total_price), publicQuoteSlug: quoteSlug, supabase });
-    redirect(`/invoice/${publicSlug}`);
+    publicSlug = await createInvoiceSnapshot({ totalPrice: Number(quote[0].total_price), publicQuoteSlug: quoteSlug, supabase });
   } catch {
     return { error: "We couldn't prepare the invoice right now. Please try again." };
   }
+  redirect(`/invoice/${publicSlug}`);
 }
 
 export async function submitInvoicePayment(_: InvoicePaymentState, formData: FormData): Promise<InvoicePaymentState> {
