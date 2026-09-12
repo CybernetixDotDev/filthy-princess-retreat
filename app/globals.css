@@ -952,11 +952,11 @@ td a { color: var(--accent); font-weight: 650; }
 .experience-invitation-intro { margin: 0 auto clamp(3.5rem, 7vw, 6rem); max-width: min(78vw, 1080px); }
 .experience-invitation-intro .experience-lead { margin-bottom: .25rem; }
 .experience-invitation-intro > p:last-child { margin-top: 0; }
-.experience-invitation-scene { margin: 0 auto; max-width: 1080px; perspective: 2200px; width: 78vw; }
-.experience-invitation { display: grid; transform-origin: center center; transform-style: preserve-3d; width: 100%; }
-.experience-invitation-face { backface-visibility: hidden; background: linear-gradient(145deg, rgba(40, 29, 33, .98), rgba(21, 17, 19, .99)); border: 1px solid rgba(212, 154, 170, .34); box-shadow: 0 35px 90px rgba(0, 0, 0, .36), inset 0 0 0 1px rgba(255, 255, 255, .025); display: flex; flex-direction: column; grid-area: 1 / 1; justify-content: space-between; min-height: 820px; padding: clamp(3rem, 6vw, 5.75rem); position: relative; }
+.experience-invitation-scene { margin: 0 auto; max-width: 1080px; perspective: 2200px; -webkit-perspective: 2200px; width: 78vw; }
+.experience-invitation { display: grid; transform-origin: center center; transform-style: preserve-3d; -webkit-transform-style: preserve-3d; width: 100%; }
+.experience-invitation-face { backface-visibility: hidden; -webkit-backface-visibility: hidden; background: linear-gradient(145deg, rgba(40, 29, 33, .98), rgba(21, 17, 19, .99)); border: 1px solid rgba(212, 154, 170, .34); box-shadow: 0 35px 90px rgba(0, 0, 0, .36), inset 0 0 0 1px rgba(255, 255, 255, .025); display: flex; flex-direction: column; grid-area: 1 / 1; justify-content: space-between; min-height: 820px; padding: clamp(3rem, 6vw, 5.75rem); position: relative; transform: translateZ(1px); -webkit-transform: translateZ(1px); transform-style: preserve-3d; -webkit-transform-style: preserve-3d; }
 .experience-invitation-face::before { background: linear-gradient(90deg, var(--experience-rose), transparent); content: ""; height: 1px; left: 0; opacity: .7; position: absolute; top: 0; width: 42%; }
-.experience-invitation-back { background: radial-gradient(circle at 78% 15%, rgba(116, 55, 73, .28), transparent 36%), linear-gradient(145deg, rgba(48, 31, 37, .99), rgba(20, 15, 18, .99)); transform: rotateY(180deg); }
+.experience-invitation-back { background: radial-gradient(circle at 78% 15%, rgba(116, 55, 73, .28), transparent 36%), linear-gradient(145deg, rgba(48, 31, 37, .99), rgba(20, 15, 18, .99)); transform: rotateY(180deg) translateZ(1px); -webkit-transform: rotateY(180deg) translateZ(1px); }
 .experience-invitation-copy { max-width: 790px; }
 .experience-invitation-face .eyebrow { margin-bottom: clamp(2.5rem, 5vw, 4.5rem); }
 .experience-invitation-face h2 { font-size: clamp(3rem, 6vw, 5.8rem); line-height: .93; margin: 0 0 clamp(2.5rem, 5vw, 4.5rem); max-width: 900px; }
