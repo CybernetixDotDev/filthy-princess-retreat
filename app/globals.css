@@ -360,14 +360,43 @@ dd { margin: 0; }
 .auth-tabs { background: #f5f1f2; border: 1px solid var(--line); border-radius: 4px; display: grid; grid-template-columns: 1fr 1fr; padding: .2rem; }
 .auth-tabs button { background: transparent; border: 0; border-radius: 3px; color: var(--muted); cursor: pointer; padding: .7rem; }
 .auth-tabs button.active { background: white; box-shadow: 0 1px 3px rgba(36,29,32,.12); color: var(--ink); font-weight: 700; }
-.admin-header { background: #282124; color: white; }
-.admin-nav { min-height: 68px; }
-.admin-brand { font-family: Georgia, "Times New Roman", serif; font-size: 1.45rem; }
-.admin-links a, .link-button.light { color: #f7f1f3; font-size: .83rem; }
-.admin-main { margin: auto; max-width: 1240px; min-height: calc(100vh - 68px); padding: 3rem 1.5rem 5rem; }
+.sr-only { clip: rect(0, 0, 0, 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px; }
+.admin-shell { background: #f7f3f2; display: flex; min-height: 100vh; min-width: 0; }
+.admin-sidebar { background: #282124; color: #f7f1f3; display: flex; flex: 0 0 254px; flex-direction: column; height: 100vh; overflow-x: hidden; overflow-y: auto; padding: 1.45rem 1rem 1rem; position: sticky; top: 0; transition: flex-basis .2s ease, padding .2s ease; z-index: 20; }
+.admin-sidebar.collapsed { flex-basis: 76px; padding-inline: .65rem; }
+.admin-sidebar-brand { border-bottom: 1px solid rgba(255,255,255,.12); min-height: 74px; padding: .35rem .55rem 1.2rem; }
+.admin-sidebar-brand a, .admin-mobile-header > a { color: #fff8f7; display: grid; font-family: Georgia, "Times New Roman", serif; font-size: 1.32rem; line-height: 1.05; }
+.admin-sidebar-brand small, .admin-mobile-header small { color: #c99aaa; font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: .63rem; letter-spacing: .2em; margin-top: .45rem; text-transform: uppercase; }
+.admin-sidebar-collapse { align-items: center; align-self: flex-end; background: transparent; border: 1px solid rgba(255,255,255,.16); border-radius: 50%; color: #eadde1; cursor: pointer; display: flex; font-size: 1.25rem; height: 30px; justify-content: center; margin: -.95rem -.05rem .8rem 0; padding: 0; width: 30px; }
+.admin-sidebar-collapse:hover, .admin-sidebar-collapse:focus-visible { border-color: #c9869e; color: white; outline: 2px solid transparent; }
+.admin-sidebar-navigation { display: grid; gap: .75rem; }
+.admin-nav-group { min-width: 0; }
+.admin-nav-group-toggle { align-items: center; background: transparent; border: 0; color: #c4afb6; cursor: pointer; display: flex; font-size: .65rem; justify-content: space-between; letter-spacing: .14em; padding: .45rem .55rem; text-transform: uppercase; width: 100%; }
+.admin-nav-group-toggle:hover, .admin-nav-group-toggle:focus-visible { color: #fff; outline: none; }
+.admin-nav-group-items { display: grid; gap: .18rem; }
+.admin-nav-group-items[hidden] { display: none; }
+.admin-nav-group-items a, .admin-sidebar-signout button { align-items: center; background: transparent; border: 0; border-radius: 4px; color: #eadfe2; cursor: pointer; display: flex; font: inherit; font-size: .84rem; gap: .75rem; min-height: 42px; padding: .55rem; text-align: left; width: 100%; }
+.admin-nav-group-items a:hover, .admin-nav-group-items a:focus-visible, .admin-sidebar-signout button:hover, .admin-sidebar-signout button:focus-visible { background: rgba(255,255,255,.07); color: white; outline: none; }
+.admin-nav-group-items a.active { background: rgba(174,87,117,.2); box-shadow: inset 2px 0 #d496ab; color: #fff; }
+.admin-nav-mark { align-items: center; border: 1px solid rgba(214,163,180,.3); border-radius: 50%; color: #e1a9bb; display: inline-flex; flex: 0 0 27px; font-family: Georgia, "Times New Roman", serif; height: 27px; justify-content: center; }
+.admin-sidebar-signout { border-top: 1px solid rgba(255,255,255,.12); margin-top: auto; padding-top: .85rem; }
+.admin-sidebar.collapsed .admin-sidebar-brand span, .admin-sidebar.collapsed .admin-sidebar-brand small, .admin-sidebar.collapsed .admin-nav-label, .admin-sidebar.collapsed .admin-nav-group-toggle span:first-child { display: none; }
+.admin-sidebar.collapsed .admin-sidebar-brand a::before { content: "FP"; font-size: 1.2rem; text-align: center; }
+.admin-sidebar.collapsed .admin-nav-group-toggle { justify-content: center; }
+.admin-sidebar.collapsed .admin-nav-group-toggle span:last-child { font-size: .9rem; }
+.admin-sidebar.collapsed .admin-nav-group-items a, .admin-sidebar.collapsed .admin-sidebar-signout button { justify-content: center; padding-inline: 0; }
+.admin-main { flex: 1 1 auto; margin: 0 auto; max-width: 1290px; min-height: 100vh; min-width: 0; padding: 3rem 1.5rem 5rem; width: 100%; }
+.admin-mobile-header, .admin-drawer-layer { display: none; }
 .admin-title { align-items: end; display: flex; justify-content: space-between; margin-bottom: 2rem; }
 .admin-title h1 { font-size: clamp(3rem, 6vw, 4.5rem); margin: 0; }
 .admin-panel { margin-bottom: 1.5rem; }
+.store-order-lifecycle { display: grid; gap: .75rem; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 1.25rem 0 0; }
+.store-order-lifecycle > div { border-left: 2px solid rgba(154, 82, 105, .28); padding: .25rem .9rem; }
+.store-order-lifecycle dt { color: var(--muted); font-size: .72rem; letter-spacing: .09em; text-transform: uppercase; }
+.store-order-lifecycle dd { font-family: Georgia, "Times New Roman", serif; font-size: clamp(1.15rem, 2vw, 1.45rem); margin-top: .35rem; }
+.store-membership-claimed { border-left: 3px solid var(--accent); }
+.store-membership-claimed h2 { margin-bottom: .65rem; }
+.store-membership-claimed > p:not(.eyebrow) { max-width: 760px; }
 .compact-form { grid-template-columns: repeat(3, 1fr); }
 .card-list { margin-top: 1.5rem; }
 .admin-card, .quote-card { align-items: center; background: white; border: 1px solid var(--line); display: flex; gap: 1.5rem; justify-content: space-between; padding: 1.2rem; }
@@ -504,6 +533,45 @@ td a { color: var(--accent); font-weight: 650; }
 .copy-field { font-family: monospace; }
 .admin-success { margin-bottom: 1.5rem; }
 .access-denied { margin: 10vh auto; max-width: 680px; padding: 2rem; text-align: center; }
+.inner-sanctum-main { background: radial-gradient(circle at 70% 20%, rgba(95, 48, 65, .25), transparent 38%), #120f11; color: #f4e9e4; min-height: calc(100vh - 140px); }
+.inner-sanctum-boundary, .inner-sanctum-welcome { margin: 0 auto; max-width: 820px; padding: clamp(6rem, 14vw, 11rem) 1.5rem; }
+.inner-sanctum-boundary h1, .inner-sanctum-welcome h1 { color: #f8eee9; font-family: Georgia, "Times New Roman", serif; font-size: clamp(3rem, 8vw, 6.5rem); font-weight: 400; line-height: .98; margin: 1rem 0 2rem; }
+.inner-sanctum-boundary > p:not(.eyebrow), .inner-sanctum-note { color: #cbbab5; font-size: clamp(1rem, 2vw, 1.2rem); line-height: 1.8; }
+.inner-sanctum-boundary .text-link { color: #e1aeba; display: inline-block; margin-top: 1.5rem; }
+.inner-sanctum-note { border-left: 1px solid rgba(218, 153, 170, .45); padding-left: 1.5rem; }
+.admin-row-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.store-page, .store-order-page { background: radial-gradient(circle at 80% 12%, rgba(113, 54, 75, .28), transparent 32%), #120f11; color: #f4e9e4; min-height: calc(100vh - 140px); padding: clamp(5rem, 10vw, 9rem) 1.5rem; }
+.store-opening { margin: 0 auto clamp(4rem, 8vw, 7rem); max-width: 1050px; }
+.store-opening h1 { color: #f8eee9; font-family: Georgia, "Times New Roman", serif; font-size: clamp(3.4rem, 8vw, 7.5rem); font-weight: 400; line-height: .94; margin: 1rem 0 1.5rem; max-width: 980px; }
+.store-opening-line { color: #d8b5bd; font-family: Georgia, "Times New Roman", serif; font-size: clamp(1.4rem, 3vw, 2.2rem); }
+.store-feature { align-items: center; display: grid; gap: clamp(2.5rem, 7vw, 7rem); grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); margin: auto; max-width: 1180px; }
+.store-product-art { aspect-ratio: 4 / 5; background: linear-gradient(145deg, #21191d, #0e0b0c); border: 1px solid rgba(222, 172, 181, .22); min-height: 0; overflow: hidden; position: relative; }
+.store-product-art > span { align-items: center; color: #d5a0ad; display: flex; font-family: Georgia, "Times New Roman", serif; font-size: 5rem; height: 100%; justify-content: center; }
+.store-product-image { object-fit: cover; }
+.store-product-copy h2 { color: #f8eee9; font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.7rem, 5vw, 5rem); font-weight: 400; line-height: 1; margin: 1rem 0 1.25rem; }
+.store-product-promise { color: #e1aeba; font-family: Georgia, "Times New Roman", serif; font-size: clamp(1.35rem, 2.4vw, 2rem); }
+.store-product-description { color: #cbbab5; line-height: 1.75; margin: 2rem 0; max-width: 620px; }
+.store-product-description p { margin: .65rem 0; }
+.store-product-clarification { color: #9f908d; font-size: .82rem; line-height: 1.6; margin: 1.5rem 0 0; max-width: 590px; }
+.store-price { color: #f8eee9; font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.8rem, 5vw, 4.5rem); margin: 2.5rem 0 1.5rem; }
+.store-purchase-form { display: grid; gap: 1rem; max-width: 520px; }
+.store-purchase-form label { color: #d9cac6; display: grid; font-size: .8rem; gap: .55rem; letter-spacing: .08em; text-transform: uppercase; }
+.store-purchase-form input { background: rgba(16, 12, 14, .8); border: 1px solid rgba(222, 172, 181, .3); color: #f8eee9; min-height: 50px; padding: .8rem 1rem; }
+.store-buy-button { width: 100%; }
+.store-message { margin: 3rem auto; max-width: 1050px; }
+.store-order-summary { margin: 0 auto; max-width: 820px; }
+.store-order-summary h1 { color: #f8eee9; font-family: Georgia, "Times New Roman", serif; font-size: clamp(3.2rem, 8vw, 6.5rem); font-weight: 400; line-height: .98; margin: 1rem 0 3rem; }
+.store-order-summary dl { border-bottom: 1px solid rgba(222, 172, 181, .2); border-top: 1px solid rgba(222, 172, 181, .2); margin: 0 0 2.5rem; }
+.store-order-summary dl div { align-items: baseline; border-bottom: 1px solid rgba(222, 172, 181, .12); display: flex; gap: 2rem; justify-content: space-between; padding: 1rem 0; }
+.store-order-summary dl div:last-child { border: 0; }
+.store-order-summary dt { color: #a99a98; font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; }
+.store-order-summary dd { color: #f4e9e4; margin: 0; text-align: right; }
+.store-order-note { border-left: 1px solid rgba(218, 153, 170, .45); color: #cbbab5; font-family: Georgia, "Times New Roman", serif; font-size: 1.2rem; line-height: 1.7; margin: 2rem 0; padding-left: 1.5rem; }
+.admin-store-link { color: inherit; display: block; text-decoration: none; }
+.admin-store-link h2 { font-size: 3rem; margin: .5rem 0; }
+.store-order-item-admin { border-top: 1px solid var(--line); padding: 1rem 0; }
+@media (max-width: 800px) { .store-feature { grid-template-columns: 1fr; } .store-product-art { aspect-ratio: 5 / 4; } .store-order-summary dl div { align-items: flex-start; flex-direction: column; gap: .35rem; } .store-order-summary dd { overflow-wrap: anywhere; text-align: left; } }
+@media (max-width: 700px) { .store-order-lifecycle { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .availability-calendar-panel { background: white; border: 1px solid var(--line); border-radius: 5px; margin-bottom: 1.5rem; padding: clamp(1rem, 2vw, 1.5rem); }
 .availability-filters { display: grid; gap: 1rem; grid-template-columns: repeat(2, minmax(0, 240px)); margin-bottom: 1.5rem; }
 .calendar-layout { display: grid; gap: 1.5rem; grid-template-columns: minmax(0, 1.7fr) minmax(260px, .8fr); }
@@ -572,8 +640,18 @@ td a { color: var(--accent); font-weight: 650; }
 .eth-result strong { font-family: Georgia, "Times New Roman", serif; font-size: 1.35rem; overflow-wrap: anywhere; }
 
 @media (max-width: 800px) {
-  .public-nav, .admin-nav { align-items: flex-start; flex-wrap: wrap; }
-  .public-links, .admin-links { flex-basis: 100%; gap: .9rem 1.2rem; justify-content: center; order: 3; overflow-x: auto; padding-top: .5rem; }
+  .public-nav { align-items: flex-start; flex-wrap: wrap; }
+  .public-links { flex-basis: 100%; gap: .9rem 1.2rem; justify-content: center; order: 3; overflow-x: auto; padding-top: .5rem; }
+  .admin-shell { display: block; }
+  .admin-sidebar { display: none; }
+  .admin-mobile-header { align-items: center; background: #282124; color: white; display: flex; height: 64px; justify-content: space-between; padding: .65rem 1rem; position: sticky; top: 0; z-index: 30; }
+  .admin-mobile-header > a { font-size: 1.08rem; }
+  .admin-mobile-header button, .admin-drawer-heading button { background: transparent; border: 1px solid rgba(255,255,255,.2); color: white; cursor: pointer; font-size: 1.2rem; height: 38px; width: 42px; }
+  .admin-drawer-layer { display: block; inset: 0; position: fixed; z-index: 50; }
+  .admin-drawer-backdrop { background: rgba(15,10,12,.66); border: 0; inset: 0; position: absolute; width: 100%; }
+  .admin-mobile-drawer { background: #282124; color: #f7f1f3; display: flex; flex-direction: column; height: 100%; max-width: 330px; overflow-y: auto; padding: 1rem; position: relative; width: min(88vw, 330px); }
+  .admin-drawer-heading { align-items: center; border-bottom: 1px solid rgba(255,255,255,.12); display: flex; font-family: Georgia, "Times New Roman", serif; font-size: 1.25rem; justify-content: space-between; margin-bottom: .8rem; padding: .15rem .4rem 1rem; }
+  .admin-main { min-height: calc(100vh - 64px); padding-top: 2rem; }
   .hero, .step-grid, .admin-detail-grid { grid-template-columns: 1fr; }
   .availability-heading { align-items: stretch; flex-direction: column; }
   .availability-heading > label { min-width: 0; }
@@ -926,3 +1004,122 @@ td a { color: var(--accent); font-weight: 650; }
   .experience-arrive h2 { font-size: clamp(2.8rem, 13vw, 4rem); }
   .experience-closer { padding: 6rem 0; }
 }
+/* Store claim and fulfillment boundary. */
+.claim-page { align-items: center; background: radial-gradient(circle at 50% 28%, rgba(106, 52, 69, .28), transparent 42%), #0d0a0b; color: #f4e9e3; display: flex; min-height: calc(100svh - 76px); padding: clamp(4rem, 10vw, 8rem) 1.25rem; }
+.claim-card { margin: 0 auto; max-width: 760px; text-align: center; width: 100%; }
+.claim-card h1, .claim-result h1 { color: #f6ebe5; font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Baskerville, Georgia, serif; font-size: clamp(3rem, 8vw, 6rem); line-height: .95; margin: 0 auto 1.5rem; }
+.claim-card > p:not(.eyebrow), .claim-result > p:not(.eyebrow) { color: #d8cbc6; font-size: clamp(1.05rem, 2vw, 1.3rem); margin: 0 auto 2rem; max-width: 580px; }
+.claim-card .primary-link { border-bottom: 1px solid rgba(239, 183, 195, .75); color: #efb7c3; display: inline-block; font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Baskerville, Georgia, serif; font-size: clamp(1.25rem, 2.6vw, 1.7rem); padding: .55rem .15rem; }
+.claim-card .primary-link:focus-visible { outline: 2px solid #efb7c3; outline-offset: 6px; }
+.claim-confirmation { margin-top: 2.5rem; }
+.admin-caution { border-left: 2px solid #a86f7b; color: var(--muted); margin: 1.5rem 0; max-width: 760px; padding: .75rem 1rem; }
+.admin-claim-controls form { margin-top: 1rem; }
+.admin-claim-actions { display: flex; flex-wrap: wrap; gap: 1.25rem; }
+.admin-one-time-key { background: rgba(94, 48, 61, .1); border: 1px solid rgba(168, 111, 123, .35); margin-top: 1rem; max-width: 780px; padding: 1rem; }
+.admin-one-time-key label { display: grid; gap: .45rem; }
+.admin-one-time-key input { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; width: 100%; }
+
+/* Protected Inner Sanctum editorial room. */
+.sanctum-shell { --sanctum-bg: #0d090b; --sanctum-ivory: #f5ebe5; --sanctum-muted: #cbbab5; --sanctum-rose: #dfa6b4; --sanctum-line: rgba(223, 166, 180, .22); background: var(--sanctum-bg); color: var(--sanctum-ivory); min-height: 100vh; }
+.sanctum-header { background: rgba(13, 9, 11, .92); border-bottom: 1px solid var(--sanctum-line); position: sticky; top: 0; z-index: 20; }
+.sanctum-header nav { align-items: center; display: flex; justify-content: space-between; margin: auto; max-width: 1240px; min-height: 64px; padding: .75rem 1.5rem; }
+.sanctum-wordmark { color: var(--sanctum-ivory); font-family: Georgia, "Times New Roman", serif; font-size: 1.25rem; letter-spacing: .04em; text-decoration: none; }
+.sanctum-header-actions { align-items: center; display: flex; gap: 1.25rem; }
+.sanctum-header-actions a, .sanctum-header-actions button, .sanctum-account button { background: none; border: 0; color: var(--sanctum-muted); cursor: pointer; font: inherit; padding: .45rem 0; text-decoration: none; }
+.sanctum-header-actions a:hover, .sanctum-header-actions button:hover, .sanctum-account button:hover { color: var(--sanctum-rose); }
+.sanctum-header-actions a:focus-visible, .sanctum-header-actions button:focus-visible, .sanctum-account button:focus-visible, .sanctum-link:focus-visible { outline: 2px solid var(--sanctum-rose); outline-offset: 5px; }
+.sanctum-shell .inner-sanctum-main { background: radial-gradient(circle at 72% 8%, rgba(112, 54, 73, .25), transparent 28%), var(--sanctum-bg); color: var(--sanctum-ivory); min-height: calc(100vh - 64px); }
+.sanctum-home { margin: auto; max-width: 1240px; overflow: hidden; padding: clamp(4rem, 8vw, 7rem) 1.5rem 4rem; }
+.sanctum-eyebrow { color: var(--sanctum-rose); font-size: .72rem; letter-spacing: .2em; margin: 0 0 1.1rem; text-transform: uppercase; }
+.sanctum-post-copy h2, .sanctum-discoveries h2 { color: var(--sanctum-ivory); font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.8rem, 7vw, 6.4rem); font-weight: 400; line-height: .97; margin: 0 0 1.75rem; }
+.sanctum-prose { color: var(--sanctum-muted); font-size: clamp(1rem, 1.7vw, 1.18rem); line-height: 1.75; max-width: 690px; }
+.sanctum-prose p { margin: 0 0 1rem; }
+.sanctum-link { border-bottom: 1px solid var(--sanctum-rose); color: var(--sanctum-rose); display: inline-block; font-family: Georgia, "Times New Roman", serif; font-size: 1.25rem; margin-top: 1.25rem; padding-bottom: .25rem; text-decoration: none; }
+.sanctum-message { margin: 0 auto clamp(6rem, 12vw, 10rem); max-width: 850px; }
+.sanctum-message .sanctum-post-copy { border-left: 1px solid var(--sanctum-line); padding-left: clamp(1.5rem, 4vw, 3.5rem); }
+.sanctum-message .sanctum-post-copy h2 { font-size: clamp(3.7rem, 9vw, 7.5rem); }
+.sanctum-feature { align-items: end; border-bottom: 1px solid var(--sanctum-line); border-top: 1px solid var(--sanctum-line); display: grid; gap: clamp(2rem, 6vw, 6rem); grid-template-columns: minmax(140px, .45fr) minmax(0, 1fr); margin-bottom: clamp(6rem, 11vw, 9rem); padding: clamp(3rem, 7vw, 6rem) 0; }
+.sanctum-feature-mark { color: rgba(223, 166, 180, .55); font-size: clamp(6rem, 18vw, 14rem); line-height: .7; text-align: center; }
+.sanctum-drop { align-items: center; display: grid; gap: clamp(2.5rem, 7vw, 7rem); grid-template-columns: minmax(0, 1.15fr) minmax(280px, .85fr); margin-bottom: clamp(6rem, 11vw, 9rem); }
+.sanctum-drop-image { aspect-ratio: 16 / 10; overflow: hidden; position: relative; }
+.sanctum-drop-image::after { background: linear-gradient(120deg, transparent 50%, rgba(13, 9, 11, .25)); content: ""; inset: 0; position: absolute; }
+.sanctum-drop-image img { object-fit: cover; object-position: center; }
+.sanctum-drop .sanctum-post-copy h2 { font-size: clamp(2.8rem, 5vw, 4.8rem); }
+.sanctum-task { margin: 0 0 clamp(6rem, 11vw, 9rem) clamp(0px, 12vw, 150px); max-width: 820px; padding: clamp(2rem, 5vw, 4rem); position: relative; }
+.sanctum-task::before { border: 1px solid var(--sanctum-line); content: ""; inset: 0; position: absolute; transform: rotate(-1deg); }
+.sanctum-task .sanctum-post-copy { position: relative; }
+.sanctum-task .sanctum-post-copy h2 { font-size: clamp(3rem, 6vw, 5rem); }
+.sanctum-discoveries { margin: 0 auto clamp(6rem, 11vw, 9rem); max-width: 900px; text-align: center; }
+.sanctum-discoveries h2 { font-size: clamp(4rem, 11vw, 9rem); margin-bottom: 1.5rem; }
+.sanctum-discoveries > p:not(.sanctum-eyebrow) { color: var(--sanctum-muted); margin: .35rem 0; }
+.sanctum-benefit { border-left: 1px solid var(--sanctum-line); margin: 0 0 clamp(5rem, 9vw, 7rem) auto; max-width: 850px; padding-left: clamp(1.5rem, 5vw, 4rem); }
+.sanctum-benefit .sanctum-post-copy h2 { font-size: clamp(3rem, 6vw, 5rem); }
+.sanctum-neutral-state { color: var(--sanctum-rose); font-family: Georgia, "Times New Roman", serif; font-size: 1.3rem; margin-top: 2rem; }
+.sanctum-account { align-items: center; border-top: 1px solid var(--sanctum-line); color: var(--sanctum-muted); display: flex; font-size: .85rem; justify-content: space-between; padding-top: 2rem; }
+.sanctum-account p { margin: 0; }
+.sanctum-collection { margin: auto; max-width: 1240px; padding: clamp(4rem, 8vw, 7rem) 1.5rem; }
+.sanctum-collection-intro { margin-bottom: clamp(3rem, 7vw, 6rem); max-width: 800px; }
+.sanctum-collection-intro h1 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(4rem, 10vw, 8rem); font-weight: 400; line-height: .92; margin: 0 0 1.5rem; }
+.sanctum-collection-intro > p:last-child, .sanctum-collectible p, .sanctum-collection-empty p { color: var(--sanctum-muted); font-size: 1.05rem; line-height: 1.7; }
+.sanctum-collection-grid { display: grid; gap: clamp(2rem, 5vw, 4rem); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.sanctum-collectible { border-top: 1px solid var(--sanctum-line); padding-top: 1.25rem; }
+.sanctum-collectible img, .sanctum-collectible video { aspect-ratio: 4 / 3; display: block; margin-bottom: 1.75rem; object-fit: cover; width: 100%; }
+.sanctum-collectible h2, .sanctum-collection-empty h2 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.2rem, 4vw, 3.8rem); font-weight: 400; margin: 0 0 1rem; }
+.sanctum-collection-empty { border-left: 1px solid var(--sanctum-line); margin: clamp(4rem, 9vw, 8rem) 0; max-width: 680px; padding-left: clamp(1.5rem, 4vw, 3rem); }
+.sanctum-benefits-page { margin: auto; max-width: 1000px; padding: clamp(4rem, 8vw, 7rem) 1.5rem; }
+.sanctum-benefits-page > header { margin-bottom: clamp(4rem, 8vw, 7rem); }
+.sanctum-benefits-page > header h1 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(3.8rem, 9vw, 7.5rem); font-weight: 400; line-height: .94; margin: 0; }
+.sanctum-benefit-item { align-items: start; border-top: 1px solid var(--sanctum-line); display: grid; gap: clamp(2rem, 5vw, 4rem); grid-template-columns: minmax(0, .8fr) minmax(280px, 1fr); padding: clamp(2.5rem, 6vw, 5rem) 0; }
+.sanctum-benefit-item:not(:has(> img, > video)) { grid-template-columns: minmax(0, 720px); }
+.sanctum-benefit-item img, .sanctum-benefit-item video { display: block; max-height: 580px; object-fit: cover; width: 100%; }
+.sanctum-benefit-item h2 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.7rem, 5vw, 4.8rem); font-weight: 400; line-height: 1; margin: 0 0 1.5rem; }
+.sanctum-benefit-actions { display: flex; gap: 1rem; margin-top: 2rem; }
+.sanctum-benefit-actions button { background: transparent; border: 1px solid var(--sanctum-rose); color: var(--sanctum-ivory); cursor: pointer; font: inherit; padding: .75rem 1.35rem; }
+.sanctum-benefit-actions button:hover, .sanctum-benefit-actions button:focus-visible { background: rgba(223, 166, 180, .12); outline: 0; }
+.sanctum-response { color: var(--sanctum-rose); font-family: Georgia, "Times New Roman", serif; font-size: 1.2rem; }
+.sanctum-benefits-past { margin-top: clamp(5rem, 10vw, 9rem); opacity: .8; }
+@media (max-width: 700px) { .sanctum-feature, .sanctum-drop { grid-template-columns: 1fr; } .sanctum-feature-mark { font-size: 7rem; text-align: left; } .sanctum-drop-image { aspect-ratio: 4 / 5; } .sanctum-task { margin-left: 0; padding: 2rem 1.4rem; } .sanctum-header-actions { gap: .85rem; } }
+@media (max-width: 700px) { .sanctum-collection-grid { grid-template-columns: 1fr; } .sanctum-header nav { align-items: flex-start; } .sanctum-header-actions { flex-wrap: wrap; justify-content: flex-end; } }
+@media (max-width: 700px) { .sanctum-benefit-item { grid-template-columns: 1fr; } }
+.sanctum-tasks-page, .sanctum-task-detail { margin: auto; max-width: 900px; padding: clamp(4rem, 8vw, 7rem) 1.5rem; }
+.sanctum-tasks-page > header { margin-bottom: clamp(4rem, 8vw, 7rem); }
+.sanctum-tasks-page > header h1, .sanctum-task-detail h1 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(3.8rem, 9vw, 7rem); font-weight: 400; line-height: .94; margin: 0; }
+.sanctum-task-list-item { border-top: 1px solid var(--sanctum-line); padding: clamp(2.5rem, 6vw, 4.5rem) 0; }
+.sanctum-task-list-item h2 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 400; line-height: 1; margin: 0; }
+.sanctum-tasks-past { margin-top: clamp(5rem, 10vw, 8rem); opacity: .82; }
+.sanctum-task-detail > .sanctum-prose { margin-top: 2.5rem; }
+.sanctum-task-detail > blockquote, .sanctum-task-sent blockquote { border-left: 1px solid var(--sanctum-rose); color: var(--sanctum-ivory); font-family: Georgia, "Times New Roman", serif; font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.4; margin: clamp(3rem, 7vw, 5rem) 0; padding-left: clamp(1.3rem, 4vw, 3rem); }
+.sanctum-task-response { display: grid; gap: 1rem; max-width: 720px; }
+.sanctum-task-response label { color: var(--sanctum-rose); font-size: .75rem; letter-spacing: .16em; text-transform: uppercase; }
+.sanctum-task-response textarea { background: rgba(255,255,255,.035); border: 1px solid var(--sanctum-line); color: var(--sanctum-ivory); font: inherit; line-height: 1.6; padding: 1rem; resize: vertical; }
+.sanctum-task-response button { background: transparent; border: 1px solid var(--sanctum-rose); color: var(--sanctum-ivory); cursor: pointer; justify-self: start; padding: .8rem 1.4rem; }
+.sanctum-task-sent { border-top: 1px solid var(--sanctum-line); margin-top: 4rem; padding-top: 2rem; }
+.admin-response { border-top: 1px solid var(--line); padding: 1.25rem 0; }
+.sanctum-you { margin: auto; max-width: 1050px; padding: clamp(4rem, 8vw, 7rem) 1.5rem; }
+.sanctum-you-intro { margin-bottom: clamp(6rem, 12vw, 10rem); }
+.sanctum-you-intro h1 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(4rem, 10vw, 8rem); font-weight: 400; line-height: .92; margin: 0 0 1.5rem; }
+.sanctum-you-intro > p:last-child { color: var(--sanctum-rose); font-family: Georgia, "Times New Roman", serif; font-size: 1.5rem; }
+.sanctum-you-membership { border-left: 1px solid var(--sanctum-line); margin: 0 0 clamp(6rem, 11vw, 9rem) auto; max-width: 760px; padding-left: clamp(1.5rem, 5vw, 4rem); }
+.sanctum-you-membership h2, .sanctum-you-section h2 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.7rem, 6vw, 5rem); font-weight: 400; line-height: 1; margin: 0 0 1.25rem; }
+.sanctum-you-membership > p:last-child, .sanctum-you-note { color: var(--sanctum-muted); }
+.sanctum-you-section { border-top: 1px solid var(--sanctum-line); padding: clamp(3.5rem, 8vw, 6rem) 0; }
+.sanctum-you-collection { display: grid; gap: 1.5rem; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.sanctum-you-collection article { min-width: 0; }
+.sanctum-you-collection img, .sanctum-you-collection video { aspect-ratio: 4 / 3; display: block; object-fit: cover; width: 100%; }
+.sanctum-you-collection h3 { font-family: Georgia, "Times New Roman", serif; font-size: 1.45rem; font-weight: 400; margin: 1rem 0 0; }
+.sanctum-you-access { border-top: 1px solid var(--sanctum-line); padding-top: 2rem; }
+.sanctum-you-access > div { align-items: center; display: flex; flex-wrap: wrap; gap: 1.5rem; }
+.sanctum-you-access a, .sanctum-you-access button { background: none; border: 0; color: var(--sanctum-muted); cursor: pointer; font: inherit; padding: .4rem 0; text-decoration: none; }
+.sanctum-you-access a:hover, .sanctum-you-access button:hover { color: var(--sanctum-rose); }
+@media (max-width: 700px) { .sanctum-you-collection { grid-template-columns: 1fr; } }
+.sanctum-filth-meter { border-bottom: 1px solid var(--sanctum-line); border-top: 1px solid var(--sanctum-line); margin-bottom: clamp(5rem, 10vw, 8rem); padding: clamp(3rem, 7vw, 5rem) 0; }
+.sanctum-filth-heading { align-items: baseline; display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: space-between; }
+.sanctum-filth-heading h2 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(3rem, 7vw, 6rem); font-weight: 400; margin: 0; }
+.sanctum-filth-heading strong { color: var(--sanctum-rose); font-family: Georgia, "Times New Roman", serif; font-size: 1.5rem; font-weight: 400; }
+.sanctum-filth-track { background: rgba(255,255,255,.08); height: 3px; margin: 2rem 0; overflow: hidden; }
+.sanctum-filth-track span { background: var(--sanctum-rose); display: block; height: 100%; }
+.sanctum-filth-meter > p, .sanctum-filth-meter li { color: var(--sanctum-muted); }
+.sanctum-filth-meter ul { display: flex; flex-wrap: wrap; gap: .75rem 1.5rem; list-style: none; padding: 0; }
+.sanctum-referral-link { margin-top: 3rem; }
+.sanctum-referral-link code { color: var(--sanctum-muted); display: block; overflow-wrap: anywhere; }
+.sanctum-referral-link button { background: transparent; border: 0; border-bottom: 1px solid var(--sanctum-rose); color: var(--sanctum-rose); cursor: pointer; font: inherit; margin-top: 1rem; padding: .4rem 0; }

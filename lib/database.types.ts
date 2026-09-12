@@ -1,5 +1,25 @@
 import type { BookingSource, BookingStatus, EnquiryStatus, HoldStatus, PaymentStatus, QuoteStatus, RetreatFormat } from "./domain";
 
+export type InnerSanctumMembershipStatus = "active" | "suspended" | "cancelled";
+export type InnerSanctumMembershipType = "lifetime";
+export type InnerSanctumMembershipSource = "admin" | "store" | "promotion" | "migration";
+export type InnerSanctumPostType = "message" | "feature" | "drop" | "task" | "benefit";
+export type InnerSanctumPostStatus = "draft" | "published" | "archived";
+export type InnerSanctumCollectibleStatus = "draft" | "active" | "archived";
+export type InnerSanctumCollectibleSource = "admin" | "experience" | "task" | "invitation" | "system";
+export type InnerSanctumBenefitType = "invitation" | "gift" | "experience" | "event" | "retreat" | "personal";
+export type InnerSanctumBenefitStatus = "draft" | "available" | "withdrawn" | "completed" | "expired";
+export type InnerSanctumBenefitResponse = "accepted" | "declined";
+export type InnerSanctumTaskStatus = "draft" | "published" | "archived";
+export type InnerSanctumReferralStatus = "active" | "disabled";
+export type InnerSanctumReferralConversionSource = "payfast" | "admin_test";
+export type StoreProductType = "membership" | "digital" | "experience" | "session" | "physical";
+export type StoreProductStatus = "draft" | "active" | "archived";
+export type StoreFulfillmentType = "inner_sanctum_membership" | "manual";
+export type StoreOrderStatus = "pending" | "paid" | "cancelled" | "failed";
+export type StoreFulfillmentAuthorizationSource = "admin" | "payfast";
+export type StoreClaimStatus = "available" | "claimed" | "revoked";
+
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 type ProductRow = { id: string; slug: string; name: string; positioning: string; allowed_formats: RetreatFormat[]; is_published: boolean; sort_order: number; created_at: string; updated_at: string };
 type AvailabilityRow = { id: string; retreat_product_id: string | null; retreat_format: RetreatFormat | null; start_date: string; end_date: string; state: "available" | "blocked"; capacity: number | null; created_at: string; updated_at: string };
@@ -80,6 +100,75 @@ type PaymentSubmissionRow = {
 type BookingRow = { id: string; enquiry_id: string | null; retreat_product_id: string; retreat_type_name: string; retreat_format: RetreatFormat; start_date: string; end_date: string | null; guest_count: number; retreat_event_id: string | null; quote_id: string | null; invoice_id: string | null; payment_submission_id: string | null; booking_reference: string; public_slug: string; booking_status: BookingStatus; payment_status: PaymentStatus; booking_source: BookingSource; created_by: string | null; confirmed_at: string; confirmed_by: string | null; created_at: string; updated_at: string };
 type HoldRow = { id: string; quote_id: string; enquiry_id: string; retreat_product_id: string; retreat_format: RetreatFormat; start_date: string; end_date: string | null; guest_count: number; retreat_event_id: string | null; status: HoldStatus; expires_at: string | null; created_at: string; updated_at: string };
 type BookingPreparationRow = { id: string; booking_id: string; preferred_contact_method: "whatsapp" | "phone" | "email"; contact_detail: string; participant_names: string | null; arrival_method: string | null; arrival_notes: string | null; dietary_requirements: string | null; accessibility_requirements: string | null; cally_notes: string | null; created_at: string; updated_at: string };
+export type InnerSanctumMembershipRow = {
+  id: string;
+  user_id: string;
+  status: InnerSanctumMembershipStatus;
+  membership_type: InnerSanctumMembershipType;
+  source: InnerSanctumMembershipSource;
+  source_reference: string | null;
+  started_at: string;
+  expires_at: string | null;
+  suspended_at: string | null;
+  cancelled_at: string | null;
+  last_changed_by: string | null;
+  created_at: string;
+  updated_at: string;
+};
+export type InnerSanctumAdminMember = {
+  user_id: string;
+  email: string | null;
+  created_at: string;
+  membership_id: string | null;
+  membership_status: InnerSanctumMembershipStatus | null;
+  membership_type: InnerSanctumMembershipType | null;
+  membership_source: InnerSanctumMembershipSource | null;
+  source_reference: string | null;
+  started_at: string | null;
+  expires_at: string | null;
+  suspended_at: string | null;
+  cancelled_at: string | null;
+  updated_at: string | null;
+};
+export type InnerSanctumPostRow = {
+  id: string;
+  type: InnerSanctumPostType;
+  eyebrow: string | null;
+  title: string;
+  body: string;
+  image_path: string | null;
+  cta_label: string | null;
+  cta_href: string | null;
+  status: InnerSanctumPostStatus;
+  published_at: string | null;
+  expires_at: string | null;
+  sort_order: number;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+};
+export type InnerSanctumVisiblePost = Omit<InnerSanctumPostRow, "status" | "created_by" | "created_at" | "updated_at">;
+export type InnerSanctumCollectibleRow = { id: string; slug: string; title: string; description: string; media_path: string | null; media_type: string | null; status: InnerSanctumCollectibleStatus; sort_order: number; created_at: string; updated_at: string };
+export type InnerSanctumMemberCollectibleRow = { id: string; user_id: string; collectible_id: string; source: InnerSanctumCollectibleSource; source_reference: string | null; granted_at: string; granted_by: string | null };
+export type InnerSanctumOwnedCollectible = Pick<InnerSanctumCollectibleRow, "id" | "slug" | "title" | "description" | "media_path" | "media_type" | "sort_order"> & { granted_at: string };
+export type InnerSanctumBenefitRow = { id: string; user_id: string; type: InnerSanctumBenefitType; eyebrow: string | null; title: string; body: string; media_path: string | null; media_type: string | null; cta_label: string | null; cta_href: string | null; status: InnerSanctumBenefitStatus; response: InnerSanctumBenefitResponse | null; available_from: string | null; expires_at: string | null; created_by: string; created_at: string; updated_at: string; responded_at: string | null };
+export type InnerSanctumVisibleBenefit = Omit<InnerSanctumBenefitRow, "user_id" | "created_by" | "updated_at">;
+export type InnerSanctumTaskRow = { id: string; slug: string; eyebrow: string | null; title: string; body: string; prompt: string; status: InnerSanctumTaskStatus; available_from: string | null; closes_at: string | null; sort_order: number; created_by: string | null; created_at: string; updated_at: string };
+export type InnerSanctumTaskResponseRow = { id: string; task_id: string; user_id: string; response_text: string; submitted_at: string; acknowledged_at: string | null; acknowledged_by: string | null };
+export type InnerSanctumMemberTask = Pick<InnerSanctumTaskRow, "id" | "slug" | "eyebrow" | "title" | "body" | "prompt" | "status" | "available_from" | "closes_at" | "sort_order"> & { response_text: string | null; submitted_at: string | null; acknowledged_at: string | null };
+export type InnerSanctumReferralRow = { id: string; user_id: string; code: string; status: InnerSanctumReferralStatus; created_at: string; updated_at: string };
+export type StoreOrderReferralRow = { id: string; order_id: string; referral_id: string; referrer_user_id: string; attributed_at: string; converted_at: string | null; conversion_id: string | null; created_at: string };
+export type InnerSanctumFilthEventRow = { id: string; user_id: string; event_type: "referral" | "admin" | "task" | "experience" | "special"; points: number; source_reference: string; created_by: string | null; created_at: string };
+export type InnerSanctumFilthMeter = { referral_code: string; filth_total: number; successful_referrals: number; current_level_number: number | null; current_level_title: string | null; current_level_threshold: number | null; next_level_threshold: number | null; earned_milestones: Array<{ title: string; threshold: number; earned_at: string }> };
+export type InnerSanctumFilthLevelRow = { id: string; level_number: number; title: string; threshold: number; status: "active" | "inactive"; sort_order: number; created_at: string; updated_at: string };
+export type InnerSanctumFilthMilestoneRow = { id: string; level_id: string | null; threshold: number; title: string; reward_type: "collectible" | "benefit" | "experience" | "retreat" | "manual"; reward_reference: string | null; status: "active" | "inactive"; sort_order: number; created_at: string; updated_at: string };
+export type InnerSanctumMemberFilthMilestoneRow = { id: string; user_id: string; milestone_id: string; earned_at: string; fulfilled_at: string | null; fulfillment_reference: string | null };
+export type StoreProductRow = { id: string; slug: string; name: string; short_description: string; description: string; product_type: StoreProductType; price_amount: number; currency: string; fulfillment_type: StoreFulfillmentType; fulfillment_reference: string | null; image_path: string | null; status: StoreProductStatus; sort_order: number; created_at: string; updated_at: string };
+export type StoreOrderRow = { id: string; order_reference: string; request_key: string; user_id: string | null; buyer_email: string; status: StoreOrderStatus; currency: string; subtotal_amount: number; total_amount: number; created_at: string; updated_at: string };
+export type StoreOrderItemRow = { id: string; order_id: string; product_id: string; product_name: string; product_slug: string; product_type: StoreProductType; unit_price_amount: number; currency: string; quantity: number; line_total_amount: number; fulfillment_type: StoreFulfillmentType; fulfillment_reference: string | null; created_at: string };
+export type StoreFulfillmentAuthorizationRow = { id: string; order_id: string; source: StoreFulfillmentAuthorizationSource; source_reference: string | null; authorized_by: string | null; authorized_at: string; created_at: string };
+export type StoreClaimRow = { id: string; order_id: string; authorization_id: string; token_hash: string; status: StoreClaimStatus; claimed_by: string | null; claimed_at: string | null; revoked_at: string | null; expires_at: string | null; created_at: string };
+export type StoreFulfillmentAdminRow = { authorization_id: string; authorization_source: StoreFulfillmentAuthorizationSource; source_reference: string | null; authorized_at: string; authorized_by: string | null; claim_id: string | null; claim_status: StoreClaimStatus | null; claim_created_at: string | null; claimed_by: string | null; claimed_email: string | null; claimed_at: string | null; revoked_at: string | null };
 
 type Table<Row, Insert = Partial<Row>, Update = Partial<Insert>> = { Row: Row; Insert: Insert; Update: Update; Relationships: [] };
 export type Database = {
@@ -97,10 +186,63 @@ export type Database = {
       retreat_bookings: Table<BookingRow, Omit<BookingRow, "id" | "created_at" | "updated_at"> & { id?: string; created_at?: string; updated_at?: string; booking_source?: BookingSource; created_by?: string | null; enquiry_id?: string | null; quote_id?: string | null }>;
       retreat_holds: Table<HoldRow, never>;
       retreat_booking_preparation: Table<BookingPreparationRow, never>;
+      inner_sanctum_memberships: Table<
+        InnerSanctumMembershipRow,
+        never,
+        never
+      >;
+      inner_sanctum_posts: Table<
+        InnerSanctumPostRow,
+        Omit<InnerSanctumPostRow, "id" | "created_at" | "updated_at"> & { id?: string; created_at?: string; updated_at?: string },
+        Partial<Omit<InnerSanctumPostRow, "id" | "created_at" | "updated_at">>
+      >;
+      inner_sanctum_collectibles: Table<InnerSanctumCollectibleRow, Omit<InnerSanctumCollectibleRow, "id" | "created_at" | "updated_at"> & { id?: string }, Partial<Omit<InnerSanctumCollectibleRow, "id" | "created_at" | "updated_at">>>;
+      inner_sanctum_member_collectibles: Table<InnerSanctumMemberCollectibleRow, never, never>;
+      inner_sanctum_benefits: Table<InnerSanctumBenefitRow, Omit<InnerSanctumBenefitRow, "id" | "created_at" | "updated_at" | "responded_at" | "response"> & { id?: string; response?: InnerSanctumBenefitResponse | null; responded_at?: string | null }, Partial<Omit<InnerSanctumBenefitRow, "id" | "created_at" | "updated_at">>>;
+      inner_sanctum_tasks: Table<InnerSanctumTaskRow, Omit<InnerSanctumTaskRow, "id" | "created_at" | "updated_at"> & { id?: string }, Partial<Omit<InnerSanctumTaskRow, "id" | "created_at" | "updated_at">>>;
+      inner_sanctum_task_responses: Table<InnerSanctumTaskResponseRow, never, never>;
+      inner_sanctum_referrals: Table<InnerSanctumReferralRow, never, Partial<Pick<InnerSanctumReferralRow, "status">>>;
+      store_order_referrals: Table<StoreOrderReferralRow, never, never>;
+      inner_sanctum_referral_conversions: Table<{ id: string; referral_id: string; referrer_user_id: string; referred_user_id: string; order_id: string; order_reference: string; points_awarded: number; conversion_source: InnerSanctumReferralConversionSource; converted_at: string; created_at: string }, never, never>;
+      inner_sanctum_filth_events: Table<InnerSanctumFilthEventRow, never, never>;
+      inner_sanctum_filth_settings: Table<{ id: boolean; referral_points: number; updated_at: string }, never, never>;
+      inner_sanctum_filth_levels: Table<InnerSanctumFilthLevelRow, Partial<InnerSanctumFilthLevelRow>, Partial<InnerSanctumFilthLevelRow>>;
+      inner_sanctum_filth_milestones: Table<InnerSanctumFilthMilestoneRow, Partial<InnerSanctumFilthMilestoneRow>, Partial<InnerSanctumFilthMilestoneRow>>;
+      inner_sanctum_member_filth_milestones: Table<InnerSanctumMemberFilthMilestoneRow, never, never>;
+      store_products: Table<StoreProductRow, Omit<StoreProductRow, "id" | "created_at" | "updated_at"> & { id?: string; created_at?: string; updated_at?: string }>;
+      store_orders: Table<StoreOrderRow, never, never>;
+      store_order_items: Table<StoreOrderItemRow, never, never>;
+      store_fulfillment_authorizations: Table<StoreFulfillmentAuthorizationRow, never, never>;
+      store_claims: Table<StoreClaimRow, never, never>;
     };
     Views: Record<string, never>;
       Functions: {
         get_public_event_by_slug: { Args: { p_slug: string }; Returns: { id: string; slug: string; title: string; retreat_product_id: string; start_date: string; end_date: string; capacity: number; available_places: number; effective_places_remaining: number; description: string | null }[] };
+        has_inner_sanctum_access: { Args: Record<string, never>; Returns: boolean };
+        get_my_inner_sanctum_access: { Args: Record<string, never>; Returns: Array<{ has_access: boolean; membership_status: InnerSanctumMembershipStatus; membership_type: InnerSanctumMembershipType; started_at: string; expires_at: string | null }> };
+        get_inner_sanctum_posts: { Args: Record<string, never>; Returns: InnerSanctumVisiblePost[] };
+        get_my_inner_sanctum_collection: { Args: Record<string, never>; Returns: InnerSanctumOwnedCollectible[] };
+        admin_grant_inner_sanctum_collectible: { Args: { p_user_id: string; p_collectible_id: string; p_source_reference?: string | null }; Returns: InnerSanctumMemberCollectibleRow };
+        get_my_inner_sanctum_benefits: { Args: Record<string, never>; Returns: InnerSanctumVisibleBenefit[] };
+        respond_to_inner_sanctum_benefit: { Args: { p_benefit_id: string; p_response: InnerSanctumBenefitResponse }; Returns: InnerSanctumBenefitResponse };
+        get_my_inner_sanctum_tasks: { Args: Record<string, never>; Returns: InnerSanctumMemberTask[] };
+        get_my_inner_sanctum_task: { Args: { p_slug: string }; Returns: InnerSanctumMemberTask[] };
+        submit_inner_sanctum_task_response: { Args: { p_task_id: string; p_response_text: string }; Returns: string };
+        admin_acknowledge_inner_sanctum_task_response: { Args: { p_response_id: string }; Returns: string };
+        is_valid_inner_sanctum_referral_code: { Args: { p_code: string }; Returns: boolean };
+        get_my_filth_meter: { Args: Record<string, never>; Returns: InnerSanctumFilthMeter[] };
+        admin_record_test_referral_conversion: { Args: { p_order_id: string; p_referred_user_id: string }; Returns: string };
+        admin_add_filth_points: { Args: { p_user_id: string; p_points: number; p_reason: string }; Returns: string };
+        admin_list_inner_sanctum_members: { Args: Record<string, never>; Returns: InnerSanctumAdminMember[] };
+        admin_transition_inner_sanctum_membership: { Args: { p_user_id: string; p_action: "grant" | "suspend" | "restore" | "cancel"; p_source?: InnerSanctumMembershipSource; p_source_reference?: string | null }; Returns: InnerSanctumMembershipRow };
+        create_public_store_order: { Args: { p_product_id: string; p_buyer_email: string; p_request_key: string; p_referral_code?: string | null }; Returns: Array<{ order_reference: string; order_status: StoreOrderStatus; currency: string; total_amount: number }> };
+        get_public_store_order: { Args: { p_order_reference: string }; Returns: Array<{ order_reference: string; order_status: StoreOrderStatus; currency: string; total_amount: number; created_at: string; product_name: string; product_slug: string; product_type: StoreProductType; quantity: number }> };
+        admin_authorize_store_fulfillment: { Args: { p_order_id: string; p_token_hash: string; p_source_reference?: string | null }; Returns: Array<{ authorization_id: string; claim_id: string; claim_status: StoreClaimStatus }> };
+        admin_reissue_store_claim: { Args: { p_order_id: string; p_token_hash: string }; Returns: Array<{ claim_id: string; claim_status: StoreClaimStatus }> };
+        admin_revoke_store_claim: { Args: { p_order_id: string }; Returns: StoreClaimStatus };
+        admin_get_store_fulfillment: { Args: { p_order_id: string }; Returns: StoreFulfillmentAdminRow[] };
+        get_store_claim_state: { Args: { p_token: string }; Returns: Array<{ claim_state: "invalid" | "revoked" | "claimed" | "available"; product_name: string | null }> };
+        redeem_store_claim: { Args: { p_token: string }; Returns: Array<{ redemption_state: "invalid" | "revoked" | "claimed" | "already_member" | "success"; order_reference: string | null }> };
         get_public_retreat_price: { Args: { p_product_id: string; p_format: RetreatFormat; p_guest_count: number }; Returns: { currency: "USD"; nights: 3; guest_count: number; total_usd: number }[] };
         get_private_arrival_availability: { Args: { p_product_id: string; p_format: RetreatFormat; p_guest_count: number; p_nights: number; p_month_start: string; p_month_end: string }; Returns: { arrival_date: string }[] };
         check_stay_availability: { Args: { p_product_id: string; p_format: RetreatFormat; p_arrival: string; p_nights: number; p_guest_count: number }; Returns: { available: boolean; state: string; arrival_date: string; nights: number; checkout_date: string; occupied_start: string; occupied_end: string }[] };
@@ -152,7 +294,7 @@ export type Database = {
         Returns: undefined;
       };
     };
-    Enums: { retreat_format: RetreatFormat; enquiry_status: EnquiryStatus; quote_status: QuoteStatus; payment_status: PaymentStatus; booking_status: BookingStatus };
+    Enums: { retreat_format: RetreatFormat; enquiry_status: EnquiryStatus; quote_status: QuoteStatus; payment_status: PaymentStatus; booking_status: BookingStatus; inner_sanctum_membership_status: InnerSanctumMembershipStatus; inner_sanctum_membership_type: InnerSanctumMembershipType; inner_sanctum_membership_source: InnerSanctumMembershipSource; store_product_type: StoreProductType; store_product_status: StoreProductStatus; store_fulfillment_type: StoreFulfillmentType; store_order_status: StoreOrderStatus; store_fulfillment_authorization_source: StoreFulfillmentAuthorizationSource; store_claim_status: StoreClaimStatus };
     CompositeTypes: Record<string, never>;
   };
 };

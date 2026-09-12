@@ -12,7 +12,9 @@
 
 # testing
 /coverage
-/supabase/tests/
+/supabase/tests/*
+!/supabase/tests/store_foundation_test.sql
+!/supabase/tests/store_claim_fulfillment_test.sql
 
 # next.js
 /.next/

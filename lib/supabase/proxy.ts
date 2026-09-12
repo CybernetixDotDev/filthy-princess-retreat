@@ -20,5 +20,10 @@ export async function updateSession(request: NextRequest) {
     },
   );
   await supabase.auth.getClaims();
+  const referralCode = request.nextUrl.searchParams.get("ref")?.trim();
+  if (referralCode && /^[A-Za-z0-9_-]{16,100}$/.test(referralCode)) {
+    const { data: valid } = await supabase.rpc("is_valid_inner_sanctum_referral_code", { p_code: referralCode });
+    if (valid === true) response.cookies.set("inner_sanctum_referral", referralCode, { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 60 * 60 * 24 * 90 });
+  }
   return response;
 }
