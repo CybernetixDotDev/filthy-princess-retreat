@@ -16,16 +16,17 @@ const optionalDate = z.string().trim().transform((value, context) => {
   return date.toISOString();
 });
 const schema = z.object({
-  userId: z.uuid(), type: z.enum(BENEFIT_TYPES), eyebrow: optionalText(100), title: z.string().trim().min(1).max(200), body: z.string().trim().min(1).max(12000),
+  userId: z.uuid(), type: z.enum(BENEFIT_TYPES), retreatEventId: z.union([z.uuid(), z.literal("")]).transform((value) => value || null), eyebrow: optionalText(100), title: z.string().trim().min(1).max(200), body: z.string().trim().min(1).max(12000),
   ctaLabel: optionalText(100), ctaHref: optionalText(500).refine((value) => !value || isSafeBenefitCta(value), "CTA must be a safe internal path."),
   status: z.enum(BENEFIT_STATUSES), availableFrom: optionalDate, expiresAt: optionalDate,
 }).superRefine((value, context) => {
   if (Boolean(value.ctaLabel) !== Boolean(value.ctaHref)) context.addIssue({ code: "custom", path: ["cta_href"], message: "CTA label and path must be supplied together." });
   if (value.availableFrom && value.expiresAt && value.expiresAt <= value.availableFrom) context.addIssue({ code: "custom", path: ["expires_at"], message: "Expiry must be after availability." });
+  if (value.retreatEventId && !["invitation", "event", "retreat"].includes(value.type)) context.addIssue({ code: "custom", path: ["retreat_event_id"], message: "Only event-related benefits can be linked to an event." });
 });
 
 function read(formData: FormData) {
-  return schema.parse({ userId: formData.get("user_id"), type: formData.get("type"), eyebrow: formData.get("eyebrow"), title: formData.get("title"), body: formData.get("body"), ctaLabel: formData.get("cta_label"), ctaHref: formData.get("cta_href"), status: formData.get("status"), availableFrom: formData.get("available_from"), expiresAt: formData.get("expires_at") });
+  return schema.parse({ userId: formData.get("user_id"), type: formData.get("type"), retreatEventId: formData.get("retreat_event_id"), eyebrow: formData.get("eyebrow"), title: formData.get("title"), body: formData.get("body"), ctaLabel: formData.get("cta_label"), ctaHref: formData.get("cta_href"), status: formData.get("status"), availableFrom: formData.get("available_from"), expiresAt: formData.get("expires_at") });
 }
 function media(formData: FormData) {
   const file = formData.get("media");
@@ -41,7 +42,7 @@ async function upload(state: NonNullable<Awaited<ReturnType<typeof requireAdmin>
   return { media_path: path, media_type: file.type };
 }
 function values(value: z.infer<typeof schema>) {
-  return { user_id: value.userId, type: value.type, eyebrow: value.eyebrow, title: value.title, body: value.body, cta_label: value.ctaLabel, cta_href: value.ctaHref, status: value.status, available_from: value.availableFrom, expires_at: value.expiresAt };
+  return { user_id: value.userId, type: value.type, retreat_event_id: value.retreatEventId, eyebrow: value.eyebrow, title: value.title, body: value.body, cta_label: value.ctaLabel, cta_href: value.ctaHref, status: value.status, available_from: value.availableFrom, expires_at: value.expiresAt };
 }
 function refresh(id?: string) { revalidatePath("/admin/benefits"); revalidatePath("/inner-sanctum"); revalidatePath("/inner-sanctum/benefits"); if (id) revalidatePath(`/admin/benefits/${id}`); }
 

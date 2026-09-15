@@ -1,10 +1,9 @@
-import Link from "next/link";
 import { getMyInnerSanctumCollection } from "@/lib/inner-sanctum-collection";
 import { hasInnerSanctumAccess } from "@/lib/inner-sanctum";
 
 export default async function CollectionPage() {
   const hasAccess = await hasInnerSanctumAccess();
-  if (!hasAccess) return <section className="inner-sanctum-boundary" aria-labelledby="collection-boundary-title"><p className="eyebrow">Inner Sanctum</p><h1 id="collection-boundary-title">This door isn&apos;t open for you yet.</h1><p>Inner Sanctum membership is required to enter.</p><Link className="text-link" href="/store">Visit the store</Link></section>;
+  if (!hasAccess) return <section className="inner-sanctum-boundary" aria-labelledby="collection-boundary-title"><p className="eyebrow">Inner Sanctum</p><h1 id="collection-boundary-title">This door isn&apos;t open for you yet.</h1><p>Inner Sanctum membership is required to enter.</p></section>;
   const collectibles = await getMyInnerSanctumCollection();
   return <div className="sanctum-collection"><header className="sanctum-collection-intro"><p className="sanctum-eyebrow">Things you&apos;ve kept</p><h1>Your collection</h1><p>Some things in here are meant to stay with you.</p></header>
     {collectibles.length ? <div className="sanctum-collection-grid">{collectibles.map((item) => <article className="sanctum-collectible" key={item.id}>

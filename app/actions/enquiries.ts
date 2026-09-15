@@ -89,8 +89,8 @@ export async function submitEnquiry(_: EnquiryState, formData: FormData): Promis
 const generalEnquirySchema = z.object({
   fullName: z.string().trim().min(2).max(200),
   email: z.email().trim(),
-  phone: z.string().trim().min(3).max(100),
-  country: z.string().trim().min(2).max(100),
+  phone: z.string().trim().max(100).optional(),
+  country: z.string().trim().max(100).optional(),
   message: z.string().trim().max(2000).optional(),
 });
 
@@ -110,8 +110,8 @@ export async function submitGeneralEnquiry(_: GeneralEnquiryState, formData: For
   const { error } = await supabase.rpc("submit_general_retreat_enquiry", {
     p_full_name: parsed.data.fullName,
     p_email: parsed.data.email,
-    p_phone: parsed.data.phone,
-    p_country: parsed.data.country,
+    p_phone: parsed.data.phone || "Not provided",
+    p_country: parsed.data.country || "Not provided",
     p_message: parsed.data.message || null,
     p_referral_code: referralCode,
     p_referral_source: referralCode ? "url" : null,

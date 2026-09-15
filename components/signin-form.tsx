@@ -2,8 +2,8 @@
 import { useActionState, useState } from "react";
 import { signIn, signUp, type AuthState } from "@/app/actions/auth";
 import { SubmitButton } from "./submit-button";
-export function SignInForm({ next }: { next: string }) {
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+export function SignInForm({ next, initialMode = "signin" }: { next: string; initialMode?: "signin" | "signup" }) {
+  const [mode, setMode] = useState<"signin" | "signup">(initialMode);
   const [signInState, signInAction] = useActionState<AuthState, FormData>(signIn, {});
   const [signUpState, signUpAction] = useActionState<AuthState, FormData>(signUp, {});
   return <div className="auth-forms">

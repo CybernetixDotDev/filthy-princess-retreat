@@ -5,6 +5,7 @@ export const PAYMENT_STATUSES = ["unpaid", "deposit_received", "paid", "refunded
 export const BOOKING_STATUSES = ["confirmed", "completed", "cancelled"] as const;
 export const BOOKING_SOURCES = ["enquiry", "manual"] as const;
 export const HOLD_STATUSES = ["active", "released", "expired", "converted"] as const;
+export const RETREAT_EVENT_INTEREST_STATUSES = ["interested", "selected", "not_selected", "withdrawn"] as const;
 
 export type RetreatFormat = (typeof RETREAT_FORMATS)[number];
 export type EnquiryStatus = (typeof ENQUIRY_STATUSES)[number];
@@ -13,6 +14,7 @@ export type PaymentStatus = (typeof PAYMENT_STATUSES)[number];
 export type BookingStatus = (typeof BOOKING_STATUSES)[number];
 export type BookingSource = (typeof BOOKING_SOURCES)[number];
 export type HoldStatus = (typeof HOLD_STATUSES)[number];
+export type RetreatEventInterestStatus = (typeof RETREAT_EVENT_INTEREST_STATUSES)[number];
 
 export const formatLabels = {
   solo: "Solo",

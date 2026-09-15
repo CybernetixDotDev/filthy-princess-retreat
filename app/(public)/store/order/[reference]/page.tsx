@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { formatStoreMoney, storeLabel } from "@/lib/store";
@@ -20,6 +19,5 @@ export default async function StoreOrderPage({ params }: { params: Promise<{ ref
       <div><dt>Status</dt><dd>{storeLabel(order.order_status)}</dd></div>
     </dl>
     <div className="store-order-note"><p>I&apos;m just making sure the door opens properly before I let you throw money at it.</p><p>— Cally</p></div>
-    <Link className="text-link" href="/store">Return to the Store</Link>
   </section></div>;
 }

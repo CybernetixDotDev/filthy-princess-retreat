@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: { default: "Filthy Princess", template: "%s | Filthy Princess" },
-  description: "Private retreats for curiosity, exploration and self-discovery.",
+  description: "The private entrance to Filthy Princess.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

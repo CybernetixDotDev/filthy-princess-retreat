@@ -9,7 +9,7 @@ function memberSince(value: string) {
 }
 
 export default async function InnerSanctumYouPage() {
-  if (!await hasInnerSanctumAccess()) return <section className="inner-sanctum-boundary" aria-labelledby="you-boundary-title"><p className="eyebrow">Inner Sanctum</p><h1 id="you-boundary-title">This door isn&apos;t open for you yet.</h1><p>Inner Sanctum membership is required to enter.</p><Link className="text-link" href="/store">Visit the store</Link></section>;
+  if (!await hasInnerSanctumAccess()) return <section className="inner-sanctum-boundary" aria-labelledby="you-boundary-title"><p className="eyebrow">Inner Sanctum</p><h1 id="you-boundary-title">This door isn&apos;t open for you yet.</h1><p>Inner Sanctum membership is required to enter.</p></section>;
   const state = await getInnerSanctumYouState();
   const origin = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
   const referralUrl = `${origin}/?ref=${encodeURIComponent(state.filth.referral_code)}`;

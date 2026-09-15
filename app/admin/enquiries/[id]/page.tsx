@@ -1,5 +1,6 @@
 ﻿import { notFound } from "next/navigation";
-import { createQuote, updateEnquiry } from "@/app/actions/admin";
+import { createQuote, releaseAdminEnquiryHold, setAdminEnquiryRetreatDate, updateEnquiry } from "@/app/actions/admin";
+import { AdminRetreatDatePicker } from "@/components/admin-retreat-date-picker";
 import { allowInvoicePaymentRetry, confirmVerifiedRetreatBooking, createInvoiceForQuote, rejectInvoicePayment, verifyInvoicePayment } from "@/app/actions/invoices";
 import { QuoteLinkActions } from "@/components/quote-link-actions";
 import { GuestShareCard } from "@/components/guest-share-card";
@@ -7,8 +8,13 @@ import { SubmitButton } from "@/components/submit-button";
 import { requireAdmin } from "@/lib/auth";
 import { ENQUIRY_STATUSES, formatDate, formatLabels, titleCaseStatus } from "@/lib/domain";
 import { formatUsd } from "@/lib/pricing";
+import { isPrivateRetreatFormat } from "@/lib/retreat-availability";
 import { retreatDatesFromInclusiveRange } from "@/lib/retreat-dates";
 import { buildInvoiceReadyMessage, buildQuoteReadyMessage, siteUrl } from "@/lib/guest-communication";
+
+function isCurrentEnquiryHold(expiresAt: string | null) {
+  return Boolean(expiresAt && new Date(expiresAt).getTime() > Date.now());
+}
 
 export default async function EnquiryDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const state = await requireAdmin();
@@ -45,6 +51,17 @@ export default async function EnquiryDetailPage({ params }: { params: Promise<{ 
   }
 
   if (!enquiry) notFound();
+
+  const { data: enquiryHold } = !quote ? await state.supabase
+    .from("retreat_holds")
+    .select("id,status,expires_at")
+    .eq("enquiry_id", id)
+    .is("quote_id", null)
+    .eq("status", "active")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle() : { data: null };
+  const activeEnquiryHold = isCurrentEnquiryHold(enquiryHold?.expires_at ?? null);
 
   const stayDates = enquiry.requested_start_date ? retreatDatesFromInclusiveRange(enquiry.requested_start_date, enquiry.requested_end_date) : null;
   const isStay = enquiry.enquiry_type === "stay";
@@ -119,12 +136,27 @@ export default async function EnquiryDetailPage({ params }: { params: Promise<{ 
           <p><strong>Experience:</strong> {enquiry.retreat_type_name ?? "—"}</p>
           <p><strong>Package:</strong> {enquiry.retreat_format ? formatLabels[enquiry.retreat_format] : "—"}</p>
           <p><strong>Guests:</strong> {enquiry.guest_count ?? "—"}</p>
+          {enquiry.estimated_total !== null && enquiry.estimated_currency && enquiry.estimated_nights !== null && (
+            <p><strong>Approximate price shown:</strong> {enquiry.estimated_currency} {Number(enquiry.estimated_total).toLocaleString("en-US", { maximumFractionDigits: 2 })} · {enquiry.estimated_nights} nights</p>
+          )}
           {stayDates && (
             <p>
               <strong>Arrival:</strong> {formatDate(stayDates.arrivalDate)} · <strong>Nights:</strong> {stayDates.nights} · <strong>Checkout:</strong> {formatDate(stayDates.checkoutDate)}
             </p>
           )}
         </section>
+      )}
+
+      {isStay && !quote && enquiry.retreat_product_id && enquiry.retreat_format && enquiry.guest_count && isPrivateRetreatFormat(enquiry.retreat_format) && (
+        <>
+          {enquiry.requested_start_date && <section className="admin-panel">
+            <h2>Agreed retreat</h2>
+            <p><strong>{formatDate(stayDates?.arrivalDate)} to {formatDate(stayDates?.checkoutDate)} · 3 nights</strong></p>
+            <p><strong>{activeEnquiryHold ? "HELD" : "EXPIRED"}</strong>{enquiryHold?.expires_at ? ` until ${new Date(enquiryHold.expires_at).toLocaleString("en-ZA")}` : ""}</p>
+          </section>}
+          <AdminRetreatDatePicker enquiryId={enquiry.id} productId={enquiry.retreat_product_id} format={enquiry.retreat_format} guestCount={enquiry.guest_count} hasAgreedDate={Boolean(enquiry.requested_start_date)} onSave={setAdminEnquiryRetreatDate} />
+          {activeEnquiryHold && <section className="admin-panel"><form action={releaseAdminEnquiryHold}><input type="hidden" name="enquiry_id" value={enquiry.id} /><SubmitButton>Release hold</SubmitButton></form></section>}
+        </>
       )}
 
       {isStay ? (

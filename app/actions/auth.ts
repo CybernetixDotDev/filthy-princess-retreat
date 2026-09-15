@@ -20,7 +20,7 @@ const signUpSchema = z.object({
 
 export async function signIn(_: AuthState, formData: FormData): Promise<AuthState> {
   const parsed = signInSchema.safeParse({ email: formData.get("email"), password: formData.get("password") });
-  const next = safeNextPath(String(formData.get("next") ?? ""), "/home");
+  const next = safeNextPath(String(formData.get("next") ?? ""), "/inner-sanctum");
   if (!parsed.success) return { error: "Enter your email and password." };
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
@@ -31,7 +31,7 @@ export async function signIn(_: AuthState, formData: FormData): Promise<AuthStat
 export async function signUp(_: AuthState, formData: FormData): Promise<AuthState> {
   const password = String(formData.get("password") ?? "");
   const confirmation = String(formData.get("confirm_password") ?? "");
-  const next = safeNextPath(String(formData.get("next") ?? ""), "/home");
+  const next = safeNextPath(String(formData.get("next") ?? ""), "/inner-sanctum");
   if (password !== confirmation) return { error: "Passwords do not match." };
   const parsed = signUpSchema.safeParse({ email: formData.get("email"), password });
   if (!parsed.success) return { error: `Enter a valid email and a password of at least ${MIN_PASSWORD_LENGTH} characters.` };
@@ -53,5 +53,5 @@ export async function signUp(_: AuthState, formData: FormData): Promise<AuthStat
 export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  redirect("/home");
+  redirect("/");
 }

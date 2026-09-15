@@ -74,6 +74,10 @@ export async function grantCollectible(collectibleId: string, formData: FormData
   const state = await requireAdmin();
   if (!state) throw new Error("Not authorized");
   const { error } = await state.supabase.rpc("admin_grant_inner_sanctum_collectible", { p_user_id: userId, p_collectible_id: id });
-  if (error) throw new Error("The collectible could not be granted.");
+  if (error) {
+    console.error("Admin collectible grant failed", { code: error.code, message: error.message, details: error.details, hint: error.hint, collectibleId: id, userId });
+    if (error.message === "active_collectible_required") throw new Error("Activate this collectible before granting it.");
+    throw new Error("The collectible could not be granted.");
+  }
   refresh(id);
 }

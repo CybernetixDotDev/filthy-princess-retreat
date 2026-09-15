@@ -6,9 +6,54 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { BOOKING_STATUSES, ENQUIRY_STATUSES, PAYMENT_STATUSES, RETREAT_FORMATS } from "@/lib/domain";
 import { requireAdmin } from "@/lib/auth";
-import { isPrivateRetreatFormat } from "@/lib/retreat-availability";
+import { isPrivateRetreatFormat, type AvailabilityState, type CalendarArrivalAvailability } from "@/lib/retreat-availability";
 import { calculateRetreatDates, inclusiveEndFromCheckout, retreatDatesFromInclusiveRange } from "@/lib/retreat-dates";
 import { calculateRetreatUsd, normalizeUsd } from "@/lib/pricing";
+
+const adminArrivalSchema = z.object({
+  productId: z.uuid(),
+  format: z.enum(RETREAT_FORMATS).refine(isPrivateRetreatFormat),
+  guestCount: z.number().int().min(1).max(50),
+  nights: z.literal(3),
+  rangeStart: z.iso.date(),
+  rangeEnd: z.iso.date(),
+});
+
+const setEnquiryDateSchema = z.object({ enquiryId: z.uuid(), arrival: z.iso.date() });
+
+export async function getAdminCalendarArrivalAvailability(input: z.input<typeof adminArrivalSchema>): Promise<{ dates: CalendarArrivalAvailability[]; error?: string }> {
+  const parsed = adminArrivalSchema.safeParse(input);
+  if (!parsed.success || parsed.data.rangeEnd < parsed.data.rangeStart) return { dates: [], error: "Choose a valid calendar range." };
+  const supabase = await adminClient();
+  const { data, error } = await supabase.rpc("get_admin_arrival_availability", {
+    p_product_id: parsed.data.productId,
+    p_format: parsed.data.format,
+    p_nights: parsed.data.nights,
+    p_guest_count: parsed.data.guestCount,
+    p_range_start: parsed.data.rangeStart,
+    p_range_end: parsed.data.rangeEnd,
+  });
+  if (error) return { dates: [], error: "Availability could not be checked." };
+  return { dates: (data ?? []).map((row) => ({ available: row.available, state: row.state as AvailabilityState, arrival: row.arrival_date, nights: row.nights, checkout: row.checkout_date, occupiedStart: row.occupied_start, occupiedEnd: row.occupied_end })) };
+}
+
+export async function setAdminEnquiryRetreatDate(formData: FormData) {
+  const parsed = setEnquiryDateSchema.parse({ enquiryId: formData.get("enquiry_id"), arrival: formData.get("arrival_date") });
+  const supabase = await adminClient();
+  const { error } = await supabase.rpc("set_admin_enquiry_retreat_date", { p_enquiry_id: parsed.enquiryId, p_arrival: parsed.arrival });
+  if (error) throw new Error(error.message.includes("no longer available") ? "The selected stay is no longer available." : error.message);
+  revalidatePath(`/admin/enquiries/${parsed.enquiryId}`);
+  revalidatePath("/admin/availability");
+}
+
+export async function releaseAdminEnquiryHold(formData: FormData) {
+  const enquiryId = z.uuid().parse(formData.get("enquiry_id"));
+  const supabase = await adminClient();
+  const { error } = await supabase.rpc("release_admin_enquiry_hold", { p_enquiry_id: enquiryId });
+  if (error) throw new Error(error.message);
+  revalidatePath(`/admin/enquiries/${enquiryId}`);
+  revalidatePath("/admin/availability");
+}
 
 async function adminClient() {
   const state = await requireAdmin();
@@ -43,18 +88,18 @@ export async function toggleAvailability(formData: FormData) {
 }
 
 export async function createEvent(formData: FormData) {
-  const parsed = z.object({ title: z.string().trim().min(2).max(200), productId: z.uuid(), start: z.iso.date(), end: z.iso.date(), capacity: z.coerce.number().int().positive().max(32767), places: z.coerce.number().int().nonnegative().max(32767), status: z.enum(["draft", "published"]), description: z.string().trim().max(1000) }).parse({ title: formData.get("title"), productId: formData.get("product_id"), start: formData.get("start_date"), end: formData.get("end_date"), capacity: formData.get("capacity"), places: formData.get("available_places"), status: formData.get("status"), description: String(formData.get("description") ?? "") });
+  const parsed = z.object({ title: z.string().trim().min(2).max(200), productId: z.uuid(), start: z.iso.date(), end: z.iso.date(), capacity: z.coerce.number().int().positive().max(32767), places: z.coerce.number().int().nonnegative().max(32767), status: z.enum(["draft", "published"]), description: z.string().trim().max(1000), invitationOnly: z.boolean(), interestEnabled: z.boolean() }).parse({ title: formData.get("title"), productId: formData.get("product_id"), start: formData.get("start_date"), end: formData.get("end_date"), capacity: formData.get("capacity"), places: formData.get("available_places"), status: formData.get("status"), description: String(formData.get("description") ?? ""), invitationOnly: formData.get("invitation_only") === "on", interestEnabled: formData.get("interest_enabled") === "on" });
   if (parsed.end < parsed.start) throw new Error("Check the event dates");
   if (parsed.places === 0) parsed.places = parsed.capacity;
   if (parsed.places > parsed.capacity) throw new Error("Check the event capacity");
-  const supabase = await adminClient(); const { error } = await supabase.rpc("create_retreat_event", { p_title: parsed.title, p_product_id: parsed.productId, p_start_date: parsed.start, p_end_date: parsed.end, p_capacity: parsed.capacity, p_status: parsed.status, p_description: parsed.description || null });
+  const supabase = await adminClient(); const { error } = await supabase.rpc("create_retreat_event", { p_title: parsed.title, p_product_id: parsed.productId, p_start_date: parsed.start, p_end_date: parsed.end, p_capacity: parsed.capacity, p_status: parsed.status, p_description: parsed.description || null, p_invitation_only: parsed.invitationOnly, p_interest_enabled: parsed.interestEnabled });
   if (error) throw new Error(error.message); revalidatePath("/admin/events"); revalidatePath("/retreat");
 }
 
 export async function updateEvent(formData: FormData) {
-  const id = z.uuid().parse(formData.get("id")); const status = z.enum(["draft", "published", "full", "cancelled", "completed"]).parse(formData.get("status")); const places = z.coerce.number().int().nonnegative().parse(formData.get("available_places"));
+  const id = z.uuid().parse(formData.get("id")); const status = z.enum(["draft", "published", "full", "cancelled", "completed"]).parse(formData.get("status")); const places = z.coerce.number().int().nonnegative().parse(formData.get("available_places")); const invitationOnly = formData.get("invitation_only") === "on"; const interestEnabled = formData.get("interest_enabled") === "on";
   void places;
-  const supabase = await adminClient(); const { data: event } = await supabase.from("retreat_events").select("title,start_date,end_date,capacity,description").eq("id", id).single(); if (!event) throw new Error("Event not found"); const { error } = await supabase.rpc("update_retreat_event", { p_event_id: id, p_title: event.title, p_start_date: event.start_date, p_end_date: event.end_date, p_capacity: event.capacity, p_status: status, p_description: event.description || "" });
+  const supabase = await adminClient(); const { data: event } = await supabase.from("retreat_events").select("title,start_date,end_date,capacity,description").eq("id", id).single(); if (!event) throw new Error("Event not found"); const { error } = await supabase.rpc("update_retreat_event", { p_event_id: id, p_title: event.title, p_start_date: event.start_date, p_end_date: event.end_date, p_capacity: event.capacity, p_status: status, p_description: event.description || "", p_invitation_only: invitationOnly, p_interest_enabled: interestEnabled });
   if (error) throw new Error(error.message); revalidatePath("/admin/events"); revalidatePath("/retreat");
 }
 
