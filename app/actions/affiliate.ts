@@ -11,5 +11,5 @@ export async function acceptAffiliateTerms(_: AffiliateActionState, form: FormDa
  if (version.data !== PUBLISHED_AFFILIATE_TERMS_VERSION) return { error: "The current Affiliate Terms are not published yet. Please refresh to check their availability." };
  const { error } = await supabase.rpc("accept_current_affiliate_terms", { p_terms_version: version.data, p_accept_terms: true });
  if (error) return { error: "Activation could not be completed. Refresh to check the current Terms and account status." };
- revalidatePath("/contributor"); return { message: "Affiliate Terms accepted." };
+ revalidatePath("/contributor"); revalidatePath("/contribute"); return { message: "Affiliate Terms accepted." };
 }

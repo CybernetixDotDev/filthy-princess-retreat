@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
+import { authenticatedDestination } from "@/lib/auth-destination";
 import { safeNextPath } from "@/lib/domain";
 
 export type AuthState = { error?: string; message?: string };
@@ -20,18 +21,18 @@ const signUpSchema = z.object({
 
 export async function signIn(_: AuthState, formData: FormData): Promise<AuthState> {
   const parsed = signInSchema.safeParse({ email: formData.get("email"), password: formData.get("password") });
-  const next = safeNextPath(String(formData.get("next") ?? ""), "/inner-sanctum");
+  const next = safeNextPath(String(formData.get("next") ?? ""), "");
   if (!parsed.success) return { error: "Enter your email and password." };
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
   if (error) return { error: "The email or password is incorrect." };
-  redirect(next);
+  redirect(await authenticatedDestination(next));
 }
 
 export async function signUp(_: AuthState, formData: FormData): Promise<AuthState> {
   const password = String(formData.get("password") ?? "");
   const confirmation = String(formData.get("confirm_password") ?? "");
-  const next = safeNextPath(String(formData.get("next") ?? ""), "/inner-sanctum");
+  const next = safeNextPath(String(formData.get("next") ?? ""), "");
   if (password !== confirmation) return { error: "Passwords do not match." };
   const parsed = signUpSchema.safeParse({ email: formData.get("email"), password });
   if (!parsed.success) return { error: `Enter a valid email and a password of at least ${MIN_PASSWORD_LENGTH} characters.` };
@@ -47,7 +48,7 @@ export async function signUp(_: AuthState, formData: FormData): Promise<AuthStat
     return { error: "We couldn't create that account. Check the details and try again." };
   }
 
-  if (data.session) redirect(next);
+  if (data.session) redirect(await authenticatedDestination(next));
   return {
     message: "Check your email to confirm your address. The confirmation link will return you to where you left off; sign in there if prompted.",
   };
@@ -60,7 +61,7 @@ export async function signOut() {
 }
 
 export async function signInWithGoogle(_: AuthState, formData: FormData): Promise<AuthState> {
-  const next = safeNextPath(String(formData.get("next") ?? ""), "/inner-sanctum");
+  const next = safeNextPath(String(formData.get("next") ?? ""), "");
   let destination: string;
   try {
     const origin = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "http://localhost:3000";
