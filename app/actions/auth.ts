@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { authenticatedDestination } from "@/lib/auth-destination";
-import { safeNextPath } from "@/lib/domain";
+import { authReturnPath } from "@/lib/auth-return";
 
 export type AuthState = { error?: string; message?: string };
 const MIN_PASSWORD_LENGTH = 6;
@@ -21,7 +21,7 @@ const signUpSchema = z.object({
 
 export async function signIn(_: AuthState, formData: FormData): Promise<AuthState> {
   const parsed = signInSchema.safeParse({ email: formData.get("email"), password: formData.get("password") });
-  const next = safeNextPath(String(formData.get("next") ?? ""), "");
+  const next = authReturnPath(String(formData.get("next") ?? ""), String(formData.get("returnTo") ?? ""));
   if (!parsed.success) return { error: "Enter your email and password." };
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
@@ -32,7 +32,7 @@ export async function signIn(_: AuthState, formData: FormData): Promise<AuthStat
 export async function signUp(_: AuthState, formData: FormData): Promise<AuthState> {
   const password = String(formData.get("password") ?? "");
   const confirmation = String(formData.get("confirm_password") ?? "");
-  const next = safeNextPath(String(formData.get("next") ?? ""), "");
+  const next = authReturnPath(String(formData.get("next") ?? ""), String(formData.get("returnTo") ?? ""));
   if (password !== confirmation) return { error: "Passwords do not match." };
   const parsed = signUpSchema.safeParse({ email: formData.get("email"), password });
   if (!parsed.success) return { error: `Enter a valid email and a password of at least ${MIN_PASSWORD_LENGTH} characters.` };
@@ -40,7 +40,7 @@ export async function signUp(_: AuthState, formData: FormData): Promise<AuthStat
   const supabase = await createClient();
   const origin = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "http://localhost:3000";
   const { data, error } = await supabase.auth.signUp({ ...parsed.data, options: {
-    emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}`,
+    emailRedirectTo: `${origin}/auth/callback?returnTo=${encodeURIComponent(next)}`,
   } });
   if (error) {
     if (/already registered|already exists/i.test(error.message)) return { error: "That email already has an account. Sign in instead." };
@@ -61,12 +61,12 @@ export async function signOut() {
 }
 
 export async function signInWithGoogle(_: AuthState, formData: FormData): Promise<AuthState> {
-  const next = safeNextPath(String(formData.get("next") ?? ""), "");
+  const next = authReturnPath(String(formData.get("next") ?? ""), String(formData.get("returnTo") ?? ""));
   let destination: string;
   try {
     const origin = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "http://localhost:3000";
     const callback = new URL("/auth/callback", origin);
-    callback.searchParams.set("next", next);
+    callback.searchParams.set("returnTo", next);
     const supabase = await createClient();
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google", options: { redirectTo: callback.toString(), skipBrowserRedirect: true },

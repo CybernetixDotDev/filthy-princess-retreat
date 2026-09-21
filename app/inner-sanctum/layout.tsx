@@ -6,7 +6,7 @@ import { resolveInnerSanctumRouteState } from "@/lib/inner-sanctum-route";
 
 export default async function InnerSanctumLayout({ children }: { children: React.ReactNode }) {
   const { user } = await getAuthState();
-  if (resolveInnerSanctumRouteState(Boolean(user), false) === "sign_in") redirect("/signin?next=/inner-sanctum");
+  if (resolveInnerSanctumRouteState(Boolean(user), false) === "sign_in") redirect("/signin?returnTo=/inner-sanctum");
 
   return <div className="sanctum-shell">
     <header className="sanctum-header"><nav aria-label="Inner Sanctum navigation">

@@ -13,19 +13,19 @@ export function SignInForm({ next, initialMode = "signin" }: { next: string; ini
       <button type="button" role="tab" aria-selected={mode === "signup"} className={mode === "signup" ? "active" : ""} onClick={() => setMode("signup")}>Sign up</button>
     </div>
     <form action={googleAction} className="stack-form">
-      <input type="hidden" name="next" value={next} />
+      <input type="hidden" name="returnTo" value={next} />
       <SubmitButton>Continue with Google</SubmitButton>
       {googleState.error && <p className="form-error" role="alert">{googleState.error}</p>}
     </form>
     <p>Or continue with email</p>
     {mode === "signin" ? <form action={signInAction} className="stack-form">
-      <input type="hidden" name="next" value={next} />
+      <input type="hidden" name="returnTo" value={next} />
       <label>Email<input type="email" name="email" autoComplete="email" required /></label>
       <label>Password<input type="password" name="password" autoComplete="current-password" required /></label>
       {signInState.error && <p className="form-error" role="alert">{signInState.error}</p>}
       <SubmitButton>Sign in</SubmitButton>
     </form> : <form action={signUpAction} className="stack-form">
-      <input type="hidden" name="next" value={next} />
+      <input type="hidden" name="returnTo" value={next} />
       <label>Email<input type="email" name="email" autoComplete="email" required /></label>
       <label>Password<input type="password" name="password" autoComplete="new-password" minLength={6} required /></label>
       <label>Confirm password<input type="password" name="confirm_password" autoComplete="new-password" minLength={6} required /></label>

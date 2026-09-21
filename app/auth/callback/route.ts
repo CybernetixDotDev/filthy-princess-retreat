@@ -1,10 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { authenticatedDestination } from "@/lib/auth-destination";
-import { safeNextPath } from "@/lib/domain";
+import { authReturnPath } from "@/lib/auth-return";
 
 export async function GET(request: NextRequest) {
-  let next = safeNextPath(request.nextUrl.searchParams.get("next"), "");
+  let next = authReturnPath(request.nextUrl.searchParams.get("next"), request.nextUrl.searchParams.get("returnTo"));
   const code = request.nextUrl.searchParams.get("code");
   if (code && !request.nextUrl.searchParams.has("error")) {
     try {
@@ -18,5 +18,5 @@ export async function GET(request: NextRequest) {
       // A failed or expired exchange must return to the existing sign-in flow.
     }
   }
-  return NextResponse.redirect(new URL(`/signin?authError=callback&next=${encodeURIComponent(next)}`, request.url), { headers: { "Referrer-Policy": "no-referrer", "Cache-Control": "no-store" } });
+  return NextResponse.redirect(new URL(`/signin?authError=callback&returnTo=${encodeURIComponent(next)}`, request.url), { headers: { "Referrer-Policy": "no-referrer", "Cache-Control": "no-store" } });
 }

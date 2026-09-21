@@ -3,13 +3,14 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { acknowledgeAdult } from "@/app/actions/entrance";
+import { authenticatedDestination } from "@/lib/auth-destination";
 import { getAuthState } from "@/lib/auth";
 
 const ADULT_ACKNOWLEDGEMENT_COOKIE = "fp_adult_acknowledged";
 
 export default async function IndexPage() {
   const { user, isAdmin } = await getAuthState();
-  if (user) redirect(isAdmin ? "/admin" : "/inner-sanctum");
+  if (user) redirect(isAdmin ? "/admin" : await authenticatedDestination());
 
   const hasAcknowledged = (await cookies()).get(ADULT_ACKNOWLEDGEMENT_COOKIE)?.value === "yes";
   if (!hasAcknowledged) {
@@ -26,7 +27,7 @@ export default async function IndexPage() {
     <Image className="entrance-kiss" src="/assets/lipstickKiss.png" alt="" width={120} height={86} priority />
     <p className="entrance-wordmark">Filthy Princess</p><h1 id="restricted-title">Restricted access.</h1>
     <p>You found the private entrance.</p><p>The Inner Sanctum is reserved for members and invited guests.</p>
-    <div className="entrance-actions entrance-auth-actions"><Link className="entrance-primary" href="/signin?next=/inner-sanctum">Member sign in</Link><Link className="entrance-secondary" href="/signin?mode=signup&next=/inner-sanctum">Sign up</Link></div>
+    <div className="entrance-actions entrance-auth-actions"><Link className="entrance-primary" href="/signin">Member sign in</Link><Link className="entrance-secondary" href="/signin?mode=signup">Sign up</Link></div>
     <p className="entrance-whisper">Some doors only open once you belong.</p>
   </section></main>;
 }

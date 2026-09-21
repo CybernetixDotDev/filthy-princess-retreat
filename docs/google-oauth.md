@@ -26,7 +26,7 @@ If using a different Supabase project or custom Auth domain, use the provider ca
 ## Manual verification after provider setup
 
 - Sign in and sign up with Google; check that the existing Supabase session is established.
-- Check ordinary return to `/inner-sanctum`, checkout/start with selected product, an existing checkout reference, and a claim return path. Checkout must still require its existing explicit account confirmation.
+- Check ordinary non-member return to `/contribute` and entitled-member return to `/inner-sanctum`, checkout/start with selected product, an existing checkout reference, and a claim return path. Checkout must still require its existing explicit account confirmation.
 - Capture a valid referral before Google sign-in and check that the existing referral cookie survives. No referral is sent as OAuth metadata.
 - Cancel Google consent and retry; test an expired callback. Both should return to Sign In with a message and preserve `next`.
 - Confirm email/password sign-in and email-confirmation signup still work.

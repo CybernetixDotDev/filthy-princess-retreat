@@ -16,10 +16,10 @@ test("checkout preserves the exact safe local path across signin and email confi
   const signin = readFileSync("app/signin/page.tsx", "utf8");
   assert.match(signin, /authenticatedDestination\(next\)/);
   const auth = readFileSync("app/actions/auth.ts", "utf8");
-  assert.match(auth, /emailRedirectTo:.*auth\/callback\?next=/);
+  assert.match(auth, /emailRedirectTo:.*auth\/callback\?returnTo=/);
   assert.match(auth, /if \(data\.session\) redirect\(await authenticatedDestination\(next\)\)/);
   const callback = readFileSync("app/auth/callback/route.ts", "utf8");
-  assert.match(callback, /safeNextPath/);
+  assert.match(callback, /authReturnPath/);
   assert.match(callback, /exchangeCodeForSession/);
   assert.match(callback, /new URL\(next, request.url\)/);
 });
