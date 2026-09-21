@@ -21,7 +21,7 @@ function harness() {
   }
   return {h,actions:load("app/actions/auth.ts"),callback:load("app/auth/callback/route.ts").GET};
 }
-const paths=["/inner-sanctum","/checkout/start?product=550e8400-e29b-41d4-a716-446655440000","/checkout/FP-REFERENCE","/claim/secret","/invite/example"];
+const paths=["/inner-sanctum","/checkout/start?product=550e8400-e29b-41d4-a716-446655440000","/checkout/FP-REFERENCE","/claim/secret","/invite/example","/contribute"];
 test("Google uses Supabase OAuth and preserves existing destinations without referral metadata",async()=>{
   const {h,actions}=harness();
   for(const next of paths){const form=new FormData();form.set("next",next);await assert.rejects(actions.signInWithGoogle({},form),/REDIRECT:https:\/\/provider.example/);const call=h.calls.at(-1)!;assert.equal(call.provider,"google");const options=call.options as {redirectTo:string;skipBrowserRedirect:boolean};const url=new URL(options.redirectTo);assert.equal(url.origin,"http://localhost:3000");assert.equal(url.pathname,"/auth/callback");assert.equal(url.searchParams.get("next"),next);assert.equal(options.skipBrowserRedirect,true);assert.deepEqual(Object.keys(call).sort(),["options","provider"]);}

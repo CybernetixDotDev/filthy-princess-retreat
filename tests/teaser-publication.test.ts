@@ -9,7 +9,7 @@ import { teaserReadiness } from "../lib/teaser-publication.ts";
 import { teaserPromoUrl } from "../lib/teaser-promo-url.ts";
 const require=createRequire(import.meta.url);
 const id="550e8400-e29b-41d4-a716-446655440000";
-const teaser:TeaserRow={id,internal_name:"Campaign",eyebrow:null,title:"Title",body:"Body",graffiti_lines:[],image_1_path:null,image_2_path:null,image_3_path:null,store_product_id:id,slug:"a".repeat(48),status:"draft",visibility:"private",created_by:id,created_at:"2026-09-21T00:00:00Z",updated_at:"2026-09-21T00:00:00Z",published_at:null};
+const teaser:TeaserRow={destination_type:"store",promo_destination:null,id,internal_name:"Campaign",eyebrow:null,title:"Title",body:"Body",graffiti_lines:[],image_1_path:null,image_2_path:null,image_3_path:null,store_product_id:id,slug:"a".repeat(48),status:"draft",visibility:"private",created_by:id,created_at:"2026-09-21T00:00:00Z",updated_at:"2026-09-21T00:00:00Z",published_at:null};
 test("readiness permits optional images/eyebrow/graffiti, requires valid content and active product",()=>{
   for(const visibility of ["private","public"] as const) assert.equal(teaserReadiness({...teaser,visibility},{id,status:"active"}).ready,true);
   for(const product of [null,{id,status:"draft"},{id,status:"archived"},{id:"wrong",status:"active"}]) assert.equal(teaserReadiness(teaser,product).ready,false);
@@ -59,3 +59,5 @@ test("preview is guarded, read-only, and no public renderer is introduced",()=>{
   assert.equal(existsSync(new URL("../app/t/[slug]/page.tsx",import.meta.url)),false);
   for(const source of [preview,editor,readFileSync(new URL("../components/teaser-publication-controls.tsx",import.meta.url),"utf8")])assert.doesNotMatch(source,/filthyprincesss\.com/);
 });
+
+test("Contribute Promo readiness needs no Store product",()=>{assert.equal(teaserReadiness({...teaser,destination_type:"promo",promo_destination:"contribute",store_product_id:null},null).ready,true);});

@@ -35,7 +35,7 @@ export default async function EditTeaserPage({ params, searchParams }: { params:
       <h3>{teaser.visibility === "private" ? "Private / Unlisted" : "Public / Discoverable"}</h3>
       <p>{teaser.visibility === "private" ? "Anyone with the promotional link can view it once the public renderer exists. It will not be eligible for normal public discovery." : "Once the public renderer exists, the promotional link will work and this teaser may later be surfaced by public Filthy Princess discovery features."}</p>
       {teaser.status === "draft" && <p>This draft is not publicly available.</p>}
-      {teaser.status === "published" && linkedProduct?.status !== "active" && <p role="alert">The Store destination is missing or inactive. This teaser remains published; the future public renderer will disable ENTER until an active destination is available.</p>}
+      {teaser.destination_type === "store" && teaser.status === "published" && linkedProduct?.status !== "active" && <p role="alert">The Store destination is missing or inactive. This teaser remains published; the future public renderer will disable ENTER until an active destination is available.</p>}
       {promoError && <p role="alert">Promo URL unavailable: {promoError}</p>}
       <TeaserPublicationControls id={id} status={teaser.status} ready={readiness.ready} promoUrl={promoUrl} />
     </section>

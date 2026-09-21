@@ -2,9 +2,9 @@ import type { BookingSource, BookingStatus, EnquiryStatus, HoldStatus, PaymentSt
 
 export type TeaserStatus = "draft" | "published";
 export type TeaserVisibility = "private" | "public";
-export type TeaserRow = { id: string; internal_name: string; eyebrow: string | null; title: string; body: string; graffiti_lines: string[]; image_1_path: string | null; image_2_path: string | null; image_3_path: string | null; store_product_id: string | null; slug: string; status: TeaserStatus; visibility: TeaserVisibility; created_by: string | null; created_at: string; updated_at: string; published_at: string | null };
-export type PublishedTeaser = Pick<TeaserRow, "id" | "slug" | "eyebrow" | "title" | "body" | "graffiti_lines" | "image_1_path" | "image_2_path" | "image_3_path" | "visibility" | "store_product_id" | "published_at"> & { store_product_active: boolean };
-export type TeaserInsert = Pick<TeaserRow, "internal_name" | "title" | "body"> & Partial<Pick<TeaserRow, "eyebrow" | "graffiti_lines" | "image_1_path" | "image_2_path" | "image_3_path" | "store_product_id">>;
+export type TeaserRow = { destination_type: "store" | "promo"; promo_destination: "contribute" | null; id: string; internal_name: string; eyebrow: string | null; title: string; body: string; graffiti_lines: string[]; image_1_path: string | null; image_2_path: string | null; image_3_path: string | null; store_product_id: string | null; slug: string; status: TeaserStatus; visibility: TeaserVisibility; created_by: string | null; created_at: string; updated_at: string; published_at: string | null };
+export type PublishedTeaser = Pick<TeaserRow, "id" | "slug" | "eyebrow" | "title" | "body" | "graffiti_lines" | "image_1_path" | "image_2_path" | "image_3_path" | "visibility" | "destination_type" | "promo_destination" | "store_product_id" | "published_at"> & { store_product_active: boolean };
+export type TeaserInsert = Pick<TeaserRow, "internal_name" | "title" | "body"> & Partial<Pick<TeaserRow, "destination_type" | "promo_destination" | "eyebrow" | "graffiti_lines" | "image_1_path" | "image_2_path" | "image_3_path" | "store_product_id">>;
 export type TeaserUpdate = Partial<TeaserInsert & Pick<TeaserRow, "status" | "visibility">>;
 
 export type ContributionCategory = "design" | "development" | "creative" | "marketing" | "idea" | "experience_event" | "other";

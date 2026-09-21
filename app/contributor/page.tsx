@@ -6,7 +6,7 @@ import { formatStoreMoney } from "@/lib/store";
 import { AffiliateActivation, AffiliateLink } from "@/components/affiliate-controls";
 
 export default async function ContributorPage() {
- const { supabase } = await requireContributorAuth("/contributor");
+ const { supabase } = await requireContributorAuth("/contribute");
  const [progressResult, submissionsResult, affiliateResult, impactResult, earningsResult] = await Promise.all([
   supabase.rpc("get_my_contribution_progress"), supabase.rpc("get_my_contributions"), supabase.rpc("get_my_affiliate_state"), supabase.rpc("get_my_affiliate_impact"), supabase.rpc("get_my_affiliate_earnings"),
  ]);

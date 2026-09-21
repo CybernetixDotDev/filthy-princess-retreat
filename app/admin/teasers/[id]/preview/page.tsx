@@ -20,7 +20,7 @@ export default async function TeaserPreviewPage({ params }: { params: Promise<{ 
         // eslint-disable-next-line @next/next/no-img-element
         return url ? <figure key={slot}><img src={url} alt={`Teaser image ${slot}`} style={{ width: "100%", maxHeight: 420, objectFit: "contain" }} /><figcaption>Image {slot}</figcaption></figure> : null;
       })}</div>
-      <h3>Store destination</h3>{product ? <><p>{product.name} - {product.currency} {product.price_amount}</p>{product.status !== "active" && <p role="alert">Linked product is no longer active. Select another product before publishing.</p>}</> : <p>No Store product selected.</p>}
+      <h3>Destination</h3>{teaser.destination_type === "promo" ? <p>Promo / Contribute - Contribution and Affiliate experience</p> : product ? <><p>{product.name} - {product.currency} {product.price_amount}</p>{product.status !== "active" && <p role="alert">Linked product is no longer active. Select another product before publishing.</p>}</> : <p>No Store product selected.</p>}
     </article>
   </>;
 }
