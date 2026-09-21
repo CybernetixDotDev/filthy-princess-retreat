@@ -18,7 +18,7 @@ function harness() {
   const mocks:Record<string,unknown>={"@/lib/auth-return":returnExports,"@/lib/auth-destination":{authenticatedDestination:async(next:string)=>safeNextPath(next, "") || (h.member ? "/inner-sanctum" : "/contribute")},"@/lib/supabase/server":{createClient:async()=>client},"@/lib/domain":{safeNextPath},"next/navigation":{redirect:(url:string)=>{throw Error(`REDIRECT:${url}`);}}};
   function load(path:string) {
     const exports:Record<string,(...args:unknown[])=>Promise<unknown>>={};
-    runInNewContext(ts.transpileModule(readFileSync(path,"utf8"),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText,{exports,require:(name:string)=>mocks[name]??require(name),URL,process:{env:{NEXT_PUBLIC_SITE_URL:"http://localhost:3000"}}});
+    runInNewContext(ts.transpileModule(readFileSync(path,"utf8"),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText,{exports,require:(name:string)=>mocks[name]??(name === "@/lib/account-identity" ? load("lib/account-identity.ts") : require(name)),URL,process:{env:{NEXT_PUBLIC_SITE_URL:"http://localhost:3000"}}});
     return exports;
   }
   return {h,actions:load("app/actions/auth.ts"),callback:load("app/auth/callback/route.ts").GET};

@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useActionState, useState } from "react";
 import { signIn, signUp, signInWithGoogle, type AuthState } from "@/app/actions/auth";
 import { SubmitButton } from "./submit-button";
@@ -24,6 +25,7 @@ export function SignInForm({ next, initialMode = "signin" }: { next: string; ini
       <label>Password<input type="password" name="password" autoComplete="current-password" required /></label>
       {signInState.error && <p className="form-error" role="alert">{signInState.error}</p>}
       <SubmitButton>Sign in</SubmitButton>
+      <Link className="text-link" href="/forgot-password">Forgot password?</Link>
     </form> : <form action={signUpAction} className="stack-form">
       <input type="hidden" name="returnTo" value={next} />
       <label>Email<input type="email" name="email" autoComplete="email" required /></label>
