@@ -1401,3 +1401,12 @@ td a { color: var(--accent); font-weight: 650; }
 @media (min-width: 560px) { .entrance-auth-actions { flex-direction: row; max-width: 500px; } .entrance-auth-actions > * { flex: 1; } }
 @media (prefers-reduced-motion: no-preference) { .entrance-panel { animation: entrance-reveal .65s ease both; } }
 @keyframes entrance-reveal { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Contribution review stays within the existing admin shell. */
+.contribution-filters { display:flex; flex-wrap:wrap; gap:12px; padding-bottom:20px; }
+.contribution-filters a { text-transform:capitalize; border:1px solid var(--line); padding:8px 12px; border-radius:5px; }
+.contribution-filters a[aria-current="page"] { background:var(--ink); color:var(--white); }
+.contribution-inbox article { padding:22px 0; border-top:1px solid var(--line); overflow-wrap:anywhere; }
+.contribution-inbox h2 { font-size:1.6rem; }.contribution-inbox p { margin:6px 0; }
+.contribution-content { white-space:pre-wrap; overflow-wrap:anywhere; }
+.contribution-review-grid { display:grid; gap:20px; }

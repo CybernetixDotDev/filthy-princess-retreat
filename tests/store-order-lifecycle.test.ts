@@ -9,6 +9,22 @@ test("pending commercial status is presented as pending payment", () => {
   assert.equal(commercialStoreOrderLabel("pending"), "Pending payment");
 });
 
+test("verified checkout membership is fulfilled without a claim key", () => {
+  assert.deepEqual(deriveStoreOrderLifecycle({ commercialStatus: "paid", isAuthorized: false,
+    claimStatus: null, membershipStatus: "active", automaticallyFulfilled: true }), {
+    commercial: "Paid", fulfillment: "Fulfilled", key: "Not required", membership: "Active",
+  });
+});
+
+test("automatic fulfillment preserves current membership status without implying a missing claim", () => {
+  for (const [status, label] of [["suspended", "Suspended"], ["cancelled", "Cancelled"], [null, "Status unavailable"]] as const) {
+    const lifecycle = deriveStoreOrderLifecycle({ commercialStatus: "paid", isAuthorized: false,
+      claimStatus: null, membershipStatus: status, automaticallyFulfilled: true });
+    assert.equal(lifecycle.fulfillment, "Fulfilled");
+    assert.equal(lifecycle.membership, label);
+  }
+});
+
 test("authorized order with an available key exposes the distinct lifecycle states", () => {
   assert.deepEqual(deriveStoreOrderLifecycle({
     commercialStatus: "pending",

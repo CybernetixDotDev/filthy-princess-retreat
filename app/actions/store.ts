@@ -16,5 +16,5 @@ export async function createStoreOrder(_: StoreOrderActionState, formData: FormD
   const { data, error } = await supabase.rpc("create_public_store_order", { p_product_id: parsed.data.productId, p_buyer_email: parsed.data.buyerEmail, p_request_key: parsed.data.requestKey, p_referral_code: referralCode });
   const order = data?.[0];
   if (error || !order) return { error: "That order could not be prepared. Please try again." };
-  redirect(`/store/order/${encodeURIComponent(order.order_reference)}`);
+  redirect(`/checkout/${encodeURIComponent(order.order_reference)}`);
 }

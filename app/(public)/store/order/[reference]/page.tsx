@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { formatStoreMoney, storeLabel } from "@/lib/store";
+export const metadata = { robots: { index: false, follow: false }, referrer: "no-referrer" as const };
 
 export default async function StoreOrderPage({ params }: { params: Promise<{ reference: string }> }) {
   const { reference } = await params;
@@ -18,6 +20,6 @@ export default async function StoreOrderPage({ params }: { params: Promise<{ ref
       <div><dt>Total</dt><dd>{formatStoreMoney(Number(order.total_amount), order.currency)}</dd></div>
       <div><dt>Status</dt><dd>{storeLabel(order.order_status)}</dd></div>
     </dl>
-    <div className="store-order-note"><p>I&apos;m just making sure the door opens properly before I let you throw money at it.</p><p>— Cally</p></div>
+    <Link className="primary-link" href={`/checkout/${encodeURIComponent(order.order_reference)}`}>Continue to secure checkout</Link>
   </section></div>;
 }

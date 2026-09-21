@@ -34,6 +34,6 @@ export function formatDate(value: string | null | undefined) {
 }
 
 export function safeNextPath(value: string | null | undefined, fallback = "/admin") {
-  if (!value || !value.startsWith("/") || value.startsWith("//") || value.includes("\\") || value.includes("\r") || value.includes("\n")) return fallback;
+  if (!value || !value.startsWith("/") || value.startsWith("//") || value.includes("\\") || value.includes("\r") || value.includes("\n") || value.includes("\t")) return fallback;
   return value;
 }

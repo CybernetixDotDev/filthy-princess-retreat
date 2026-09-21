@@ -9,8 +9,9 @@ export const adminNavigation: readonly AdminNavigationGroup[] = [
     { label: "Events", href: "/admin/events", shortLabel: "E" },
     { label: "Bookings", href: "/admin/bookings", shortLabel: "B" },
   ] },
-  { label: "Commerce", items: [{ label: "Store", href: "/admin/store", shortLabel: "S" }] },
+  { label: "Commerce", items: [{ label: "Store", href: "/admin/store", shortLabel: "S" }, { label: "Teasers", href: "/admin/teasers", shortLabel: "T" }] },
   { label: "Community", items: [
+    { label: "Contributions", href: "/admin/contributions", shortLabel: "C" },
     { label: "Members", href: "/admin/members", shortLabel: "M" },
     { label: "Inner Sanctum", href: "/admin/inner-sanctum", shortLabel: "I" },
     { label: "Collections", href: "/admin/collections", shortLabel: "C" },

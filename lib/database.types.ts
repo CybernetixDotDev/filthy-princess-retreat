@@ -1,5 +1,35 @@
 import type { BookingSource, BookingStatus, EnquiryStatus, HoldStatus, PaymentStatus, QuoteStatus, RetreatFormat } from "./domain";
 
+export type TeaserStatus = "draft" | "published";
+export type TeaserVisibility = "private" | "public";
+export type TeaserRow = { id: string; internal_name: string; eyebrow: string | null; title: string; body: string; graffiti_lines: string[]; image_1_path: string | null; image_2_path: string | null; image_3_path: string | null; store_product_id: string | null; slug: string; status: TeaserStatus; visibility: TeaserVisibility; created_by: string | null; created_at: string; updated_at: string; published_at: string | null };
+export type PublishedTeaser = Pick<TeaserRow, "id" | "slug" | "eyebrow" | "title" | "body" | "graffiti_lines" | "image_1_path" | "image_2_path" | "image_3_path" | "visibility" | "store_product_id" | "published_at"> & { store_product_active: boolean };
+export type TeaserInsert = Pick<TeaserRow, "internal_name" | "title" | "body"> & Partial<Pick<TeaserRow, "eyebrow" | "graffiti_lines" | "image_1_path" | "image_2_path" | "image_3_path" | "store_product_id">>;
+export type TeaserUpdate = Partial<TeaserInsert & Pick<TeaserRow, "status" | "visibility">>;
+
+export type ContributionCategory = "design" | "development" | "creative" | "marketing" | "idea" | "experience_event" | "other";
+export type ContributionStatus = "submitted" | "reviewing" | "accepted" | "declined";
+export type ContributionSubmissionRow = { id: string; user_id: string; category: ContributionCategory; title: string; description: string; work_url: string | null; additional_notes: string | null; status: ContributionStatus; submitted_at: string; reviewed_by: string | null; reviewed_at: string | null; filth_awarded: number; paid_opportunity: boolean; admin_note: string | null };
+export type MyContribution = Omit<ContributionSubmissionRow, "user_id" | "reviewed_by" | "admin_note">;
+export type ContributionProgress = { filth_total: number; accepted_contributions: number; filth_from_contributions: number; current_level_number: number | null; current_level_title: string | null; current_level_threshold: number | null; next_level_threshold: number | null; earned_milestones: Json };
+export type AffiliateImpact = { successful_referrals: number; filth_from_referrals: number; recent_activity: Json };
+export type AffiliateEarnings = { pending_total: number; available_total: number; commission_history: Json };
+
+export type AffiliateCommissionRuleType = "percentage" | "fixed";
+export type AffiliateCommissionSettingsRow = { id: boolean; default_commission_type: AffiliateCommissionRuleType; default_commission_value: number; commission_hold_days: number; updated_at: string };
+export type AffiliateCommissionRow = { id: string; conversion_id: string; affiliate_account_id: string; referrer_user_id: string; gross_amount: number; commissionable_amount: number; rule_type: AffiliateCommissionRuleType; rule_value: number; commission_amount: number; status: "pending" | "available"; created_at: string; available_at: string; matured_at: string | null };
+export type AffiliateAccountStatus = "active" | "suspended" | "closed";
+export type AffiliateAccountRow = {
+  id: string; user_id: string; status: AffiliateAccountStatus;
+  created_at: string; updated_at: string; activated_at: string;
+  suspended_at: string | null; closed_at: string | null;
+  accepted_terms_version: string | null; terms_accepted_at: string | null;
+};
+export type AffiliateState = {
+  has_account: boolean; affiliate_status: AffiliateAccountStatus | null;
+  current_terms_version: string; accepted_terms_version: string | null;
+  terms_accepted_at: string | null; has_accepted_current_terms: boolean;
+};
 export type InnerSanctumMembershipStatus = "active" | "suspended" | "cancelled";
 export type InnerSanctumMembershipType = "lifetime";
 export type InnerSanctumMembershipSource = "admin" | "store" | "promotion" | "migration";
@@ -12,7 +42,7 @@ export type InnerSanctumBenefitStatus = "draft" | "available" | "withdrawn" | "c
 export type InnerSanctumBenefitResponse = "accepted" | "declined";
 export type InnerSanctumTaskStatus = "draft" | "published" | "archived";
 export type InnerSanctumReferralStatus = "active" | "disabled";
-export type InnerSanctumReferralConversionSource = "payfast" | "admin_test";
+export type InnerSanctumReferralConversionSource = "payfast" | "admin_test" | "verified_payment";
 export type StoreProductType = "membership" | "digital" | "experience" | "session" | "physical";
 export type StoreProductStatus = "draft" | "active" | "archived";
 export type StoreFulfillmentType = "inner_sanctum_membership" | "manual";
@@ -160,13 +190,15 @@ export type InnerSanctumTaskResponseRow = { id: string; task_id: string; user_id
 export type InnerSanctumMemberTask = Pick<InnerSanctumTaskRow, "id" | "slug" | "eyebrow" | "title" | "body" | "prompt" | "status" | "available_from" | "closes_at" | "sort_order"> & { response_text: string | null; submitted_at: string | null; acknowledged_at: string | null };
 export type InnerSanctumReferralRow = { id: string; user_id: string; code: string; status: InnerSanctumReferralStatus; created_at: string; updated_at: string };
 export type StoreOrderReferralRow = { id: string; order_id: string; referral_id: string; referrer_user_id: string; attributed_at: string; converted_at: string | null; conversion_id: string | null; created_at: string };
-export type InnerSanctumFilthEventRow = { id: string; user_id: string; event_type: "referral" | "admin" | "task" | "experience" | "special"; points: number; source_reference: string; created_by: string | null; created_at: string };
-export type InnerSanctumFilthMeter = { referral_code: string; filth_total: number; successful_referrals: number; current_level_number: number | null; current_level_title: string | null; current_level_threshold: number | null; next_level_threshold: number | null; earned_milestones: Array<{ title: string; threshold: number; earned_at: string }> };
+export type InnerSanctumFilthEventRow = { id: string; user_id: string; event_type: "referral" | "admin" | "task" | "experience" | "special" | "contribution"; points: number; source_reference: string; created_by: string | null; created_at: string };
+export type InnerSanctumFilthMeter = { referral_code: string | null; filth_total: number; successful_referrals: number; current_level_number: number | null; current_level_title: string | null; current_level_threshold: number | null; next_level_threshold: number | null; earned_milestones: Array<{ title: string; threshold: number; earned_at: string }> };
 export type InnerSanctumFilthLevelRow = { id: string; level_number: number; title: string; threshold: number; status: "active" | "inactive"; sort_order: number; created_at: string; updated_at: string };
 export type InnerSanctumFilthMilestoneRow = { id: string; level_id: string | null; threshold: number; title: string; reward_type: "collectible" | "benefit" | "experience" | "retreat" | "manual"; reward_reference: string | null; status: "active" | "inactive"; sort_order: number; created_at: string; updated_at: string };
 export type InnerSanctumMemberFilthMilestoneRow = { id: string; user_id: string; milestone_id: string; earned_at: string; fulfilled_at: string | null; fulfillment_reference: string | null };
-export type StoreProductRow = { id: string; slug: string; name: string; short_description: string; description: string; product_type: StoreProductType; price_amount: number; currency: string; fulfillment_type: StoreFulfillmentType; fulfillment_reference: string | null; image_path: string | null; status: StoreProductStatus; sort_order: number; created_at: string; updated_at: string };
-export type StoreOrderRow = { id: string; order_reference: string; request_key: string; user_id: string | null; buyer_email: string; status: StoreOrderStatus; currency: string; subtotal_amount: number; total_amount: number; created_at: string; updated_at: string };
+export type StoreProductRow = { commission_type: AffiliateCommissionRuleType | null; commission_value: number | null; id: string; slug: string; name: string; short_description: string; description: string; product_type: StoreProductType; price_amount: number; currency: string; fulfillment_type: StoreFulfillmentType; fulfillment_reference: string | null; image_path: string | null; status: StoreProductStatus; sort_order: number; created_at: string; updated_at: string };
+export type StorePaymentStatus = "pending" | "submitted" | "verified" | "rejected";
+export type StorePaymentAudit = { payment_status: StorePaymentStatus; payment_method: string | null; payment_submitted_at: string | null; payment_reference: string | null; payment_verified_at: string | null; payment_verified_by: string | null; payment_reviewed_at: string | null; payment_reviewed_by: string | null; payment_verification_note: string | null; fulfilled_at: string | null };
+export type StoreOrderRow = StorePaymentAudit & { id: string; order_reference: string; request_key: string; user_id: string | null; buyer_email: string; status: StoreOrderStatus; currency: string; subtotal_amount: number; total_amount: number; created_at: string; updated_at: string };
 export type StoreOrderItemRow = { id: string; order_id: string; product_id: string; product_name: string; product_slug: string; product_type: StoreProductType; unit_price_amount: number; currency: string; quantity: number; line_total_amount: number; fulfillment_type: StoreFulfillmentType; fulfillment_reference: string | null; created_at: string };
 export type StoreFulfillmentAuthorizationRow = { id: string; order_id: string; source: StoreFulfillmentAuthorizationSource; source_reference: string | null; authorized_by: string | null; authorized_at: string; created_at: string };
 export type StoreClaimRow = { id: string; order_id: string; authorization_id: string; token_hash: string; status: StoreClaimStatus; claimed_by: string | null; claimed_at: string | null; revoked_at: string | null; expires_at: string | null; created_at: string };
@@ -176,6 +208,11 @@ type Table<Row, Insert = Partial<Row>, Update = Partial<Insert>> = { Row: Row; I
 export type Database = {
   public: {
     Tables: {
+      teasers: Table<TeaserRow, TeaserInsert, TeaserUpdate>;
+      affiliate_commission_settings: Table<AffiliateCommissionSettingsRow, never, never>;
+      affiliate_commissions: Table<AffiliateCommissionRow, never, never>;
+      contribution_submissions: Table<ContributionSubmissionRow, never, never>;
+      affiliate_accounts: Table<AffiliateAccountRow, never, never>;
       admin_users: Table<{ user_id: string; created_at: string }, { user_id: string; created_at?: string }>;
       retreat_products: Table<ProductRow, Omit<ProductRow, "id" | "created_at" | "updated_at"> & { id?: string; created_at?: string; updated_at?: string }>;
       retreat_availability: Table<AvailabilityRow, Omit<AvailabilityRow, "id" | "created_at" | "updated_at"> & { id?: string; created_at?: string; updated_at?: string }>;
@@ -212,7 +249,7 @@ export type Database = {
       inner_sanctum_filth_levels: Table<InnerSanctumFilthLevelRow, Partial<InnerSanctumFilthLevelRow>, Partial<InnerSanctumFilthLevelRow>>;
       inner_sanctum_filth_milestones: Table<InnerSanctumFilthMilestoneRow, Partial<InnerSanctumFilthMilestoneRow>, Partial<InnerSanctumFilthMilestoneRow>>;
       inner_sanctum_member_filth_milestones: Table<InnerSanctumMemberFilthMilestoneRow, never, never>;
-      store_products: Table<StoreProductRow, Omit<StoreProductRow, "id" | "created_at" | "updated_at"> & { id?: string; created_at?: string; updated_at?: string }>;
+      store_products: Table<StoreProductRow, Omit<StoreProductRow, "id" | "created_at" | "updated_at" | "commission_type" | "commission_value"> & { commission_type?: AffiliateCommissionRuleType | null; commission_value?: number | null; id?: string; created_at?: string; updated_at?: string }>;
       store_orders: Table<StoreOrderRow, never, never>;
       store_order_items: Table<StoreOrderItemRow, never, never>;
       store_fulfillment_authorizations: Table<StoreFulfillmentAuthorizationRow, never, never>;
@@ -220,6 +257,23 @@ export type Database = {
     };
     Views: Record<string, never>;
       Functions: {
+        get_published_teaser_by_slug: { Args: { p_slug: string }; Returns: PublishedTeaser[] };
+        submit_contribution: { Args: { p_category: ContributionCategory; p_title: string; p_description: string; p_work_url?: string | null; p_additional_notes?: string | null }; Returns: string };
+        get_my_contributions: { Args: Record<string, never>; Returns: MyContribution[] };
+        admin_get_contributions: { Args: { p_status?: ContributionStatus | null; p_id?: string | null }; Returns: Array<ContributionSubmissionRow & { email: string | null }> };
+        admin_mark_contribution_reviewing: { Args: { p_contribution_id: string }; Returns: ContributionSubmissionRow };
+        admin_accept_contribution: { Args: { p_contribution_id: string; p_filth_award: number; p_paid_opportunity: boolean; p_admin_note?: string | null }; Returns: ContributionSubmissionRow };
+        admin_decline_contribution: { Args: { p_contribution_id: string; p_admin_note?: string | null }; Returns: ContributionSubmissionRow };
+        get_my_contribution_progress: { Args: Record<string, never>; Returns: ContributionProgress[] };
+        get_my_affiliate_impact: { Args: Record<string, never>; Returns: AffiliateImpact[] };
+        get_my_affiliate_earnings: { Args: Record<string, never>; Returns: AffiliateEarnings[] };
+        bind_my_store_order: { Args: { p_order_reference: string }; Returns: StoreOrderRow };
+        get_my_store_checkout: { Args: { p_order_reference: string }; Returns: StoreOrderRow };
+        submit_my_store_payment: { Args: { p_order_reference: string; p_payment_method: string; p_payment_reference?: string | null }; Returns: StoreOrderRow };
+        admin_verify_store_payment: { Args: { p_order_id: string; p_note?: string | null }; Returns: StoreOrderRow };
+        admin_reject_store_payment: { Args: { p_order_id: string; p_note?: string | null }; Returns: StoreOrderRow };
+        accept_current_affiliate_terms: { Args: { p_terms_version: string; p_accept_terms: boolean }; Returns: AffiliateAccountRow };
+        get_my_affiliate_state: { Args: Record<string, never>; Returns: AffiliateState[] };
         get_public_event_by_slug: { Args: { p_slug: string }; Returns: { id: string; slug: string; title: string; retreat_product_id: string; start_date: string; end_date: string; capacity: number; available_places: number; effective_places_remaining: number; description: string | null; invitation_only: boolean; interest_enabled: boolean }[] };
         has_inner_sanctum_access: { Args: Record<string, never>; Returns: boolean };
         get_my_inner_sanctum_access: { Args: Record<string, never>; Returns: Array<{ has_access: boolean; membership_status: InnerSanctumMembershipStatus; membership_type: InnerSanctumMembershipType; started_at: string; expires_at: string | null }> };
@@ -233,6 +287,7 @@ export type Database = {
         submit_inner_sanctum_task_response: { Args: { p_task_id: string; p_response_text: string }; Returns: string };
         admin_acknowledge_inner_sanctum_task_response: { Args: { p_response_id: string }; Returns: string };
         is_valid_inner_sanctum_referral_code: { Args: { p_code: string }; Returns: boolean };
+        get_or_create_my_referral_identity: { Args: Record<string, never>; Returns: InnerSanctumReferralRow };
         get_my_filth_meter: { Args: Record<string, never>; Returns: InnerSanctumFilthMeter[] };
         admin_record_test_referral_conversion: { Args: { p_order_id: string; p_referred_user_id: string }; Returns: string };
         admin_add_filth_points: { Args: { p_user_id: string; p_points: number; p_reason: string }; Returns: string };
@@ -305,7 +360,18 @@ export type Database = {
         Returns: undefined;
       };
     };
-    Enums: { retreat_format: RetreatFormat; enquiry_status: EnquiryStatus; quote_status: QuoteStatus; payment_status: PaymentStatus; booking_status: BookingStatus; inner_sanctum_membership_status: InnerSanctumMembershipStatus; inner_sanctum_membership_type: InnerSanctumMembershipType; inner_sanctum_membership_source: InnerSanctumMembershipSource; store_product_type: StoreProductType; store_product_status: StoreProductStatus; store_fulfillment_type: StoreFulfillmentType; store_order_status: StoreOrderStatus; store_fulfillment_authorization_source: StoreFulfillmentAuthorizationSource; store_claim_status: StoreClaimStatus };
+    Enums: { teaser_status: TeaserStatus; teaser_visibility: TeaserVisibility; contribution_category: ContributionCategory; contribution_status: ContributionStatus; affiliate_commission_rule_type: AffiliateCommissionRuleType; affiliate_commission_status: "pending" | "available"; store_payment_status: StorePaymentStatus; affiliate_account_status: AffiliateAccountStatus; retreat_format: RetreatFormat; enquiry_status: EnquiryStatus; quote_status: QuoteStatus; payment_status: PaymentStatus; booking_status: BookingStatus; inner_sanctum_membership_status: InnerSanctumMembershipStatus; inner_sanctum_membership_type: InnerSanctumMembershipType; inner_sanctum_membership_source: InnerSanctumMembershipSource; store_product_type: StoreProductType; store_product_status: StoreProductStatus; store_fulfillment_type: StoreFulfillmentType; store_order_status: StoreOrderStatus; store_fulfillment_authorization_source: StoreFulfillmentAuthorizationSource; store_claim_status: StoreClaimStatus };
+    CompositeTypes: Record<string, never>;
+  };
+  teaser_private: {
+    Tables: Record<string, never>;
+    Views: Record<string, never>;
+    Functions: {
+      valid_copy: { Args: { value: string; max_length: number }; Returns: boolean };
+      valid_graffiti: { Args: { lines: string[] }; Returns: boolean };
+      valid_image_path: { Args: { path: string; teaser_id: string; slot: number }; Returns: boolean };
+    };
+    Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
   };
 };

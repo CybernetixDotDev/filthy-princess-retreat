@@ -6,9 +6,9 @@ import type {
 
 export type StoreOrderLifecycle = {
   commercial: string;
-  fulfillment: "Authorized" | "Not authorized";
-  key: "No key issued" | "Available" | "Claimed" | "Revoked";
-  membership: "Not claimed" | "Active" | "Suspended" | "Cancelled";
+  fulfillment: "Fulfilled" | "Authorized" | "Not authorized";
+  key: "No key issued" | "Not required" | "Available" | "Claimed" | "Revoked";
+  membership: "Not claimed" | "Status unavailable" | "Active" | "Suspended" | "Cancelled";
 };
 
 export function commercialStoreOrderLabel(status: StoreOrderStatus) {
@@ -27,11 +27,13 @@ export function deriveStoreOrderLifecycle({
   isAuthorized,
   claimStatus,
   membershipStatus,
+  automaticallyFulfilled = false,
 }: {
   commercialStatus: StoreOrderStatus;
   isAuthorized: boolean;
   claimStatus: StoreClaimStatus | null;
   membershipStatus: InnerSanctumMembershipStatus | null;
+  automaticallyFulfilled?: boolean;
 }): StoreOrderLifecycle {
   const claimLabels: Record<StoreClaimStatus, StoreOrderLifecycle["key"]> = {
     available: "Available",
@@ -46,10 +48,10 @@ export function deriveStoreOrderLifecycle({
 
   return {
     commercial: commercialStoreOrderLabel(commercialStatus),
-    fulfillment: isAuthorized ? "Authorized" : "Not authorized",
-    key: claimStatus ? claimLabels[claimStatus] : "No key issued",
-    membership: claimStatus === "claimed" && membershipStatus
+    fulfillment: automaticallyFulfilled ? "Fulfilled" : isAuthorized ? "Authorized" : "Not authorized",
+    key: claimStatus ? claimLabels[claimStatus] : automaticallyFulfilled ? "Not required" : "No key issued",
+    membership: (automaticallyFulfilled || claimStatus === "claimed") && membershipStatus
       ? membershipLabels[membershipStatus]
-      : "Not claimed",
+      : automaticallyFulfilled ? "Status unavailable" : "Not claimed",
   };
 }

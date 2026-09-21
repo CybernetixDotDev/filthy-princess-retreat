@@ -1,6 +1,28 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { safeNextPath } from "../lib/domain.ts";
+import { readFileSync } from "node:fs";
+
+test("checkout preserves the exact safe local path across signin and email confirmation", () => {
+  const path = "/checkout/FP-12345678-ABCDEF12-34567890";
+  assert.equal(safeNextPath(new URLSearchParams(`next=${encodeURIComponent(path)}`).get("next")), path);
+  assert.equal(safeNextPath("https://attacker.example/checkout", path), path);
+  assert.equal(safeNextPath("//attacker.example/checkout", path), path);
+  assert.equal(safeNextPath("/\t/attacker.example/checkout", path), path);
+  const checkout = readFileSync("app/checkout/[reference]/page.tsx", "utf8");
+  assert.match(checkout, /if \(!user\) redirect\(`/);
+  assert.match(checkout, /signin\?next=/);
+  assert.match(checkout, /referrer: "no-referrer"/);
+  const signin = readFileSync("app/signin/page.tsx", "utf8");
+  assert.match(signin, /query\.next \? next : isAdmin/);
+  const auth = readFileSync("app/actions/auth.ts", "utf8");
+  assert.match(auth, /emailRedirectTo:.*auth\/callback\?next=/);
+  assert.match(auth, /if \(data\.session\) redirect\(next\)/);
+  const callback = readFileSync("app/auth/callback/route.ts", "utf8");
+  assert.match(callback, /safeNextPath/);
+  assert.match(callback, /exchangeCodeForSession/);
+  assert.match(callback, /new URL\(next, request.url\)/);
+});
 
 const claimPath = "/claim/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 

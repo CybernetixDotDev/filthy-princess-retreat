@@ -37,7 +37,10 @@ export async function signUp(_: AuthState, formData: FormData): Promise<AuthStat
   if (!parsed.success) return { error: `Enter a valid email and a password of at least ${MIN_PASSWORD_LENGTH} characters.` };
 
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.signUp(parsed.data);
+  const origin = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "http://localhost:3000";
+  const { data, error } = await supabase.auth.signUp({ ...parsed.data, options: {
+    emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}`,
+  } });
   if (error) {
     if (/already registered|already exists/i.test(error.message)) return { error: "That email already has an account. Sign in instead." };
     if (/signup is disabled|signups not allowed|signups are disabled/i.test(error.message)) return { error: "New account registration is currently unavailable." };
@@ -46,7 +49,7 @@ export async function signUp(_: AuthState, formData: FormData): Promise<AuthStat
 
   if (data.session) redirect(next);
   return {
-    message: "Your account has been created. Check your email to confirm your address, then return here to sign in.",
+    message: "Check your email to confirm your address. The confirmation link will return you to where you left off; sign in there if prompted.",
   };
 }
 

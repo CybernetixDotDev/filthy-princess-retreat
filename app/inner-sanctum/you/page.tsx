@@ -12,7 +12,7 @@ export default async function InnerSanctumYouPage() {
   if (!await hasInnerSanctumAccess()) return <section className="inner-sanctum-boundary" aria-labelledby="you-boundary-title"><p className="eyebrow">Inner Sanctum</p><h1 id="you-boundary-title">This door isn&apos;t open for you yet.</h1><p>Inner Sanctum membership is required to enter.</p></section>;
   const state = await getInnerSanctumYouState();
   const origin = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
-  const referralUrl = `${origin}/?ref=${encodeURIComponent(state.filth.referral_code)}`;
+  const referralUrl = state.filth.referral_code ? `${origin}/?ref=${encodeURIComponent(state.filth.referral_code)}` : null;
   return <div className="sanctum-you"><header className="sanctum-you-intro"><p className="sanctum-eyebrow">Your corner</p><h1>You&apos;re still here.</h1><p>Good.</p></header>
     <section className="sanctum-you-membership"><p className="sanctum-eyebrow">You&apos;re inside</p><h2>Lifetime Inner Sanctum membership.</h2><p>Member since {memberSince(state.membership.started_at)}</p></section>
     <FilthMeter meter={state.filth} referralUrl={referralUrl} />
