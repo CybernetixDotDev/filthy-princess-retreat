@@ -1,16 +1,23 @@
 "use client";
 import { useActionState, useState } from "react";
-import { signIn, signUp, type AuthState } from "@/app/actions/auth";
+import { signIn, signUp, signInWithGoogle, type AuthState } from "@/app/actions/auth";
 import { SubmitButton } from "./submit-button";
 export function SignInForm({ next, initialMode = "signin" }: { next: string; initialMode?: "signin" | "signup" }) {
   const [mode, setMode] = useState<"signin" | "signup">(initialMode);
   const [signInState, signInAction] = useActionState<AuthState, FormData>(signIn, {});
   const [signUpState, signUpAction] = useActionState<AuthState, FormData>(signUp, {});
+  const [googleState, googleAction] = useActionState<AuthState, FormData>(signInWithGoogle, {});
   return <div className="auth-forms">
     <div className="auth-tabs" role="tablist" aria-label="Authentication mode">
       <button type="button" role="tab" aria-selected={mode === "signin"} className={mode === "signin" ? "active" : ""} onClick={() => setMode("signin")}>Sign in</button>
       <button type="button" role="tab" aria-selected={mode === "signup"} className={mode === "signup" ? "active" : ""} onClick={() => setMode("signup")}>Sign up</button>
     </div>
+    <form action={googleAction} className="stack-form">
+      <input type="hidden" name="next" value={next} />
+      <SubmitButton>Continue with Google</SubmitButton>
+      {googleState.error && <p className="form-error" role="alert">{googleState.error}</p>}
+    </form>
+    <p>Or continue with email</p>
     {mode === "signin" ? <form action={signInAction} className="stack-form">
       <input type="hidden" name="next" value={next} />
       <label>Email<input type="email" name="email" autoComplete="email" required /></label>

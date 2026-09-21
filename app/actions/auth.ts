@@ -58,3 +58,22 @@ export async function signOut() {
   await supabase.auth.signOut();
   redirect("/");
 }
+
+export async function signInWithGoogle(_: AuthState, formData: FormData): Promise<AuthState> {
+  const next = safeNextPath(String(formData.get("next") ?? ""), "/inner-sanctum");
+  let destination: string;
+  try {
+    const origin = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "http://localhost:3000";
+    const callback = new URL("/auth/callback", origin);
+    callback.searchParams.set("next", next);
+    const supabase = await createClient();
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google", options: { redirectTo: callback.toString(), skipBrowserRedirect: true },
+    });
+    if (error || !data.url) return { error: "Google sign-in could not be started. Try again or sign in with email." };
+    destination = data.url;
+  } catch {
+    return { error: "Google sign-in is unavailable right now. Try again or sign in with email." };
+  }
+  redirect(destination);
+}
