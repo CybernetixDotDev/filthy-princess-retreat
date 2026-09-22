@@ -1,4 +1,11 @@
 /* Scoped to the practical Contribution Hub. */
+.hub-card.hub-sanctum-invitation { position:relative; isolation:isolate; overflow:hidden; padding:clamp(24px,4vw,44px); border-color:#87634f; background:#211319 url("/assets/wavesOfSatin.png") center/cover no-repeat; }
+.hub-sanctum-invitation::before { content:""; position:absolute; z-index:-2; inset:0; background:url("/assets/goldenStrawberryRain.png") right center/cover no-repeat; opacity:.35; pointer-events:none; }
+.hub-sanctum-invitation::after { content:""; position:absolute; z-index:-1; inset:0; background:linear-gradient(100deg,rgba(18,10,15,.94),rgba(18,10,15,.72) 65%,rgba(18,10,15,.3)); pointer-events:none; }
+.hub-sanctum-copy { max-width:560px; }
+.hub-card.hub-sanctum-invitation h2 { max-width:30ch; margin:0 0 18px; color:#f0cfaa; font-family:inherit; font-size:clamp(.85rem,1.5vw,1rem); font-weight:700; letter-spacing:.12em; line-height:1.5; text-wrap:balance; }
+.hub-card.hub-sanctum-invitation p { color:#f6eeeb; margin:12px 0; line-height:1.55; }
+.hub-sanctum-invitation .hub-button { margin-top:8px; }
 .contributor-shell { min-height:100svh; background:#120e11; color:#f6eeeb; --hub-line:#49313a; --hub-muted:#c5b2b7; }
 .hub-nav { max-width:1120px; margin:auto; padding:24px; display:flex; align-items:center; justify-content:space-between; gap:24px; border-bottom:1px solid var(--hub-line); }
 .hub-brand { font-family:Georgia,serif; font-size:1.5rem; }.hub-brand span { display:block; font-family:system-ui,sans-serif; font-size:.7rem; letter-spacing:.14em; text-transform:uppercase; color:#d8a7ac; margin-top:5px; }
