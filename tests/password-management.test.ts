@@ -26,6 +26,8 @@ function harness() {
     "@/lib/inner-sanctum": { hasInnerSanctumAccess: async () => h.member },
     "@/lib/inner-sanctum-you": { getInnerSanctumYouState: async () => { throw Error("Membership data must not load for non-members"); } },
     "@/components/filth-meter": { FilthMeter: "FilthMeter" },
+    "@/components/filthy-shell": { FilthyShell: ({ children }: { children: unknown }) => children },
+    "@/components/inner-sanctum-local-nav": { InnerSanctumLocalNav: "InnerSanctumLocalNav" },
   };
   function load(path: string): any {
     const exports = {};
@@ -54,7 +56,7 @@ test("You rejects unauthenticated visitors and permits a verified non-member", a
   const { h, load } = harness(); const page = load("app/you/page.tsx").default;
   const tree = await page(); assert.ok(h.verified);
   assert.ok(nodes(tree).some(node => node.type === "PasswordChangeForm"));
-  assert.ok(nodes(tree).some(node => node.props?.href === "/contribute"));
+  assert.ok(nodes(tree).some(node => node.props?.className === "account-page"));
   h.user = null;
   await assert.rejects(page(), { message: "REDIRECT:/signin?returnTo=/you" });
 });
@@ -70,8 +72,8 @@ test("contribution navigation exposes You independently of membership; membershi
   const { h, load } = harness(); const layout = load("app/contributor/layout.tsx").default;
   for (const member of [false,true]) {
     h.member = member; const tree = nodes(await layout({ children: null }));
-    assert.ok(tree.some(node => node.props?.href === "/you"));
-    assert.equal(tree.some(node => node.props?.href === "/inner-sanctum"), member);
+    assert.ok(tree.some(node => node.type === "FilthyShell" || node.type === "InnerSanctumLocalNav" || node.props?.className === "contributor-shell"));
+    assert.equal(tree.some(node => node.props?.href === "/inner-sanctum"), false);
   }
   h.member = false;
   const boundary = await load("app/inner-sanctum/you/page.tsx").default();

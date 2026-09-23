@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { acknowledgeAdult } from "@/app/actions/entrance";
@@ -23,11 +22,6 @@ export default async function IndexPage() {
     </section></main>;
   }
 
-  return <main className="entrance-page entrance-landing"><section className="entrance-panel" aria-labelledby="restricted-title">
-    <Image className="entrance-kiss" src="/assets/lipstickKiss.png" alt="" width={120} height={86} priority />
-    <p className="entrance-wordmark">Filthy Princess</p><h1 id="restricted-title">Restricted access.</h1>
-    <p>You found the private entrance.</p><p>The Inner Sanctum is reserved for members and invited guests.</p>
-    <div className="entrance-actions entrance-auth-actions"><Link className="entrance-primary" href="/signin">Member sign in</Link><Link className="entrance-secondary" href="/signin?mode=signup">Sign up</Link></div>
-    <p className="entrance-whisper">Some doors only open once you belong.</p>
-  </section></main>;
+  redirect("/retreat");
+
 }

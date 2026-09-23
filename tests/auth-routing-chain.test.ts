@@ -118,10 +118,9 @@ for (const target of ["", "/contribute", "/checkout/start?product=uuid", "/check
     assert.equal(h.state.rpcCalls, target ? 0 : 1);
   });
 }
-test("generic entrance links manufacture no return destination", async () => {
+test("acknowledged anonymous entrance redirects to the public Retreat without a return destination", async () => {
   const h = harness();
-  const links = nodes(await h.entrance()).filter(node => node.props?.href?.startsWith("/signin"));
-  assert.deepEqual(links.map(node => node.props.href), ["/signin", "/signin?mode=signup"]);
+  await assert.rejects(h.entrance(), { message: "REDIRECT:/retreat" });
 });
 test("old direct callbacks discard legacy default; intentional return survives failed exchange and retry", async () => {
   const h = harness();

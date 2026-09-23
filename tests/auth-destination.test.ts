@@ -12,10 +12,11 @@ test("canonical entitlement controls only default landing",async()=>{
  for(const path of ["/checkout/start?product=uuid","/checkout/reference","/claim/token","/invite/token"]){const before=calls;assert.equal(await exports.authenticatedDestination!(path),path);assert.equal(calls,before);}
  member=false;assert.equal(await exports.authenticatedDestination!("https://evil.example"),"/contribute");
 });
-test("Hub alias reuses existing Affiliate experience and membership-aware navigation",()=>{
+test("Hub alias reuses existing Affiliate experience and shared membership-aware navigation",()=>{
  assert.match(readFileSync("app/contribute/page.tsx","utf8"),/contributor\/page/);
- const layout=readFileSync("app/contributor/layout.tsx","utf8");assert.match(layout,/requireContributorAuth/);assert.match(layout,/hasAccess && <Link href="\/inner-sanctum"/);assert.doesNotMatch(layout,/affiliate_status/);
- assert.match(readFileSync("app/inner-sanctum/layout.tsx","utf8"),/href="\/contribute">Contribute/);
+ const layout=readFileSync("app/contributor/layout.tsx","utf8");assert.match(layout,/requireContributorAuth/);assert.match(layout,/FilthyShell/);assert.doesNotMatch(layout,/affiliate_status/);
+ assert.match(readFileSync("app/inner-sanctum/layout.tsx","utf8"),/FilthyShell/);
+ assert.match(readFileSync("components/inner-sanctum-local-nav.tsx","utf8"),/href: "\/inner-sanctum\/tasks"/);
  assert.match(readFileSync("app/contributor/page.tsx","utf8"),/AffiliateActivation/);
  assert.match(readFileSync("app/actions/affiliate.ts","utf8"),/accept_current_affiliate_terms/);
 });

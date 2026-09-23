@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { bindStoreOrder, submitStorePayment } from "@/app/actions/store-checkout";
+import { bindStoreOrder, redeemFilthStoreOrder, submitStorePayment } from "@/app/actions/store-checkout";
 import { SubmitButton } from "@/components/submit-button";
 
 export function StoreCheckoutControls({ reference, bind }: { reference: string; bind: boolean }) {
@@ -15,5 +15,19 @@ export function StoreCheckoutControls({ reference, bind }: { reference: string; 
     {state.error && <p role="alert">{state.error}</p>}
     {state.message && <p role="status">{state.message}</p>}
     <SubmitButton>{bind ? "Continue with this account" : "I've made payment"}</SubmitButton>
+  </form>;
+}
+
+export function FilthCheckoutControls({ reference, price, available }: { reference: string; price: number; available: number }) {
+  const [state, action] = useActionState(redeemFilthStoreOrder, {});
+  const canAfford = available >= price;
+  return <form action={action} className="stack-form">
+    <input type="hidden" name="order_reference" value={reference} />
+    <p>Review this carefully before committing your Filth.</p>
+    <dl><dt>Filth price</dt><dd>{price.toLocaleString("en-ZA")} Filth</dd><dt>Available now</dt><dd>{available.toLocaleString("en-ZA")} Filth</dd><dt>Afterwards</dt><dd>{Math.max(0, available - price).toLocaleString("en-ZA")} Filth</dd></dl>
+    {!canAfford ? <p role="alert">You need {(price - available).toLocaleString("en-ZA")} more Filth. <a href="/contribute">Get Filthier →</a></p> : null}
+    {state.error && <p role="alert">{state.error}</p>}
+    {state.message && <p role="status">{state.message}</p>}
+    <SubmitButton disabled={!canAfford}>Redeem {price.toLocaleString("en-ZA")} Filth →</SubmitButton>
   </form>;
 }

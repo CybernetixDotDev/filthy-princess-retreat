@@ -33,6 +33,7 @@ WHERE user_id NOT IN (SELECT user_id FROM public.admin_users);
 -- production immutability trigger itself is left unchanged and remains active
 -- for all normal application operations.
 TRUNCATE TABLE
+  public.store_inventory_holds,
   public.retreat_booking_preparation,
   public.retreat_payment_submissions,
   public.retreat_invoices,
@@ -41,6 +42,9 @@ TRUNCATE TABLE
   public.retreat_quotes,
   public.retreat_enquiries,
   public.retreat_event_interests,
+  public.affiliate_commissions,
+  public.affiliate_accounts,
+  public.contribution_submissions,
   public.inner_sanctum_benefits,
   public.inner_sanctum_task_responses,
   public.inner_sanctum_member_collectibles,
@@ -63,12 +67,52 @@ WHERE id NOT IN (SELECT user_id FROM public.admin_users);
 DO $$
 DECLARE
   remaining_non_admin_users integer;
+  remaining_non_admin_memberships integer;
+  expected_admin_users integer;
+  remaining_admin_users integer;
+  remaining_store_holds integer;
+  remaining_store_orders integer;
+  remaining_filth_events integer;
 BEGIN
   SELECT count(*)::integer INTO remaining_non_admin_users
   FROM auth.users
   WHERE id NOT IN (SELECT user_id FROM public.admin_users);
   IF remaining_non_admin_users <> 0 THEN
     RAISE EXCEPTION 'E2E reset incomplete: % non-Admin auth users remain', remaining_non_admin_users;
+  END IF;
+
+  SELECT count(*)::integer INTO expected_admin_users
+  FROM public.admin_users;
+  SELECT count(*)::integer INTO remaining_admin_users
+  FROM auth.users
+  WHERE id IN (SELECT user_id FROM public.admin_users);
+  IF remaining_admin_users <> expected_admin_users THEN
+    RAISE EXCEPTION 'E2E reset incomplete: expected % Admin auth users, found %', expected_admin_users, remaining_admin_users;
+  END IF;
+
+  SELECT count(*)::integer INTO remaining_non_admin_memberships
+  FROM public.inner_sanctum_memberships
+  WHERE user_id NOT IN (SELECT user_id FROM public.admin_users);
+  IF remaining_non_admin_memberships <> 0 THEN
+    RAISE EXCEPTION 'E2E reset incomplete: % non-Admin membership rows remain', remaining_non_admin_memberships;
+  END IF;
+
+  SELECT count(*)::integer INTO remaining_store_holds
+  FROM public.store_inventory_holds;
+  IF remaining_store_holds <> 0 THEN
+    RAISE EXCEPTION 'E2E reset incomplete: % Store inventory holds remain', remaining_store_holds;
+  END IF;
+
+  SELECT count(*)::integer INTO remaining_store_orders
+  FROM public.store_orders;
+  IF remaining_store_orders <> 0 THEN
+    RAISE EXCEPTION 'E2E reset incomplete: % Store orders remain', remaining_store_orders;
+  END IF;
+
+  SELECT count(*)::integer INTO remaining_filth_events
+  FROM public.inner_sanctum_filth_events;
+  IF remaining_filth_events <> 0 THEN
+    RAISE EXCEPTION 'E2E reset incomplete: % Filth ledger events remain', remaining_filth_events;
   END IF;
 END
 $$;

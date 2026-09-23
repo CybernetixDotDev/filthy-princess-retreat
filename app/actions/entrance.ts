@@ -11,5 +11,5 @@ export async function acknowledgeAdult() {
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
   });
-  redirect("/");
+  redirect("/retreat");
 }

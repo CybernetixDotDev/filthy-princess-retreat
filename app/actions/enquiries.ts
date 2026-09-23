@@ -18,6 +18,7 @@ export type GeneralEnquiryState = {
   success?: boolean;
   error?: string;
 };
+export type PublicRetreatInterestState = { success?: boolean; error?: string };
 export async function getPrivateArrivalDates(input: { productId: string; format: (typeof RETREAT_FORMATS)[number]; guestCount: number; nights: number; monthStart: string; monthEnd: string }) {
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("get_private_arrival_availability", { p_product_id: input.productId, p_format: input.format, p_guest_count: input.guestCount, p_nights: input.nights, p_month_start: input.monthStart, p_month_end: input.monthEnd });
@@ -115,6 +116,38 @@ export async function submitGeneralEnquiry(_: GeneralEnquiryState, formData: For
     p_message: parsed.data.message || null,
     p_referral_code: referralCode,
     p_referral_source: referralCode ? "url" : null,
+  });
+  if (error) return { error: "We couldn't send your enquiry. Please try again." };
+  return { success: true };
+}
+
+const publicRetreatInterestSchema = z.object({
+  fullName: z.string().trim().min(2).max(200),
+  email: z.email().trim().max(320),
+  productId: z.uuid(),
+  format: z.enum(PRIVATE_RETREAT_FORMATS),
+  guestCount: z.coerce.number().int().min(1).max(50),
+  message: z.string().trim().max(2000).optional(),
+});
+
+export async function submitPublicRetreatInterest(_: PublicRetreatInterestState, formData: FormData): Promise<PublicRetreatInterestState> {
+  const parsed = publicRetreatInterestSchema.safeParse({
+    fullName: formData.get("full_name"),
+    email: formData.get("email"),
+    productId: formData.get("product_id"),
+    format: formData.get("retreat_format"),
+    guestCount: formData.get("guest_count"),
+    message: formData.get("message"),
+  });
+  if (!parsed.success) return { error: "Please complete your name, email, and retreat selection." };
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("submit_public_retreat_interest", {
+    p_full_name: parsed.data.fullName,
+    p_email: parsed.data.email,
+    p_retreat_product_id: parsed.data.productId,
+    p_retreat_format: parsed.data.format,
+    p_guest_count: parsed.data.guestCount,
+    p_message: parsed.data.message || null,
   });
   if (error) return { error: "We couldn't send your enquiry. Please try again." };
   return { success: true };

@@ -5,16 +5,17 @@ import { hasInnerSanctumAccess } from "@/lib/inner-sanctum";
 import { categoryLabels, contributionDate, earningsHistorySchema, milestoneSchema, referralActivitySchema } from "@/lib/contributions";
 import { formatStoreMoney } from "@/lib/store";
 import { AffiliateActivation, AffiliateLink } from "@/components/affiliate-controls";
+import { FilthMeter } from "@/components/filth-meter";
 
 export default async function ContributorPage() {
  const { supabase } = await requireContributorAuth("/contribute");
  const hasAccess = await hasInnerSanctumAccess();
- const [progressResult, submissionsResult, affiliateResult, impactResult, earningsResult] = await Promise.all([
-  supabase.rpc("get_my_contribution_progress"), supabase.rpc("get_my_contributions"), supabase.rpc("get_my_affiliate_state"), supabase.rpc("get_my_affiliate_impact"), supabase.rpc("get_my_affiliate_earnings"),
+ const [progressResult, progressionResult, submissionsResult, affiliateResult, impactResult, earningsResult] = await Promise.all([
+  supabase.rpc("get_my_contribution_progress"), supabase.rpc("get_my_filth_progression"), supabase.rpc("get_my_contributions"), supabase.rpc("get_my_affiliate_state"), supabase.rpc("get_my_affiliate_impact"), supabase.rpc("get_my_affiliate_earnings"),
  ]);
- if ([progressResult, submissionsResult, affiliateResult, impactResult, earningsResult].some(result => result.error)) throw new Error("Your Contribution Hub could not be loaded. Please try again.");
- const progress = progressResult.data?.[0], affiliate = affiliateResult.data?.[0], impact = impactResult.data?.[0], earnings = earningsResult.data?.[0];
- if (!progress || !affiliate || !impact || !earnings) throw new Error("Contribution Hub data is unavailable.");
+ if ([progressResult, progressionResult, submissionsResult, affiliateResult, impactResult, earningsResult].some(result => result.error)) throw new Error("Your Contribution Hub could not be loaded. Please try again.");
+ const progress = progressResult.data?.[0], progression = progressionResult.data?.[0], affiliate = affiliateResult.data?.[0], impact = impactResult.data?.[0], earnings = earningsResult.data?.[0];
+ if (!progress || !progression || !affiliate || !impact || !earnings) throw new Error("Contribution Hub data is unavailable.");
  const submissions = submissionsResult.data ?? [];
  const milestones = milestoneSchema.parse(progress.earned_milestones);
  const activity = referralActivitySchema.parse(impact.recent_activity);
@@ -29,8 +30,8 @@ export default async function ContributorPage() {
  }
  const termsUrl = affiliate.current_terms_version === PUBLISHED_AFFILIATE_TERMS_VERSION ? AFFILIATE_TERMS_PATH : null;
  return <>
-  <header className="hub-intro"><p className="eyebrow">Contributor</p><h1>Leave your fingerprints<br />on Filthy Princess.</h1><p>There’s more than one way to help build this world.</p></header>
-  <div className="hub-stats"><section className="hub-card"><p className="eyebrow">Filth</p><strong className="hub-number">{Number(progress.filth_total).toLocaleString()}</strong>{progress.current_level_title && <p>Level {progress.current_level_number} · {progress.current_level_title}</p>}{progress.current_level_threshold !== null && <p className="hub-muted">Current threshold: {progress.current_level_threshold} Filth{progress.next_level_threshold !== null ? ` · Next: ${progress.next_level_threshold}` : ""}</p>}</section><section className="hub-card"><p className="eyebrow">Your contribution</p><strong className="hub-number">{progress.accepted_contributions}</strong><p>accepted contributions · {progress.filth_from_contributions} Filth earned</p><Link className="hub-text-link" href="/contributor/submit">Contribute something →</Link></section></div>
+  <header className="hub-intro"><p className="eyebrow">Contribute</p><h1>Leave your fingerprints<br />on Filthy Princess.</h1><p>There’s more than one way to help build this world.</p></header>
+    <div className="hub-stats"><FilthMeter variant="compact" progression={progression} earnedMilestones={milestones} referralCount={impact.successful_referrals} showDetailLink /><section className="hub-card"><p className="eyebrow">Your contribution</p><strong className="hub-number">{progress.accepted_contributions}</strong><p>accepted contributions · {progress.filth_from_contributions} Filth earned</p><Link className="hub-text-link" href="/contributor/submit">Contribute something →</Link></section></div>
   {!!milestones.length && <section className="hub-card"><h2>What you’ve earned</h2><ul className="hub-history">{milestones.map((milestone, index) => <li key={`${milestone.title}-${index}`}><strong>{milestone.title}</strong><span>{contributionDate(milestone.earned_at)} · {milestone.threshold} Filth milestone</span></li>)}</ul></section>}
   <section className="hub-card hub-invitation"><div><p className="eyebrow">How will you leave your fingerprints?</p><h2>Design. Build. Create.<br />Share an idea.</h2><p>Accepted contributions earn Filth. Exceptional contributions may lead to opportunities, invitations or paid work.</p></div><Link className="hub-button" href="/contributor/submit">Contribute something</Link></section>
   {!hasAccess && <section className="hub-card hub-sanctum-invitation" aria-labelledby="hub-sanctum-title">

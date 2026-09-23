@@ -5,6 +5,7 @@ import { requireAdmin } from "@/lib/auth";
 import type { InnerSanctumMembershipStatus } from "@/lib/database.types";
 import { formatStoreMoney, storeLabel } from "@/lib/store";
 import { deriveStoreOrderLifecycle } from "@/lib/store-order-lifecycle";
+import { markStoreOrderFulfilled } from "@/app/admin/store/fulfillment-actions";
 
 export default async function AdminStoreOrderPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -29,12 +30,13 @@ export default async function AdminStoreOrderPage({ params }: { params: Promise<
     membershipStatus = members?.find((member) => member.user_id === memberUserId)?.membership_status ?? null;
   }
 
+  const isFulfilled = Boolean(order.fulfilled_at || order.fulfillment_completed_at);
   const lifecycle = deriveStoreOrderLifecycle({
     commercialStatus: order.status,
     isAuthorized: Boolean(authorization),
     claimStatus: latestClaim?.claim_status ?? null,
     membershipStatus,
-    automaticallyFulfilled: Boolean(order.fulfilled_at),
+    automaticallyFulfilled: isFulfilled,
   });
   const membershipClaimed = lifecycle.key === "Claimed" && lifecycle.membership === "Active";
 
@@ -56,13 +58,15 @@ export default async function AdminStoreOrderPage({ params }: { params: Promise<
       <h2 id="order-lifecycle-heading">Current state</h2>
       <dl className="store-order-lifecycle">
         <div><dt>Commercial</dt><dd>{lifecycle.commercial}</dd></div>
-        <div><dt>Fulfillment</dt><dd>{lifecycle.fulfillment}</dd></div>
+        <div><dt>Payment</dt><dd>{order.acquisition_method === "filth" ? "Paid with Filth" : lifecycle.commercial}</dd></div>
+        <div><dt>Fulfillment</dt><dd>{isFulfilled ? "Fulfilled" : order.status === "paid" ? "Awaiting fulfilment" : "Not available"}</dd></div>
         <div><dt>Key</dt><dd>{lifecycle.key}</dd></div>
         <div><dt>Membership</dt><dd>{lifecycle.membership}</dd></div>
       </dl>
     </section>
     <section className="admin-panel"><dl className="detail-list">
       <div><dt>Commercial status</dt><dd>{lifecycle.commercial}</dd></div>
+      <div><dt>Acquisition method</dt><dd>{order.acquisition_method === "filth" ? "Filth" : "Money"}</dd></div>
       <div><dt>Buyer email</dt><dd>{order.buyer_email}</dd></div>
       <div><dt>Linked Auth user</dt><dd>{order.user_id ?? "Not linked"}</dd></div>
       <div><dt>Total</dt><dd>{formatStoreMoney(Number(order.total_amount), order.currency)}</dd></div>
@@ -85,10 +89,12 @@ export default async function AdminStoreOrderPage({ params }: { params: Promise<
         <div><dt>Last review</dt><dd>{order.payment_reviewed_at ?? "Not reviewed"} {order.payment_reviewed_by ?? ""}</dd></div>
         <div><dt>Review note</dt><dd>{order.payment_verification_note ?? "None"}</dd></div>
         <div><dt>Automatic fulfilment</dt><dd>{order.fulfilled_at ?? "Not automatically fulfilled"}</dd></div>
+        <div><dt>Fulfilled</dt><dd>{order.fulfillment_completed_at ?? "Awaiting fulfilment"}</dd></div>
       </dl>
       {order.payment_status === "submitted" && <AdminStorePaymentControls orderId={id} />}
     </section>
     <section className="admin-panel"><h2>Fulfillment and key</h2>
+      {order.status === "paid" && !isFulfilled && !order.fulfilled_at ? <form action={markStoreOrderFulfilled}><input type="hidden" name="order_id" value={id} /><button className="button" type="submit">Mark as fulfilled</button></form> : null}
       {order.fulfilled_at && <p>Membership was fulfilled automatically after payment verification. No claim key is required.</p>}
       {authorization ? <dl className="detail-list">
         <div><dt>Authorization</dt><dd>Authorized</dd></div>

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { signOut } from "@/app/actions/auth";
 import { InnerSanctumPostRenderer } from "@/components/inner-sanctum-post-renderer";
 import { InnerSanctumEventDiscovery, type InnerSanctumEventState } from "@/components/inner-sanctum-event-discovery";
 import { getMyInnerSanctumBenefits } from "@/lib/inner-sanctum-benefit-data";
@@ -50,6 +49,5 @@ export default async function InnerSanctumPage() {
       <p>Some things in here are meant to stay with you.</p><Link className="sanctum-link" href="/inner-sanctum/collection">Open my collection</Link>
     </section>
     <section className="sanctum-benefit"><div className="sanctum-post-copy"><p className="sanctum-eyebrow">Beyond the screen</p>{waiting ? <><h2>Something is waiting for you.</h2><div className="sanctum-prose"><p>{waiting.title}</p></div><Link className="sanctum-link" href="/inner-sanctum/benefits">See what&apos;s waiting</Link></> : <><h2>Nothing waiting right now.</h2><div className="sanctum-prose"><p>I&apos;ll leave it here when there is.</p></div></>}</div></section>
-    <section className="sanctum-account" aria-label="Member account"><p>You&apos;re inside.</p><form action={signOut}><button type="submit">Leave quietly</button></form></section>
   </div>;
 }

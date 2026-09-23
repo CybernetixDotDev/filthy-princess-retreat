@@ -3,7 +3,7 @@ import Link from "next/link";
 import "./terms.css";
 export const metadata: Metadata = { title: "Affiliate Programme Terms", description: "Filthy Princess Affiliate Programme Terms, affiliate-v1. Effective 21 September 2026." };
 export default function AffiliateTermsPage() {
- return <main className="affiliate-terms"><nav aria-label="Affiliate Terms navigation"><Link href="/contributor">Back to Contribution Hub</Link></nav><article>
+ return <main className="affiliate-terms"><nav aria-label="Affiliate Terms navigation"><Link href="/contribute">Back to Contribution Hub</Link></nav><article>
 <h1>{"Filthy Princess Affiliate Programme Terms"}</h1>
 <p><strong>{"Version:"}</strong>{" affiliate-v1"}<br /><strong>{"Effective date:"}</strong>{" 21 September 2026"}</p>
 <p>{"These Affiliate Programme Terms govern participation in the Filthy Princess Affiliate Programme."}</p>
@@ -115,5 +115,5 @@ export default function AffiliateTermsPage() {
 <p>{"Questions about the Affiliate Programme, commission records or these Terms should be directed through the official Filthy Princess contact channel published on the Filthy Princess website."}</p>
 <hr />
 <p><strong>{"Affiliate Terms version:"}</strong>{" "}<code>{"affiliate-v1"}</code><br /><strong>{"Effective:"}</strong>{" 21 September 2026"}</p>
- </article><footer><Link href="/contributor">Return to the Hub to review your Affiliate status and accept the Terms</Link></footer></main>;
+ </article><footer><Link href="/contribute">Return to the Hub to review your Affiliate status and accept the Terms</Link></footer></main>;
 }
