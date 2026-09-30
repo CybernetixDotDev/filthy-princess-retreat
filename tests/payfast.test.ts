@@ -34,6 +34,15 @@ test("return and ITN routes cannot settle an order by browser navigation", () =>
   assert.doesNotMatch(itnRoute, /payment_status.*paid/);
 });
 
+test("ITN diagnostics expose fixed reason codes without payload logging", () => {
+  const itnRoute = readFileSync("app/api/payfast/itn/route.ts", "utf8");
+  for (const reason of ["malformed_payload", "invalid_merchant", "invalid_signature", "invalid_source", "invalid_amount", "provider_confirmation_failed"]) {
+    assert.match(itnRoute, new RegExp(`\\"${reason}\\"`));
+  }
+  assert.match(itnRoute, /console\.warn\("\[payfast-itn\] rejected", \{ reason \}\)/);
+  assert.doesNotMatch(itnRoute, /console\.warn\([^\n]*(rawBody|signature|passphrase|email|ip)/i);
+});
+
 test("PayFast origin validation accepts canonical production www and sandbox localhost", () => {
   const names = ["PAYFAST_MODE", "PAYFAST_PRODUCTION_MERCHANT_ID", "PAYFAST_PRODUCTION_MERCHANT_KEY", "PAYFAST_PRODUCTION_PASSPHRASE", "PAYFAST_SANDBOX_MERCHANT_ID", "PAYFAST_SANDBOX_MERCHANT_KEY", "PAYFAST_SANDBOX_PASSPHRASE", "PAYFAST_RETURN_BASE_URL"];
   const previous = Object.fromEntries(names.map(name => [name, process.env[name]]));
