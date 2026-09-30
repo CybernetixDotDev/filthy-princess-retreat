@@ -15,6 +15,12 @@ function reject(reason: string, message: string, status = 400) {
   return response(message, status);
 }
 
+function malformedReason(error: unknown) {
+  if (!(error instanceof Error)) return "invalid_form_encoding";
+  if (["payfast_body_invalid", "payfast_duplicate_field", "payfast_signature_missing"].includes(error.message)) return error.message;
+  return "invalid_form_encoding";
+}
+
 async function confirmWithPayFast(config: ReturnType<typeof getPayFastConfig>, entries: Array<[string, string]>) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 8_000);
@@ -37,7 +43,10 @@ export async function POST(request: Request) {
   try { config = getPayFastConfig(); } catch { return reject("configuration_unavailable", "PayFast configuration unavailable.", 503); }
   const rawBody = await request.text();
   let parsed: ReturnType<typeof parsePayFastNotification>;
-  try { parsed = parsePayFastNotification(rawBody); } catch { return reject("malformed_payload", "Invalid PayFast notification."); }
+  try { parsed = parsePayFastNotification(rawBody); } catch (error) {
+    console.warn("[payfast-itn] rejected", { reason: "malformed_payload", subreason: malformedReason(error) });
+    return response("Invalid PayFast notification.", 400);
+  }
   const values = parsed.values;
   const required = ["merchant_id", "m_payment_id", "pf_payment_id", "payment_status", "item_name", "amount_gross"];
   if (required.some(field => !values.get(field))) return reject("missing_required_fields", "Incomplete PayFast notification.");

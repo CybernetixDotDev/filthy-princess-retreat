@@ -71,3 +71,14 @@ test("PayFast origin validation accepts canonical production www and sandbox loc
     }
   }
 });
+
+test("malformed ITN diagnostics retain fixed parser subreason identifiers", () => {
+  const itnRoute = readFileSync("app/api/payfast/itn/route.ts", "utf8");
+  const payfast = readFileSync("lib/payfast.ts", "utf8");
+  assert.match(itnRoute, /subreason: malformedReason\(error\)/);
+  for (const subreason of ["payfast_body_invalid", "payfast_duplicate_field", "payfast_signature_missing"]) {
+    assert.match(payfast, new RegExp(subreason));
+  }
+  assert.match(itnRoute, /invalid_form_encoding/);
+  assert.doesNotMatch(itnRoute, /rawBody.*console|signature.*console|passphrase.*console/i);
+});
