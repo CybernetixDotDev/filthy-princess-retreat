@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-import { buildPayFastFields, createPayFastSignature, getPayFastConfig, getPayFastRequestDiagnostics, isPayFastSourceIp, parsePayFastFormData, parsePayFastNotification, parsePayFastNotificationEntries } from "../lib/payfast.ts";
+import { buildPayFastFields, createPayFastSignature, createPayFastSignatureFromEntries, getPayFastConfig, getPayFastRequestDiagnostics, isPayFastSourceIp, parsePayFastFormData, parsePayFastNotification, parsePayFastNotificationEntries } from "../lib/payfast.ts";
 
 test("PayFast signature preserves documented field order and excludes the passphrase from fields", () => {
   const fields = { merchant_id: "10000100", merchant_key: "merchant-key", amount: "10.00", item_name: "FP-ORDER" };
@@ -147,4 +147,27 @@ test("multipart diagnostic body bucket uses actual request bytes", () => {
   const diagnostics = getPayFastRequestDiagnostics("", "multipart/form-data", 33000);
   assert.equal(diagnostics.bodyLengthBucket, "over-32000");
   assert.equal(diagnostics.contentTypeCategory, "multipart/form-data");
+});
+
+test("URL-encoded and multipart ITNs share PayFast canonical signatures", () => {
+  const passphrase = "sandbox passphrase";
+  const fields: Array<[string, string]> = [
+    ["m_payment_id", "FP-PF-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"],
+    ["item_description", "  Space + plus & ampersand % percent  "],
+    ["custom_str1", ""],
+    ["payment_status", "COMPLETE"],
+    ["amount_gross", "5000.00"],
+    ["merchant_id", "10000100"],
+  ];
+  const signature = createPayFastSignatureFromEntries(fields, passphrase);
+  assert.equal(signature, "8dc254488e346197a1af1bef1f283625");
+  const urlEncoded = new URLSearchParams([...fields, ["signature", signature]]).toString();
+  const urlParsed = parsePayFastNotification(urlEncoded);
+  const multipart = new FormData();
+  for (const [key, value] of [...fields, ["signature", signature]]) multipart.append(key, value);
+  const multipartParsed = parsePayFastFormData(multipart);
+  assert.equal(urlParsed.signature, signature);
+  assert.equal(multipartParsed.signature, signature);
+  assert.equal(createPayFastSignatureFromEntries(urlParsed.entries.filter(([key]) => key !== "signature"), passphrase), signature);
+  assert.equal(createPayFastSignatureFromEntries(multipartParsed.entries.filter(([key]) => key !== "signature"), passphrase), signature);
 });
