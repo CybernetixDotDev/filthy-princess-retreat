@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { getPayFastConfig, createPayFastParameterString, createPayFastSignatureFromEntries, isPayFastSourceIp, parsePayFastNotification } from "@/lib/payfast";
+import { getPayFastConfig, createPayFastParameterString, createPayFastSignatureFromEntries, getPayFastRequestDiagnostics, isPayFastSourceIp, parsePayFastNotification } from "@/lib/payfast";
 import { createServiceClient } from "@/lib/supabase/service";
 
 const referencePattern = /^FP-[A-F0-9]{8}-[A-F0-9]{8}-[A-F0-9]{8}$/;
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
   const rawBody = await request.text();
   let parsed: ReturnType<typeof parsePayFastNotification>;
   try { parsed = parsePayFastNotification(rawBody); } catch (error) {
-    console.warn("[payfast-itn] rejected", { reason: "malformed_payload", subreason: malformedReason(error) });
+    console.warn("[payfast-itn] rejected", { reason: "malformed_payload", subreason: malformedReason(error), ...getPayFastRequestDiagnostics(rawBody, request.headers.get("content-type")) });
     return response("Invalid PayFast notification.", 400);
   }
   const values = parsed.values;

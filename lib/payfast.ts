@@ -54,6 +54,30 @@ export function parsePayFastNotification(rawBody: string) {
   return { entries, values, signature };
 }
 
+const payFastDiagnosticFields = new Set([
+  "merchant_id", "merchant_key", "return_url", "cancel_url", "notify_url", "m_payment_id",
+  "pf_payment_id", "payment_status", "item_name", "item_description", "amount", "amount_gross",
+  "amount_fee", "amount_net", "signature", "name_first", "name_last", "email_address", "cell_number",
+  "custom_int1", "custom_int2", "custom_int3", "custom_int4", "custom_int5", "custom_str1", "custom_str2",
+  "custom_str3", "custom_str4", "custom_str5", "payment_method", "email_confirmation", "confirmation_address",
+]);
+
+export function getPayFastRequestDiagnostics(rawBody: string, contentType: string | null) {
+  const bodyLength = Buffer.byteLength(rawBody, "utf8");
+  const bodyLengthBucket = bodyLength === 0 ? "empty" : bodyLength <= 100 ? "1-100" : bodyLength <= 1000 ? "101-1000" : bodyLength <= 32000 ? "1001-32000" : "over-32000";
+  const params = new URLSearchParams(rawBody);
+  const parsedEntries = [...params];
+  const fieldNames = [...new Set([...params.keys()])];
+  const presence = Object.fromEntries(["m_payment_id", "pf_payment_id", "payment_status", "amount_gross", "merchant_id", "signature"].map(field => [`has_${field}`, params.has(field)]));
+  return {
+    contentTypeCategory: contentType?.toLowerCase().split(";", 1)[0] || "missing",
+    bodyLengthBucket,
+    parsedFieldCount: parsedEntries.length,
+    ...presence,
+    hasUnexpectedFields: fieldNames.some(field => !payFastDiagnosticFields.has(field)),
+  };
+}
+
 export function isPayFastSourceIp(ip: string | null) {
   if (!ip || !/^\d{1,3}(?:\.\d{1,3}){3}$/.test(ip)) return false;
   const parts = ip.split(".").map(Number);

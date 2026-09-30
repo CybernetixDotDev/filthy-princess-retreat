@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-import { buildPayFastFields, createPayFastSignature, getPayFastConfig, isPayFastSourceIp, parsePayFastNotification } from "../lib/payfast.ts";
+import { buildPayFastFields, createPayFastSignature, getPayFastConfig, getPayFastRequestDiagnostics, isPayFastSourceIp, parsePayFastNotification } from "../lib/payfast.ts";
 
 test("PayFast signature preserves documented field order and excludes the passphrase from fields", () => {
   const fields = { merchant_id: "10000100", merchant_key: "merchant-key", amount: "10.00", item_name: "FP-ORDER" };
@@ -43,7 +43,8 @@ test("ITN diagnostics expose fixed reason codes without payload logging", () => 
     assert.match(itnRoute, new RegExp(`\\"${reason}\\"`));
   }
   assert.match(itnRoute, /console\.warn\("\[payfast-itn\] rejected", \{ reason \}\)/);
-  assert.doesNotMatch(itnRoute, /console\.warn\([^\n]*(rawBody|signature|passphrase|email|ip)/i);
+  assert.match(itnRoute, /getPayFastRequestDiagnostics\(rawBody, request\.headers\.get\("content-type"\)\)/);
+  assert.doesNotMatch(itnRoute, /console\.warn\([^\n]*(parsed\.values|providerReference|orderReference|passphrase|sourceIp)/i);
 });
 
 test("PayFast origin validation accepts canonical production www and sandbox localhost", () => {
@@ -84,4 +85,34 @@ test("malformed ITN diagnostics retain fixed parser subreason identifiers", () =
   }
   assert.match(itnRoute, /invalid_form_encoding/);
   assert.doesNotMatch(itnRoute, /rawBody.*console|signature.*console|passphrase.*console/i);
+});
+
+test("synthetic documented ITN form preserves the signature field", () => {
+  const parsed = parsePayFastNotification([
+    "m_payment_id=FP-PF-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "pf_payment_id=123456",
+    "payment_status=COMPLETE",
+    "amount_gross=5000.00",
+    "merchant_id=10000100",
+    "signature=0123456789abcdef0123456789abcdef",
+  ].join("&"));
+  assert.equal(parsed.signature, "0123456789abcdef0123456789abcdef");
+  assert.equal(parsed.values.has("signature"), true);
+  assert.equal(parsed.entries.length, 6);
+});
+
+test("malformed diagnostics expose only request shape metadata", () => {
+  const diagnostics = getPayFastRequestDiagnostics("m_payment_id=x&signature=0123456789abcdef0123456789abcdef", "application/x-www-form-urlencoded; charset=UTF-8");
+  assert.deepEqual(diagnostics, {
+    contentTypeCategory: "application/x-www-form-urlencoded",
+    bodyLengthBucket: "1-100",
+    parsedFieldCount: 2,
+    has_m_payment_id: true,
+    has_pf_payment_id: false,
+    has_payment_status: false,
+    has_amount_gross: false,
+    has_merchant_id: false,
+    has_signature: true,
+    hasUnexpectedFields: false,
+  });
 });
