@@ -34,10 +34,10 @@ export function FilthCheckoutControls({ reference, price, available }: { referen
 
 export function PayFastCheckoutControls({ reference }: { reference: string }) {
   const [state, action] = useActionState(startPayFastStorePayment, {});
-  return <form action={action} className="stack-form">
+  return <form action={action} className="stack-form store-payfast-primary">
     <input type="hidden" name="order_reference" value={reference} />
-    <p>Pay securely through PayFast Sandbox. Your order remains pending until verified notification processing is enabled.</p>
+    <p>Secure payment through PayFast Sandbox. Your order becomes paid after verified notification.</p>
     {state.error && <p role="alert">{state.error}</p>}
-    <SubmitButton>Pay with PayFast Sandbox</SubmitButton>
+    <SubmitButton className="store-cart-action store-cart-action-primary">Pay with PayFast Sandbox</SubmitButton>
   </form>;
 }

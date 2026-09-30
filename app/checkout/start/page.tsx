@@ -25,7 +25,7 @@ export default async function CheckoutStartPage({ searchParams }: {
       .eq("id", parsedProduct.data).eq("status", "active").maybeSingle();
     if (productError) throw new Error("Unable to load checkout product.");
     if (!product?.filth_enabled) notFound();
-    return <main className="store-order-page"><section className="store-order-summary">
+    return <main className="store-order-page store-checkout-start"><section className="store-order-summary">
       <p className="eyebrow">Checkout</p><h1>{product.name}</h1>
       <p>{product.filth_price?.toLocaleString("en-ZA")} Filth</p>
       <p>Signed in as {user.email}. Continue to create this Filth order with your account.</p>
@@ -36,7 +36,7 @@ export default async function CheckoutStartPage({ searchParams }: {
     .select("id, name, price_amount, currency, money_enabled, inventory_unlimited, inventory_quantity")
     .eq("status", "active").order("sort_order").order("created_at");
   if (error) throw new Error("Unable to load checkout product.");
-  return <main className="store-order-page"><section className="store-order-summary">
+  return <main className="store-order-page store-checkout-start"><section className="store-order-summary">
     <p className="eyebrow">Checkout</p><h1>Review your cart</h1>
     <p>{user ? `Signed in as ${user.email}.` : "Enter your email so we can identify this order."}</p>
     <StoreCartCheckout products={products ?? []} defaultEmail={user?.email ?? ""} />

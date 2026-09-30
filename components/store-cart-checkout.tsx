@@ -59,25 +59,31 @@ export function StoreCartCheckout({ products, defaultEmail }: { products: StoreC
       </div>;
     })}
   </>;
+  const summaryLines = <div className="store-cart-summary-lines">
+    {visibleItems.map((item) => {
+      const product = productById.get(item.productId)!;
+      return <div key={item.productId}><span>{product.name} <small>× {item.quantity}</small></span><strong>{new Intl.NumberFormat("en-ZA", { style: "currency", currency: product.currency }).format(Number(product.price_amount) * item.quantity)}</strong></div>;
+    })}
+  </div>;
   if (!visibleItems.length) return <div className="stack-form"><p>Your cart is empty.</p><Link className="primary-link" href="/store">Continue shopping</Link></div>;
   if (!checkoutReady) return <div className="stack-form">
     {lines}
     {total ? <p><strong>Estimated grand total:</strong> {total}</p> : <p className="form-error" role="alert">Items with different currencies must be ordered separately.</p>}
     <div className="store-cart-checkout-actions">
-      <button type="button" onClick={clearCart}>Clear cart</button>
+      <button className="store-cart-action store-cart-action-secondary" type="button" onClick={clearCart}>Clear cart</button>
       <Link className="text-link" href="/store">Continue shopping</Link>
-      <button type="button" disabled={!currency} onClick={() => setCheckoutReady(true)}>Proceed to checkout</button>
+      <button className="store-cart-action store-cart-action-primary" type="button" disabled={!currency} onClick={() => setCheckoutReady(true)}>Proceed to checkout</button>
     </div>
   </div>;
   return <form action={action} className="stack-form">
-    <p><button type="button" className="text-link" onClick={() => setCheckoutReady(false)}>Back to edit cart</button></p>
-    {lines}
+    <div className="store-checkout-summary-heading"><div><p className="eyebrow">Order summary</p><h2>Ready when you are.</h2></div><button type="button" className="text-link" onClick={() => setCheckoutReady(false)}>Edit cart</button></div>
+    {summaryLines}
     {total ? <p><strong>Estimated grand total:</strong> {total}</p> : <p className="form-error" role="alert">Items with different currencies must be ordered separately.</p>}
     <input type="hidden" name="items" value={JSON.stringify(visibleItems)} />
     <input type="hidden" name="request_key" value={requestKey} />
     <label>Email for this order<input name="buyer_email" type="email" defaultValue={defaultEmail} autoComplete="email" required /></label>
-    <p>Payment is not available yet. Confirming creates a pending order for the payment workflow.</p>
+    <p className="store-checkout-note">Your order will be created with the current server price, then you’ll continue to secure payment.</p>
     {state.error ? <p className="form-error" role="alert">{state.error}</p> : null}
-    <SubmitButton disabled={!currency}>Confirm and Pay</SubmitButton>
+    <SubmitButton className="store-cart-action store-cart-action-primary" disabled={!currency}>Continue to secure payment</SubmitButton>
   </form>;
 }

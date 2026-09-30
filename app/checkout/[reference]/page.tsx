@@ -21,15 +21,15 @@ export default async function CheckoutPage({ params }: { params: Promise<{ refer
     supabase.rpc("get_my_store_inventory_hold", { p_order_reference: reference }),
   ]) : [{ data: null }, { data: null }];
   const currentHold = hold?.[0];
-  return <main className="store-order-page"><section className="store-order-summary">
-    <p className="eyebrow">Checkout</p><h1>Your order</h1>
+  return <main className="store-order-page store-order-status-page"><section className="store-order-summary">
+    <p className="eyebrow">Store order</p><h1>Order status</h1>
     <dl><dt>Order</dt><dd>{reference}</dd><dt>Total</dt><dd>{formatStoreMoney(Number(summary.total_amount), summary.currency)}</dd></dl>
     <ul>{publicData.map((line) => <li key={line.item_id}>{line.product_name} × {line.quantity} ({formatStoreMoney(Number(line.line_total_amount), line.currency)})</li>)}</ul>
     {!user ? <>{summary.order_status === "pending" ? <PayFastCheckoutControls reference={reference} /> : null}<p>Order status: {summary.order_status}</p></> : !order ? <StoreCheckoutControls reference={reference} bind /> : <>
       <p>Payment: {order.acquisition_method === "filth" ? "Filth" : order.payment_status}</p>
       {order.status === "pending" && (order.payment_status === "pending" || order.payment_status === "rejected") && <>
         {order.acquisition_method === "money" ? <PayFastCheckoutControls reference={reference} /> : null}
-        {order.acquisition_method === "filth" && progression?.[0] && order.filth_price_snapshot ? <><p>{currentHold?.status === "held" ? "Reserved for you for 15 minutes." : "This inventory hold is no longer active."}</p><FilthCheckoutControls reference={reference} price={order.filth_price_snapshot} available={Number(progression[0].available_filth)} /></> : <><p style={{ whiteSpace: "pre-line" }}>{process.env.STORE_PAYMENT_INSTRUCTIONS?.trim() || "Contact Filthy Princess for payment instructions before sending funds. Only confirm below once you have made the agreed payment."}</p><StoreCheckoutControls reference={reference} bind={false} /></>}
+        {order.acquisition_method === "filth" && progression?.[0] && order.filth_price_snapshot ? <><p>{currentHold?.status === "held" ? "Reserved for you for 15 minutes." : "This inventory hold is no longer active."}</p><FilthCheckoutControls reference={reference} price={order.filth_price_snapshot} available={Number(progression[0].available_filth)} /></> : <details className="store-manual-payment"><summary>Alternative: manual payment</summary><p style={{ whiteSpace: "pre-line" }}>{process.env.STORE_PAYMENT_INSTRUCTIONS?.trim() || "Contact Filthy Princess for payment instructions before sending funds. Only confirm below once you have made the agreed payment."}</p><StoreCheckoutControls reference={reference} bind={false} /></details>}
       </>}
       {order.payment_status === "submitted" && <p>Payment submitted. Awaiting independent verification. You can return to this page to check its status.</p>}
       {order.payment_status === "rejected" && <p>Payment could not be verified. Contact Filthy Princess with your order reference before taking any further payment action.</p>}
