@@ -3,10 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useId, useRef, useState, type MouseEvent } from "react";
+import { useEffect, useId, useRef, useState, useSyncExternalStore, type MouseEvent } from "react";
 import { signOut } from "@/app/actions/auth";
 import { customerDestinations as destinations } from "@/lib/customer-destinations";
 import type { CustomerPresentationState } from "@/lib/customer-presentation";
+import { parseStoreCartSnapshot, STORE_CART_STORAGE_KEY, storeCartCount } from "@/lib/store-cart";
 
 const world = [
   { label: "Retreat", href: destinations.retreat, note: "run away" },
@@ -17,6 +18,15 @@ const world = [
 ] as const;
 const number = new Intl.NumberFormat("en-ZA");
 
+function subscribeToCart(onChange: () => void) {
+  window.addEventListener("store-cart-updated", onChange);
+  window.addEventListener("storage", onChange);
+  return () => {
+    window.removeEventListener("store-cart-updated", onChange);
+    window.removeEventListener("storage", onChange);
+  };
+}
+
 export function FilthyNav({ state }: { state: CustomerPresentationState }) {
   const pathname = usePathname();
   const id = useId();
@@ -25,6 +35,12 @@ export function FilthyNav({ state }: { state: CustomerPresentationState }) {
   const opener = useRef<HTMLButtonElement | null>(null);
   const brand = useRef<HTMLAnchorElement>(null);
   const [open, setOpen] = useState<"account" | "world" | null>(null);
+  const cartSnapshot = useSyncExternalStore(
+    subscribeToCart,
+    () => window.localStorage.getItem(STORE_CART_STORAGE_KEY) ?? "[]",
+    () => "[]",
+  );
+  const cartCount = storeCartCount(parseStoreCartSnapshot(cartSnapshot));
   const identity = state.user?.displayName || state.user?.email?.split("@")[0] || "Your account";
   const filth = state.filth;
   const filthLabel = filth
@@ -77,6 +93,10 @@ export function FilthyNav({ state }: { state: CustomerPresentationState }) {
   return <header className="filthy-nav">
     <nav className="filthy-nav-bar" aria-label="Filthy Princess">
       <div className="filthy-nav-me">
+        <Link className="filthy-nav-cart" href="/checkout/start" aria-label={`Open shopping bag${cartCount ? `, ${cartCount} ${cartCount === 1 ? "item" : "items"}` : ""}`}>
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M6 8h12l1 12H5L6 8Zm3 0a3 3 0 0 1 6 0" /></svg>
+          {cartCount ? <span className="filthy-nav-cart-badge" aria-label={`${cartCount} ${cartCount === 1 ? "item" : "items"}`}>{cartCount > 99 ? "99+" : cartCount}</span> : null}
+        </Link>
         {state.authenticated ? <>
           <button className="filthy-nav-identity" type="button" aria-label={`Open account for ${identity}`} aria-haspopup="dialog" aria-expanded={open === "account"} aria-controls={`${id}-account`} onClick={event => show("account", event.currentTarget)}>
             <span>{identity}</span><span aria-hidden="true">⌄</span>

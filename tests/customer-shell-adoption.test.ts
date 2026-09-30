@@ -18,13 +18,14 @@ test("Filth uses the shared shell while preserving its auth gate and product con
   assert.doesNotMatch(filthPage, /<main className="filth-page"/);
 });
 
-test("Store uses the shared shell while preserving acquisition and auth handoff", () => {
+test("Store uses the shared shell with public catalog and browser cart", () => {
   assert.match(storePage, /import \{ FilthyShell \} from "@\/components\/filthy-shell"/);
-  assert.match(storePage, /if \(!user\) redirect\("\/signin\?next=\/store"\)/);
+  assert.doesNotMatch(storePage, /redirect\("\/signin\?next=\/store"\)/);
   assert.match(storePage, /return <FilthyShell><div className="store-page private-store-page">/);
   assert.match(storePage, /store_products/);
-  assert.match(storePage, /get_my_filth_progression/);
-  assert.match(storePage, /checkout\/start\?product=/);
+  assert.match(storePage, /user\s*\n\s*\? await supabase\.rpc\("get_my_filth_progression"/);
+  assert.match(storePage, /StoreCartButton/);
+  assert.match(storePage, /StoreCartSummary/);
   assert.match(storePage, /private-store-catalogue|private-store-card/);
   assert.doesNotMatch(storePage, /<main className="store-page/);
 });

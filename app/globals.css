@@ -21,11 +21,17 @@
 .filthy-nav { background: var(--customer-bg); border-bottom: 1px solid var(--customer-border); color: var(--customer-fg); position: sticky; top: 0; z-index: 30; }
 .filthy-nav-bar { align-items: center; column-gap: .5rem; display: grid; grid-template-columns: minmax(0, 1fr) 96px minmax(0, 1fr); margin-inline: auto; max-width: 1600px; min-height: 88px; padding-inline: var(--customer-gutter-mobile); }
 .filthy-nav-me, .filthy-nav-world { min-width: 0; }
+.filthy-nav-me { align-items: center; display: flex; gap: .75rem; }
 .filthy-nav-me { max-width: 16rem; }
 .filthy-nav button { background: none; border: 0; color: inherit; cursor: pointer; font: inherit; }
 .filthy-nav a { text-decoration: none; }
 .filthy-nav :is(a, button):focus-visible { outline: 2px solid var(--customer-focus); outline-offset: 3px; border-radius: 2px; }
 .filthy-nav-identity { align-items: center; display: flex; gap: .4rem; min-height: 44px; padding: 0; width: 100%; }
+.filthy-nav-cart { align-items: center; display: inline-flex; flex: 0 0 44px; height: 44px; justify-content: center; position: relative; width: 44px; }
+.filthy-nav-cart svg { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5; }
+.filthy-nav-cart-badge { align-items: center; background: var(--customer-rose); border: 2px solid var(--customer-bg); border-radius: 999px; color: var(--customer-bg); display: flex; font-size: .58rem; font-weight: 700; height: 1.15rem; justify-content: center; min-width: 1.15rem; padding-inline: .2rem; position: absolute; right: 0; top: .1rem; }
+.store-cart-checkout-actions { align-items: center; display: flex; flex-wrap: wrap; gap: .75rem 1rem; }
+.store-cart-checkout-actions button { min-height: 44px; }
 .filthy-nav-identity span:first-child { font-size: .875rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .filthy-nav-identity span:last-child { color: var(--customer-muted); flex-shrink: 0; }
 .filthy-nav-filth { color: var(--customer-muted); display: flex; flex-direction: column; gap: .4rem; justify-content: center; min-height: 44px; max-width: 9rem; padding-bottom: .4rem; }

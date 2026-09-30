@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createHash } from "node:crypto";
 import { createClient } from "@/lib/supabase/server";
+import { getPayFastConfig } from "@/lib/payfast";
 import { z } from "zod";
 
 export type CheckoutActionState = { error?: string; message?: string };
@@ -66,4 +67,15 @@ export async function submitStorePayment(_: CheckoutActionState, form: FormData)
   if (error) return { error: "Payment could not be submitted. Refresh to check the current order state." };
   revalidatePath(`/checkout/${parsed.data.reference}`);
   return { message: "Payment submitted. Awaiting independent verification." };
+}
+
+export async function startPayFastStorePayment(_: CheckoutActionState, form: FormData): Promise<CheckoutActionState> {
+  const reference = referenceSchema.safeParse(form.get("order_reference"));
+  if (!reference.success) return { error: "Invalid checkout reference." };
+  try { getPayFastConfig(); } catch { return { error: "PayFast Sandbox payment is not currently available." }; }
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("begin_public_payfast_store_payment", { p_order_reference: reference.data });
+  const attempt = data?.[0];
+  if (error || !attempt) return { error: error?.message.includes("currency") ? "PayFast Sandbox currently accepts ZAR orders only." : error?.message.includes("inventory") ? "This order's inventory reservation has expired. Return to the Store to start again." : "This order is not available for PayFast payment." };
+  redirect(`/checkout/${encodeURIComponent(reference.data)}/payfast?attempt=${encodeURIComponent(attempt.attempt_id)}`);
 }

@@ -23,11 +23,12 @@ const participant: CustomerPresentationState = {
   authenticated: true, user: { id: "never-display-this-id", displayName: "Cally", email: "cally@example.com" }, isAdmin: false, hasInnerSanctumAccess: false,
   filth: { lifetime_filth: 120, available_filth: 35, current_level: 2, current_level_title: "Curious", current_level_threshold: 100, next_level: 3, next_level_title: "Closer", next_level_threshold: 200, filth_to_next_level: 80, progress_percentage: 20, can_spend_filth: false },
 };
-function render(state: CustomerPresentationState, pathname = "/inner-sanctum/tasks") {
+function render(state: CustomerPresentationState, pathname = "/inner-sanctum/tasks", cartCount = 0) {
   const { FilthyNav } = load("components/filthy-nav.tsx", {
     "next/navigation": { usePathname: () => pathname },
     "@/lib/customer-destinations": { customerDestinations },
     "@/app/actions/auth": { signOut },
+    "@/lib/store-cart": { STORE_CART_STORAGE_KEY: "cart", parseStoreCartSnapshot: () => [], storeCartCount: () => cartCount },
   });
   return renderToStaticMarkup(createElement(FilthyNav as ComponentType<{ state: CustomerPresentationState }>, { state }));
 }
@@ -43,7 +44,16 @@ test("anonymous navigation offers both account entrances and the whole world, wi
   assertWorld(html);
   assert.match(html, /href="\/signin\?mode=signup"[^>]*>Join free/);
   assert.match(html, /href="\/signin"[^>]*>Sign in/);
+  assert.match(html, /href="\/checkout\/start"/);
+  assert.match(html, /filthy-nav-cart/);
+  assert.doesNotMatch(html, /filthy-nav-cart-badge/);
   assert.doesNotMatch(html, /filthy-nav-identity|filthy-nav-track|Your Filth:|Account &amp; settings/);
+});
+
+test("shopping bag badge reflects the current local cart count", () => {
+  const html = render(anonymous, "/store", 3);
+  assert.match(html, /filthy-nav-cart-badge[^>]*>3</);
+  assert.match(html, /Open shopping bag, 3 items/);
 });
 
 test("non-member and member retain the same world links and authoritative Filth values", () => {

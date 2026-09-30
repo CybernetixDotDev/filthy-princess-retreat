@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { getAuthState } from "@/lib/auth";
 import { formatStoreMoney } from "@/lib/store";
-import { FilthCheckoutControls, StoreCheckoutControls } from "@/components/store-checkout-controls";
+import { FilthCheckoutControls, PayFastCheckoutControls, StoreCheckoutControls } from "@/components/store-checkout-controls";
 
 export const metadata: Metadata = { robots: { index: false, follow: false }, referrer: "no-referrer" };
 export const dynamic = "force-dynamic";
@@ -12,22 +12,23 @@ export default async function CheckoutPage({ params }: { params: Promise<{ refer
   const { reference } = await params;
   if (!/^FP-[A-F0-9]{8}-[A-F0-9]{8}-[A-F0-9]{8}$/.test(reference)) notFound();
   const { user, supabase } = await getAuthState();
-  if (!user) redirect(`/signin?next=${encodeURIComponent(`/checkout/${reference}`)}`);
   const { data: publicData } = await supabase.rpc("get_public_store_order", { p_order_reference: reference });
   const summary = publicData?.[0];
   if (!summary) notFound();
-  const { data: order } = await supabase.rpc("get_my_store_checkout", { p_order_reference: reference });
+  const { data: order } = user ? await supabase.rpc("get_my_store_checkout", { p_order_reference: reference }) : { data: null };
   const [{ data: progression }, { data: hold }] = order?.acquisition_method === "filth" ? await Promise.all([
     supabase.rpc("get_my_filth_progression"),
     supabase.rpc("get_my_store_inventory_hold", { p_order_reference: reference }),
   ]) : [{ data: null }, { data: null }];
   const currentHold = hold?.[0];
   return <main className="store-order-page"><section className="store-order-summary">
-    <p className="eyebrow">Checkout</p><h1>{summary.product_name}</h1>
+    <p className="eyebrow">Checkout</p><h1>Your order</h1>
     <dl><dt>Order</dt><dd>{reference}</dd><dt>Total</dt><dd>{formatStoreMoney(Number(summary.total_amount), summary.currency)}</dd></dl>
-    {!order ? <StoreCheckoutControls reference={reference} bind /> : <>
+    <ul>{publicData.map((line) => <li key={line.item_id}>{line.product_name} × {line.quantity} ({formatStoreMoney(Number(line.line_total_amount), line.currency)})</li>)}</ul>
+    {!user ? <>{summary.order_status === "pending" ? <PayFastCheckoutControls reference={reference} /> : null}<p>Order status: {summary.order_status}</p></> : !order ? <StoreCheckoutControls reference={reference} bind /> : <>
       <p>Payment: {order.acquisition_method === "filth" ? "Filth" : order.payment_status}</p>
-      {order.payment_status === "pending" && order.status === "pending" && <>
+      {order.status === "pending" && (order.payment_status === "pending" || order.payment_status === "rejected") && <>
+        {order.acquisition_method === "money" ? <PayFastCheckoutControls reference={reference} /> : null}
         {order.acquisition_method === "filth" && progression?.[0] && order.filth_price_snapshot ? <><p>{currentHold?.status === "held" ? "Reserved for you for 15 minutes." : "This inventory hold is no longer active."}</p><FilthCheckoutControls reference={reference} price={order.filth_price_snapshot} available={Number(progression[0].available_filth)} /></> : <><p style={{ whiteSpace: "pre-line" }}>{process.env.STORE_PAYMENT_INSTRUCTIONS?.trim() || "Contact Filthy Princess for payment instructions before sending funds. Only confirm below once you have made the agreed payment."}</p><StoreCheckoutControls reference={reference} bind={false} /></>}
       </>}
       {order.payment_status === "submitted" && <p>Payment submitted. Awaiting independent verification. You can return to this page to check its status.</p>}

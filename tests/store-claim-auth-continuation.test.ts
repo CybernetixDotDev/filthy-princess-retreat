@@ -3,16 +3,17 @@ import test from "node:test";
 import { safeNextPath } from "../lib/domain.ts";
 import { readFileSync } from "node:fs";
 
-test("checkout preserves the exact safe local path across signin and email confirmation", () => {
-  const path = "/checkout/FP-12345678-ABCDEF12-34567890";
-  assert.equal(safeNextPath(new URLSearchParams(`next=${encodeURIComponent(path)}`).get("next")), path);
-  assert.equal(safeNextPath("https://attacker.example/checkout", path), path);
-  assert.equal(safeNextPath("//attacker.example/checkout", path), path);
-  assert.equal(safeNextPath("/\t/attacker.example/checkout", path), path);
+test("anonymous checkout exposes only the public order summary", () => {
   const checkout = readFileSync("app/checkout/[reference]/page.tsx", "utf8");
-  assert.match(checkout, /if \(!user\) redirect\(`/);
-  assert.match(checkout, /signin\?next=/);
+  assert.match(checkout, /get_public_store_order/);
+  assert.match(checkout, /user \? await supabase\.rpc\("get_my_store_checkout"/);
+  assert.match(checkout, /!user \? <>[\s\S]*Order status:/);
+  assert.doesNotMatch(checkout, /!user\) redirect\(`/);
   assert.match(checkout, /referrer: "no-referrer"/);
+  const store = readFileSync("app/store/page.tsx", "utf8");
+  assert.doesNotMatch(store, /redirect\("\/signin\?next=\/store"\)/);
+  assert.match(store, /const \{ data: progression, error: progressionError \} = user/);
+  assert.match(store, /get_my_filth_progression/);
   const signin = readFileSync("app/signin/page.tsx", "utf8");
   assert.match(signin, /authenticatedDestination\(next\)/);
   const auth = readFileSync("app/actions/auth.ts", "utf8");

@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { bindStoreOrder, redeemFilthStoreOrder, submitStorePayment } from "@/app/actions/store-checkout";
+import { bindStoreOrder, redeemFilthStoreOrder, startPayFastStorePayment, submitStorePayment } from "@/app/actions/store-checkout";
 import { SubmitButton } from "@/components/submit-button";
 
 export function StoreCheckoutControls({ reference, bind }: { reference: string; bind: boolean }) {
@@ -29,5 +29,15 @@ export function FilthCheckoutControls({ reference, price, available }: { referen
     {state.error && <p role="alert">{state.error}</p>}
     {state.message && <p role="status">{state.message}</p>}
     <SubmitButton disabled={!canAfford}>Redeem {price.toLocaleString("en-ZA")} Filth →</SubmitButton>
+  </form>;
+}
+
+export function PayFastCheckoutControls({ reference }: { reference: string }) {
+  const [state, action] = useActionState(startPayFastStorePayment, {});
+  return <form action={action} className="stack-form">
+    <input type="hidden" name="order_reference" value={reference} />
+    <p>Pay securely through PayFast Sandbox. Your order remains pending until verified notification processing is enabled.</p>
+    {state.error && <p role="alert">{state.error}</p>}
+    <SubmitButton>Pay with PayFast Sandbox</SubmitButton>
   </form>;
 }

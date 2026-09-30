@@ -16,10 +16,10 @@ export default async function StoreOrderPage({ params }: { params: Promise<{ ref
     <h1>Payment comes next.</h1>
     <dl>
       <div><dt>Order</dt><dd>{order.order_reference}</dd></div>
-      <div><dt>Product</dt><dd>{order.product_name}</dd></div>
       <div><dt>Total</dt><dd>{formatStoreMoney(Number(order.total_amount), order.currency)}</dd></div>
       <div><dt>Status</dt><dd>{storeLabel(order.order_status)}</dd></div>
     </dl>
+    <ul>{data.map((line) => <li key={line.item_id}>{line.product_name} × {line.quantity} ({formatStoreMoney(Number(line.line_total_amount), line.currency)})</li>)}</ul>
     <Link className="primary-link" href={`/checkout/${encodeURIComponent(order.order_reference)}`}>Continue to secure checkout</Link>
   </section></div>;
 }

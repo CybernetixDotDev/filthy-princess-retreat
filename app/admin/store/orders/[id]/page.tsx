@@ -11,13 +11,15 @@ export default async function AdminStoreOrderPage({ params }: { params: Promise<
   const { id } = await params;
   const state = await requireAdmin();
   if (!state) return null;
-  const [{ data: order }, { data: items }, { data: fulfillment, error: fulfillmentError }] = await Promise.all([
+  const [{ data: order }, { data: items }, { data: fulfillment, error: fulfillmentError }, { data: payfastAttempts, error: payfastError }] = await Promise.all([
     state.supabase.from("store_orders").select("*").eq("id", id).maybeSingle(),
     state.supabase.from("store_order_items").select("*").eq("order_id", id).order("created_at"),
     state.supabase.rpc("admin_get_store_fulfillment", { p_order_id: id }),
+    state.supabase.rpc("admin_get_store_payfast_attempts", { p_order_id: id }),
   ]);
   if (!order) notFound();
   if (fulfillmentError) throw new Error("Unable to load fulfillment state.");
+  if (payfastError) throw new Error("Unable to load PayFast attempt state.");
   const rows = fulfillment ?? [];
   const authorization = rows[0] ?? null;
   const latestClaim = rows.find((row) => row.claim_id) ?? null;
@@ -93,6 +95,7 @@ export default async function AdminStoreOrderPage({ params }: { params: Promise<
       </dl>
       {order.payment_status === "submitted" && <AdminStorePaymentControls orderId={id} />}
     </section>
+    {payfastAttempts?.length ? <section className="admin-panel"><h2>PayFast attempts</h2>{payfastAttempts.map((attempt) => <article key={attempt.attempt_id}><p><strong>{attempt.provider_reference}</strong> · {storeLabel(attempt.attempt_status)}</p><p>{formatStoreMoney(Number(attempt.amount), attempt.currency)} · Provider payment: {attempt.provider_payment_id ?? "Not received"}</p><p>{attempt.verified_at ? `Verified ${new Date(attempt.verified_at).toLocaleString("en-ZA")}` : "Awaiting verified notification"}{attempt.verification_note ? ` · ${attempt.verification_note}` : ""}</p></article>)}</section> : null}
     <section className="admin-panel"><h2>Fulfillment and key</h2>
       {order.status === "paid" && !isFulfilled && !order.fulfilled_at ? <form action={markStoreOrderFulfilled}><input type="hidden" name="order_id" value={id} /><button className="button" type="submit">Mark as fulfilled</button></form> : null}
       {order.fulfilled_at && <p>Membership was fulfilled automatically after payment verification. No claim key is required.</p>}
