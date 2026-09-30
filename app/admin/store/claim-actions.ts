@@ -15,11 +15,28 @@ function actionError(message?: string) {
   return "The claim operation could not be completed.";
 }
 
+async function requirePaidMembershipOrder(state: Awaited<ReturnType<typeof requireAdmin>>, orderId: string) {
+  if (!state) return "Administrator access is required.";
+  const [{ data: order }, { data: items }] = await Promise.all([
+    state.supabase.from("store_orders").select("status, payment_status").eq("id", orderId).maybeSingle(),
+    state.supabase.from("store_order_items").select("fulfillment_type, fulfillment_reference, quantity").eq("order_id", orderId),
+  ]);
+  const eligible = order?.status === "paid"
+    && order.payment_status === "verified"
+    && items?.length === 1
+    && items[0].quantity === 1
+    && items[0].fulfillment_type === "inner_sanctum_membership"
+    && items[0].fulfillment_reference === "lifetime";
+  return eligible ? null : "Only paid, verified lifetime membership orders can issue a claim.";
+}
+
 export async function authorizeStoreFulfillment(_: AdminClaimActionState, formData: FormData): Promise<AdminClaimActionState> {
   const parsed = orderSchema.safeParse({ orderId: formData.get("order_id") });
   if (!parsed.success) return { error: "Invalid order." };
   const state = await requireAdmin();
   if (!state) return { error: "Administrator access is required." };
+  const eligibilityError = await requirePaidMembershipOrder(state, parsed.data.orderId);
+  if (eligibilityError) return { error: eligibilityError };
   const secret = createStoreClaimSecret();
   const { error } = await state.supabase.rpc("admin_authorize_store_fulfillment", {
     p_order_id: parsed.data.orderId,
@@ -36,6 +53,8 @@ export async function reissueStoreClaim(_: AdminClaimActionState, formData: Form
   if (!parsed.success) return { error: "Invalid order." };
   const state = await requireAdmin();
   if (!state) return { error: "Administrator access is required." };
+  const eligibilityError = await requirePaidMembershipOrder(state, parsed.data.orderId);
+  if (eligibilityError) return { error: eligibilityError };
   const secret = createStoreClaimSecret();
   const { error } = await state.supabase.rpc("admin_reissue_store_claim", { p_order_id: parsed.data.orderId, p_token_hash: secret.tokenHash });
   if (error) return { error: actionError(error.message) };
@@ -48,6 +67,8 @@ export async function revokeStoreClaim(_: AdminClaimActionState, formData: FormD
   if (!parsed.success) return { error: "Invalid order." };
   const state = await requireAdmin();
   if (!state) return { error: "Administrator access is required." };
+  const eligibilityError = await requirePaidMembershipOrder(state, parsed.data.orderId);
+  if (eligibilityError) return { error: eligibilityError };
   const { error } = await state.supabase.rpc("admin_revoke_store_claim", { p_order_id: parsed.data.orderId });
   if (error) return { error: actionError(error.message) };
   revalidatePath(`/admin/store/orders/${parsed.data.orderId}`);

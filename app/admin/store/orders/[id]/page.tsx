@@ -23,6 +23,8 @@ export default async function AdminStoreOrderPage({ params }: { params: Promise<
   const rows = fulfillment ?? [];
   const authorization = rows[0] ?? null;
   const latestClaim = rows.find((row) => row.claim_id) ?? null;
+  const pureLifetimeMembership = Boolean(items?.length === 1 && items[0].quantity === 1 && items[0].fulfillment_type === "inner_sanctum_membership" && items[0].fulfillment_reference === "lifetime");
+  const mixedFulfillment = Boolean(items?.some((item) => item.fulfillment_type === "inner_sanctum_membership") && !pureLifetimeMembership);
   let membershipStatus: InnerSanctumMembershipStatus | null = null;
 
   const memberUserId = order.fulfilled_at ? order.user_id : latestClaim?.claim_status === "claimed" ? latestClaim.claimed_by : null;
@@ -96,10 +98,13 @@ export default async function AdminStoreOrderPage({ params }: { params: Promise<
       {order.payment_status === "submitted" && <AdminStorePaymentControls orderId={id} />}
     </section>
     {payfastAttempts?.length ? <section className="admin-panel"><h2>PayFast attempts</h2>{payfastAttempts.map((attempt) => <article key={attempt.attempt_id}><p><strong>{attempt.provider_reference}</strong> · {storeLabel(attempt.attempt_status)}</p><p>{formatStoreMoney(Number(attempt.amount), attempt.currency)} · Provider payment: {attempt.provider_payment_id ?? "Not received"}</p><p>{attempt.verified_at ? `Verified ${new Date(attempt.verified_at).toLocaleString("en-ZA")}` : "Awaiting verified notification"}{attempt.verification_note ? ` · ${attempt.verification_note}` : ""}</p></article>)}</section> : null}
-    <section className="admin-panel"><h2>Fulfillment and key</h2>
-      {order.status === "paid" && !isFulfilled && !order.fulfilled_at ? <form action={markStoreOrderFulfilled}><input type="hidden" name="order_id" value={id} /><button className="button" type="submit">Mark as fulfilled</button></form> : null}
+    <section className="admin-panel"><h2>{pureLifetimeMembership ? "Membership fulfilment" : "Fulfillment and key"}</h2>
+      {pureLifetimeMembership && order.status === "paid" && order.payment_status === "verified" && !isFulfilled ? <><p>Payment verified. Generate a single-use claim link; membership is fulfilled only after the authenticated customer redeems it.</p><AdminStoreClaimControls orderId={id} authorizationExists={Boolean(authorization)} latestClaim={latestClaim?.claim_status ? { claim_status: latestClaim.claim_status } : null} /></> : null}
+      {pureLifetimeMembership && !isFulfilled && (order.status !== "paid" || order.payment_status !== "verified") ? <p>Membership claim is unavailable until payment is verified. This order is currently {storeLabel(order.status)} / {storeLabel(order.payment_status)}.</p> : null}
+      {!pureLifetimeMembership && !mixedFulfillment && order.status === "paid" && !isFulfilled ? <form action={markStoreOrderFulfilled}><input type="hidden" name="order_id" value={id} /><button className="button" type="submit">Mark as fulfilled</button></form> : null}
+      {mixedFulfillment && !isFulfilled ? <p>Mixed membership/manual fulfillment cannot be marked complete as one aggregate action.</p> : null}
       {order.fulfilled_at && <p>Membership was fulfilled automatically after payment verification. No claim key is required.</p>}
-      {authorization ? <dl className="detail-list">
+      {!pureLifetimeMembership && authorization ? <dl className="detail-list">
         <div><dt>Authorization</dt><dd>Authorized</dd></div>
         <div><dt>Source</dt><dd>{storeLabel(authorization.authorization_source)}</dd></div>
         <div><dt>Authorized</dt><dd>{new Date(authorization.authorized_at).toLocaleString("en-ZA")}</dd></div>
@@ -108,7 +113,7 @@ export default async function AdminStoreOrderPage({ params }: { params: Promise<
           {latestClaim.claimed_at && <div><dt>Claimed</dt><dd>{new Date(latestClaim.claimed_at).toLocaleString("en-ZA")} by {latestClaim.claimed_email ?? latestClaim.claimed_by}</dd></div>}
           {latestClaim.revoked_at && <div><dt>Revoked</dt><dd>{new Date(latestClaim.revoked_at).toLocaleString("en-ZA")}</dd></div>}</>}
       </dl> : !order.fulfilled_at ? <p>Not authorized for fulfillment.</p> : null}
-      <AdminStoreClaimControls orderId={id} authorizationExists={Boolean(authorization)} latestClaim={latestClaim?.claim_status ? { claim_status: latestClaim.claim_status } : null} />
+      {!pureLifetimeMembership && <AdminStoreClaimControls orderId={id} authorizationExists={Boolean(authorization)} latestClaim={latestClaim?.claim_status ? { claim_status: latestClaim.claim_status } : null} />}
     </section>
   </>;
 }

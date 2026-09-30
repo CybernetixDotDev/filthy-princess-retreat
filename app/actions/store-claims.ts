@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { STORE_CLAIM_TOKEN_PATTERN } from "@/lib/store-claims";
@@ -26,6 +27,9 @@ export async function redeemStoreClaim(
 
   const allowed = new Set(["success", "already_member", "invalid", "revoked", "claimed"]);
   if (!allowed.has(result.redemption_state)) return { error: "This key could not be claimed." };
-  if (result.redemption_state === "success") revalidatePath("/inner-sanctum");
+  if (result.redemption_state === "success" || result.redemption_state === "already_member") {
+    (await cookies()).delete("store_claim_token");
+    revalidatePath("/inner-sanctum");
+  }
   return { state: result.redemption_state as StoreClaimActionState["state"] };
 }

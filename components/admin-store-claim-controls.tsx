@@ -17,7 +17,7 @@ function OneTimeKey({ state }: { state: AdminClaimActionState }) {
   if (!state.claimUrl) return state.message ? <p role="status">{state.message}</p> : null;
   return <div className="admin-one-time-key" role="status">
     <p className="eyebrow">Key created</p>
-    <p>{state.message ?? "Copy this link now. It cannot be retrieved again."}</p>
+    <p>{state.message ?? "Copy this link now. It cannot be retrieved again. It has not been emailed."}</p>
     <label>Claim link<input value={state.claimUrl} readOnly onFocus={(event) => event.currentTarget.select()} /></label>
     <button type="button" className="secondary-button" onClick={async () => {
       await navigator.clipboard.writeText(state.claimUrl ?? "");
@@ -39,7 +39,7 @@ export function AdminStoreClaimControls({ orderId, authorizationExists, latestCl
   const oneTimeResult = selectOneTimeClaimResult(authorizeState, reissueState);
 
   return <div className="admin-claim-controls">
-    <p className="admin-caution">Development/admin action. This allows the order to issue a membership claim. It does not represent payment-provider verification.</p>
+    <p className="admin-caution">This issues a single-use claim link for a paid, verified lifetime membership. Copying it does not email the customer.</p>
     {!authorizationExists && <form action={authorizeAction}>
       <input type="hidden" name="order_id" value={orderId} />
       <SubmitButton>Authorize fulfillment</SubmitButton>
