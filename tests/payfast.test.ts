@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-import { buildPayFastFields, createPayFastSignature, getPayFastConfig, getPayFastRequestDiagnostics, isPayFastSourceIp, parsePayFastNotification } from "../lib/payfast.ts";
+import { buildPayFastFields, createPayFastSignature, getPayFastConfig, getPayFastRequestDiagnostics, isPayFastSourceIp, parsePayFastFormData, parsePayFastNotification, parsePayFastNotificationEntries } from "../lib/payfast.ts";
 
 test("PayFast signature preserves documented field order and excludes the passphrase from fields", () => {
   const fields = { merchant_id: "10000100", merchant_key: "merchant-key", amount: "10.00", item_name: "FP-ORDER" };
@@ -79,7 +79,7 @@ test("PayFast origin validation accepts canonical production www and sandbox loc
 test("malformed ITN diagnostics retain fixed parser subreason identifiers", () => {
   const itnRoute = readFileSync("app/api/payfast/itn/route.ts", "utf8");
   const payfast = readFileSync("lib/payfast.ts", "utf8");
-  assert.match(itnRoute, /subreason: malformedReason\(error\)/);
+  assert.match(itnRoute, /malformedReason\(error\)/);
   for (const subreason of ["payfast_body_invalid", "payfast_duplicate_field", "payfast_signature_absent", "payfast_signature_empty", "payfast_signature_malformed"]) {
     assert.match(payfast, new RegExp(subreason));
   }
@@ -115,4 +115,36 @@ test("malformed diagnostics expose only request shape metadata", () => {
     has_signature: true,
     hasUnexpectedFields: false,
   });
+});
+
+test("multipart ITN entries preserve order, empty optional fields, and signature", () => {
+  const form = new FormData();
+  form.append("m_payment_id", "FP-PF-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+  form.append("pf_payment_id", "123456");
+  form.append("payment_status", "COMPLETE");
+  form.append("amount_gross", "5000.00");
+  form.append("item_description", "");
+  form.append("merchant_id", "10000100");
+  form.append("signature", "0123456789abcdef0123456789abcdef");
+  const parsed = parsePayFastNotificationEntries([...form.entries()].map(([key, value]) => {
+    assert.equal(typeof value, "string");
+    return [key, value as string];
+  }));
+  assert.equal(parsed.signature, "0123456789abcdef0123456789abcdef");
+  assert.equal(parsed.entries[4][0], "item_description");
+  assert.equal(parsed.entries[4][1], "");
+});
+
+test("multipart parser rejects duplicate keys and file parts", () => {
+  assert.throws(() => parsePayFastNotificationEntries([["signature", "0123456789abcdef0123456789abcdef"], ["signature", "0123456789abcdef0123456789abcdef"]]), /payfast_duplicate_field/);
+  const file = new File(["not a notification"], "payload.txt");
+  const form = new FormData();
+  form.append("signature", file);
+  assert.throws(() => parsePayFastFormData(form), /payfast_file_part/);
+});
+
+test("multipart diagnostic body bucket uses actual request bytes", () => {
+  const diagnostics = getPayFastRequestDiagnostics("", "multipart/form-data", 33000);
+  assert.equal(diagnostics.bodyLengthBucket, "over-32000");
+  assert.equal(diagnostics.contentTypeCategory, "multipart/form-data");
 });

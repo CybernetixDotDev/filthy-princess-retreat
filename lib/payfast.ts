@@ -40,11 +40,13 @@ export function createPayFastParameterString(entries: Array<[string, string]>) {
 export function parsePayFastNotification(rawBody: string) {
   if (!rawBody || rawBody.length > 32_000) throw new Error("payfast_body_invalid");
   const params = new URLSearchParams(rawBody);
-  const entries: Array<[string, string]> = [];
+  return parsePayFastNotificationEntries([...params.entries()]);
+}
+
+export function parsePayFastNotificationEntries(entries: Array<[string, string]>) {
   const values = new Map<string, string>();
-  for (const [key, value] of params.entries()) {
+  for (const [key, value] of entries) {
     if (values.has(key)) throw new Error("payfast_duplicate_field");
-    entries.push([key, value]);
     values.set(key, value);
   }
   if (!values.has("signature")) throw new Error("payfast_signature_absent");
@@ -52,6 +54,15 @@ export function parsePayFastNotification(rawBody: string) {
   if (signature === "") throw new Error("payfast_signature_empty");
   if (typeof signature !== "string" || !/^[a-f0-9]{32}$/i.test(signature)) throw new Error("payfast_signature_malformed");
   return { entries, values, signature };
+}
+
+export function parsePayFastFormData(formData: FormData) {
+  const entries: Array<[string, string]> = [];
+  for (const [key, value] of formData.entries()) {
+    if (typeof value !== "string") throw new Error("payfast_file_part");
+    entries.push([key, value]);
+  }
+  return parsePayFastNotificationEntries(entries);
 }
 
 const payFastDiagnosticFields = new Set([
@@ -62,8 +73,8 @@ const payFastDiagnosticFields = new Set([
   "custom_str3", "custom_str4", "custom_str5", "payment_method", "email_confirmation", "confirmation_address",
 ]);
 
-export function getPayFastRequestDiagnostics(rawBody: string, contentType: string | null) {
-  const bodyLength = Buffer.byteLength(rawBody, "utf8");
+export function getPayFastRequestDiagnostics(rawBody: string, contentType: string | null, bodyLengthOverride?: number) {
+  const bodyLength = bodyLengthOverride ?? Buffer.byteLength(rawBody, "utf8");
   const bodyLengthBucket = bodyLength === 0 ? "empty" : bodyLength <= 100 ? "1-100" : bodyLength <= 1000 ? "101-1000" : bodyLength <= 32000 ? "1001-32000" : "over-32000";
   const params = new URLSearchParams(rawBody);
   const parsedEntries = [...params];

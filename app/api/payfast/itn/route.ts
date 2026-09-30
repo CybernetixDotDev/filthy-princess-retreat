@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { getPayFastConfig, createPayFastParameterString, createPayFastSignatureFromEntries, getPayFastRequestDiagnostics, isPayFastSourceIp, parsePayFastNotification } from "@/lib/payfast";
+import { getPayFastConfig, createPayFastParameterString, createPayFastSignatureFromEntries, getPayFastRequestDiagnostics, isPayFastSourceIp, parsePayFastFormData, parsePayFastNotification } from "@/lib/payfast";
 import { createServiceClient } from "@/lib/supabase/service";
 
 const referencePattern = /^FP-[A-F0-9]{8}-[A-F0-9]{8}-[A-F0-9]{8}$/;
@@ -41,10 +41,29 @@ async function confirmWithPayFast(config: ReturnType<typeof getPayFastConfig>, e
 export async function POST(request: Request) {
   let config: ReturnType<typeof getPayFastConfig>;
   try { config = getPayFastConfig(); } catch { return reject("configuration_unavailable", "PayFast configuration unavailable.", 503); }
-  const rawBody = await request.text();
   let parsed: ReturnType<typeof parsePayFastNotification>;
-  try { parsed = parsePayFastNotification(rawBody); } catch (error) {
-    console.warn("[payfast-itn] rejected", { reason: "malformed_payload", subreason: malformedReason(error), ...getPayFastRequestDiagnostics(rawBody, request.headers.get("content-type")) });
+  const contentType = request.headers.get("content-type")?.toLowerCase().split(";", 1)[0] ?? "";
+  let requestShape: ReturnType<typeof getPayFastRequestDiagnostics> | undefined;
+  try {
+    if (contentType === "application/x-www-form-urlencoded") {
+      const rawBody = await request.text();
+      requestShape = getPayFastRequestDiagnostics(rawBody, request.headers.get("content-type"));
+      parsed = parsePayFastNotification(rawBody);
+    } else if (contentType === "multipart/form-data") {
+      const contentLength = Number(request.headers.get("content-length") ?? "");
+      if (Number.isFinite(contentLength) && contentLength > 32_000) throw new Error("payfast_body_invalid");
+      const formData = await request.clone().formData();
+      const bodyBytes = await request.arrayBuffer();
+      if (bodyBytes.byteLength > 32_000) throw new Error("payfast_body_invalid");
+      requestShape = getPayFastRequestDiagnostics("", request.headers.get("content-type"), bodyBytes.byteLength);
+      parsed = parsePayFastFormData(formData);
+    } else {
+      throw new Error("payfast_content_type_unsupported");
+    }
+  } catch (error) {
+    const subreason = error instanceof Error && error.message === "payfast_content_type_unsupported" ? "unsupported_content_type" : error instanceof Error && error.message === "payfast_file_part" ? "file_part_rejected" : malformedReason(error);
+    const safeShape = requestShape ?? { contentTypeCategory: contentType || "missing", bodyLengthBucket: "unknown", parsedFieldCount: 0, has_m_payment_id: false, has_pf_payment_id: false, has_payment_status: false, has_amount_gross: false, has_merchant_id: false, has_signature: false, hasUnexpectedFields: false };
+    console.warn("[payfast-itn] rejected", { reason: "malformed_payload", subreason, ...safeShape });
     return response("Invalid PayFast notification.", 400);
   }
   const values = parsed.values;
