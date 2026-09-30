@@ -18,16 +18,23 @@ function actionError(message?: string) {
 async function requirePaidMembershipOrder(state: Awaited<ReturnType<typeof requireAdmin>>, orderId: string) {
   if (!state) return "Administrator access is required.";
   const [{ data: order }, { data: items }] = await Promise.all([
-    state.supabase.from("store_orders").select("status, payment_status").eq("id", orderId).maybeSingle(),
-    state.supabase.from("store_order_items").select("fulfillment_type, fulfillment_reference, quantity").eq("order_id", orderId),
+    state.supabase.from("store_orders").select("status, payment_status, payment_method, currency, total_amount").eq("id", orderId).maybeSingle(),
+    state.supabase.from("store_order_items").select("product_id, fulfillment_type, fulfillment_reference, quantity, product_type, currency, unit_price_amount, line_total_amount").eq("order_id", orderId),
   ]);
-  const eligible = order?.status === "paid"
+  const standardEligible = order?.status === "paid"
     && order.payment_status === "verified"
     && items?.length === 1
     && items[0].quantity === 1
     && items[0].fulfillment_type === "inner_sanctum_membership"
     && items[0].fulfillment_reference === "lifetime";
-  return eligible ? null : "Only paid, verified lifetime membership orders can issue a claim.";
+  const legacyEligible = orderId === "2a5564f3-502c-48db-bb45-a8a9a1de475e"
+    && order?.status === "paid" && order.payment_status === "verified" && order.payment_method === "payfast"
+    && order.currency === "ZAR" && Number(order.total_amount) === 5000
+    && items?.length === 1 && items[0].product_id === "77e5cde7-9535-4bc2-b53c-f54212d578b3"
+    && items[0].product_type === "membership" && items[0].quantity === 1 && items[0].currency === "ZAR"
+    && Number(items[0].unit_price_amount) === 5000 && Number(items[0].line_total_amount) === 5000
+    && items[0].fulfillment_type === "inner_sanctum_membership" && items[0].fulfillment_reference === null;
+  return standardEligible || legacyEligible ? null : "Only paid, verified lifetime membership orders can issue a claim.";
 }
 
 export async function authorizeStoreFulfillment(_: AdminClaimActionState, formData: FormData): Promise<AdminClaimActionState> {

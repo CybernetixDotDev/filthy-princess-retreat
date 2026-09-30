@@ -34,3 +34,13 @@ test("admin fulfillment distinguishes membership, manual, and mixed orders", () 
   const controls = readFileSync("components/admin-store-claim-controls.tsx", "utf8");
   assert.match(controls, /It has not been emailed/);
 });
+
+test("legacy recovery is scoped to the known product and order", () => {
+  const migration = readFileSync("supabase/migrations/20260930131000_store_lifetime_membership_legacy_recovery.sql", "utf8");
+  const page = readFileSync("app/admin/store/orders/[id]/page.tsx", "utf8");
+  assert.match(migration, /2a5564f3-502c-48db-bb45-a8a9a1de475e/);
+  assert.match(migration, /77e5cde7-9535-4bc2-b53c-f54212d578b3/);
+  assert.match(migration, /fulfillment_reference is null/);
+  assert.match(migration, /selected_order\.total_amount = 5000\.00/);
+  assert.match(page, /legacyLifetimeMembership/);
+});

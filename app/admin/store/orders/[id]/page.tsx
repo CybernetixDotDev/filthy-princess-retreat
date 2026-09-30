@@ -23,7 +23,9 @@ export default async function AdminStoreOrderPage({ params }: { params: Promise<
   const rows = fulfillment ?? [];
   const authorization = rows[0] ?? null;
   const latestClaim = rows.find((row) => row.claim_id) ?? null;
-  const pureLifetimeMembership = Boolean(items?.length === 1 && items[0].quantity === 1 && items[0].fulfillment_type === "inner_sanctum_membership" && items[0].fulfillment_reference === "lifetime");
+  const standardLifetimeMembership = Boolean(items?.length === 1 && items[0].quantity === 1 && items[0].fulfillment_type === "inner_sanctum_membership" && items[0].fulfillment_reference === "lifetime");
+  const legacyLifetimeMembership = id === "2a5564f3-502c-48db-bb45-a8a9a1de475e" && order.status === "paid" && order.payment_status === "verified" && order.payment_method === "payfast" && order.currency === "ZAR" && Number(order.total_amount) === 5000 && items?.length === 1 && items[0].product_id === "77e5cde7-9535-4bc2-b53c-f54212d578b3" && items[0].quantity === 1 && items[0].fulfillment_type === "inner_sanctum_membership" && items[0].fulfillment_reference === null;
+  const pureLifetimeMembership = standardLifetimeMembership || legacyLifetimeMembership;
   const mixedFulfillment = Boolean(items?.some((item) => item.fulfillment_type === "inner_sanctum_membership") && !pureLifetimeMembership);
   let membershipStatus: InnerSanctumMembershipStatus | null = null;
 
