@@ -18,7 +18,9 @@ export function getPayFastConfig(): PayFastConfig {
   if (!merchantId || !/^\d{1,8}$/.test(merchantId) || !merchantKey || !passphrase || !returnBaseUrl) throw new Error("PayFast Sandbox configuration is incomplete.");
   let parsedUrl: URL;
   try { parsedUrl = new URL(returnBaseUrl); } catch { throw new Error("PayFast return URL is invalid."); }
-  if (parsedUrl.protocol !== "https:" || parsedUrl.search || parsedUrl.hash || (mode === "production" && parsedUrl.hostname !== "filthyprincesss.com")) throw new Error("PayFast return URL is not an allowed HTTPS origin.");
+  const isLocalhost = parsedUrl.hostname === "localhost" || parsedUrl.hostname === "127.0.0.1";
+  const hasAllowedProtocol = parsedUrl.protocol === "https:" || (mode === "sandbox" && isLocalhost && parsedUrl.protocol === "http:");
+  if (!hasAllowedProtocol || parsedUrl.search || parsedUrl.hash || (mode === "production" && parsedUrl.hostname !== "www.filthyprincesss.com")) throw new Error("PayFast return URL is not an allowed origin.");
   return { mode, merchantId, merchantKey, passphrase, returnBaseUrl: parsedUrl.origin, validationUrl: `https://${mode === "sandbox" ? "sandbox.payfast.co.za" : "www.payfast.co.za"}/eng/query/validate`, processUrl: mode === "sandbox" ? PAYFAST_SANDBOX_PROCESS_URL : PAYFAST_LIVE_PROCESS_URL };
 }
 

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-import { buildPayFastFields, createPayFastSignature, isPayFastSourceIp, parsePayFastNotification } from "../lib/payfast.ts";
+import { buildPayFastFields, createPayFastSignature, getPayFastConfig, isPayFastSourceIp, parsePayFastNotification } from "../lib/payfast.ts";
 
 test("PayFast signature preserves documented field order and excludes the passphrase from fields", () => {
   const fields = { merchant_id: "10000100", merchant_key: "merchant-key", amount: "10.00", item_name: "FP-ORDER" };
@@ -32,4 +32,33 @@ test("return and ITN routes cannot settle an order by browser navigation", () =>
   assert.doesNotMatch(returnPage, /supabase\.rpc|status.*paid|settle/);
   assert.match(itnRoute, /settle_payfast_store_payment/);
   assert.doesNotMatch(itnRoute, /payment_status.*paid/);
+});
+
+test("PayFast origin validation accepts canonical production www and sandbox localhost", () => {
+  const names = ["PAYFAST_MODE", "PAYFAST_PRODUCTION_MERCHANT_ID", "PAYFAST_PRODUCTION_MERCHANT_KEY", "PAYFAST_PRODUCTION_PASSPHRASE", "PAYFAST_SANDBOX_MERCHANT_ID", "PAYFAST_SANDBOX_MERCHANT_KEY", "PAYFAST_SANDBOX_PASSPHRASE", "PAYFAST_RETURN_BASE_URL"];
+  const previous = Object.fromEntries(names.map(name => [name, process.env[name]]));
+  try {
+    process.env.PAYFAST_MODE = "production";
+    process.env.PAYFAST_PRODUCTION_MERCHANT_ID = "10000100";
+    process.env.PAYFAST_PRODUCTION_MERCHANT_KEY = "production-key";
+    process.env.PAYFAST_PRODUCTION_PASSPHRASE = "production-passphrase";
+    process.env.PAYFAST_RETURN_BASE_URL = "https://www.filthyprincesss.com";
+    assert.equal(getPayFastConfig().returnBaseUrl, "https://www.filthyprincesss.com");
+
+    process.env.PAYFAST_MODE = "sandbox";
+    process.env.PAYFAST_SANDBOX_MERCHANT_ID = "10000100";
+    process.env.PAYFAST_SANDBOX_MERCHANT_KEY = "sandbox-key";
+    process.env.PAYFAST_SANDBOX_PASSPHRASE = "sandbox-passphrase";
+    process.env.PAYFAST_RETURN_BASE_URL = "http://localhost:3000";
+    assert.equal(getPayFastConfig().returnBaseUrl, "http://localhost:3000");
+
+    process.env.PAYFAST_MODE = "production";
+    process.env.PAYFAST_RETURN_BASE_URL = "https://filthyprincesss.com";
+    assert.throws(() => getPayFastConfig(), /allowed origin/);
+  } finally {
+    for (const name of names) {
+      if (previous[name] === undefined) delete process.env[name];
+      else process.env[name] = previous[name]!;
+    }
+  }
 });
