@@ -22,6 +22,9 @@ test("PayFast hosted fields use the existing order and attempt references", () =
 
 test("ITN parsing rejects duplicate fields and source validation rejects non-PayFast addresses", () => {
   assert.throws(() => parsePayFastNotification("merchant_id=1&merchant_id=2&signature=00000000000000000000000000000000"), /payfast_duplicate_field/);
+  assert.throws(() => parsePayFastNotification("merchant_id=1"), /payfast_signature_absent/);
+  assert.throws(() => parsePayFastNotification("signature="), /payfast_signature_empty/);
+  assert.throws(() => parsePayFastNotification("signature=not-a-signature"), /payfast_signature_malformed/);
   assert.equal(isPayFastSourceIp("197.97.145.144"), true);
   assert.equal(isPayFastSourceIp("203.0.113.10"), false);
 });
@@ -76,7 +79,7 @@ test("malformed ITN diagnostics retain fixed parser subreason identifiers", () =
   const itnRoute = readFileSync("app/api/payfast/itn/route.ts", "utf8");
   const payfast = readFileSync("lib/payfast.ts", "utf8");
   assert.match(itnRoute, /subreason: malformedReason\(error\)/);
-  for (const subreason of ["payfast_body_invalid", "payfast_duplicate_field", "payfast_signature_missing"]) {
+  for (const subreason of ["payfast_body_invalid", "payfast_duplicate_field", "payfast_signature_absent", "payfast_signature_empty", "payfast_signature_malformed"]) {
     assert.match(payfast, new RegExp(subreason));
   }
   assert.match(itnRoute, /invalid_form_encoding/);

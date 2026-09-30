@@ -47,8 +47,10 @@ export function parsePayFastNotification(rawBody: string) {
     entries.push([key, value]);
     values.set(key, value);
   }
+  if (!values.has("signature")) throw new Error("payfast_signature_absent");
   const signature = values.get("signature");
-  if (!signature || !/^[a-f0-9]{32}$/i.test(signature)) throw new Error("payfast_signature_missing");
+  if (signature === "") throw new Error("payfast_signature_empty");
+  if (typeof signature !== "string" || !/^[a-f0-9]{32}$/i.test(signature)) throw new Error("payfast_signature_malformed");
   return { entries, values, signature };
 }
 

@@ -17,7 +17,7 @@ function reject(reason: string, message: string, status = 400) {
 
 function malformedReason(error: unknown) {
   if (!(error instanceof Error)) return "invalid_form_encoding";
-  if (["payfast_body_invalid", "payfast_duplicate_field", "payfast_signature_missing"].includes(error.message)) return error.message;
+  if (["payfast_body_invalid", "payfast_duplicate_field", "payfast_signature_absent", "payfast_signature_empty", "payfast_signature_malformed"].includes(error.message)) return error.message;
   return "invalid_form_encoding";
 }
 
