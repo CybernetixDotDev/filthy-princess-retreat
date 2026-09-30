@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-import { buildPayFastFields, createPayFastSignature, createPayFastSignatureFromEntries, getPayFastConfig, getPayFastRequestDiagnostics, isPayFastSourceIp, parsePayFastFormData, parsePayFastNotification, parsePayFastNotificationEntries } from "../lib/payfast.ts";
+import { buildPayFastFields, createPayFastItnParameterString, createPayFastParameterString, createPayFastSignature, createPayFastSignatureFromEntries, getPayFastConfig, getPayFastRequestDiagnostics, isPayFastSourceIp, parsePayFastFormData, parsePayFastNotification, parsePayFastNotificationEntries } from "../lib/payfast.ts";
 
 test("PayFast signature preserves documented field order and excludes the passphrase from fields", () => {
   const fields = { merchant_id: "10000100", merchant_key: "merchant-key", amount: "10.00", item_name: "FP-ORDER" };
@@ -170,4 +170,10 @@ test("URL-encoded and multipart ITNs share PayFast canonical signatures", () => 
   assert.equal(multipartParsed.signature, signature);
   assert.equal(createPayFastSignatureFromEntries(urlParsed.entries.filter(([key]) => key !== "signature"), passphrase), signature);
   assert.equal(createPayFastSignatureFromEntries(multipartParsed.entries.filter(([key]) => key !== "signature"), passphrase), signature);
+});
+
+test("ITN canonicalization preserves empty fields while checkout canonicalization omits them", () => {
+  const entries: Array<[string, string]> = [["first", "value"], ["optional", ""], ["last", "value"]];
+  assert.equal(createPayFastItnParameterString(entries), "first=value&optional=&last=value");
+  assert.equal(createPayFastParameterString(entries), "first=value&last=value");
 });

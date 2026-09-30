@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { getPayFastConfig, createPayFastParameterString, createPayFastSignatureFromEntries, getPayFastRequestDiagnostics, isPayFastSourceIp, parsePayFastFormData, parsePayFastNotification } from "@/lib/payfast";
+import { getPayFastConfig, createPayFastItnParameterString, createPayFastItnSignatureFromEntries, createPayFastParameterString, getPayFastRequestDiagnostics, isPayFastSourceIp, parsePayFastFormData, parsePayFastNotification } from "@/lib/payfast";
 import { createServiceClient } from "@/lib/supabase/service";
 
 const referencePattern = /^FP-[A-F0-9]{8}-[A-F0-9]{8}-[A-F0-9]{8}$/;
@@ -28,7 +28,7 @@ async function confirmWithPayFast(config: ReturnType<typeof getPayFastConfig>, e
     const result = await fetch(config.validationUrl, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded", "User-Agent": "FilthyPrincessPayFastITN/1.0" },
-      body: createPayFastParameterString(entries),
+      body: createPayFastItnParameterString(entries),
       signal: controller.signal,
       cache: "no-store",
     });
@@ -79,7 +79,7 @@ export async function POST(request: Request) {
   if (!/^\d+$/.test(values.get("pf_payment_id")!)) return reject("invalid_provider_payment_id", "PayFast notification rejected.");
   if (!["COMPLETE", "CANCELLED", "FAILED"].includes(paymentStatus)) return reject("invalid_status", "PayFast notification rejected.");
   if (!amountPattern.test(amount)) return reject("invalid_amount", "PayFast notification rejected.");
-  if (createPayFastSignatureFromEntries(parsed.entries.filter(([key]) => key !== "signature"), config.passphrase).toLowerCase() !== parsed.signature.toLowerCase()) return reject("invalid_signature", "PayFast notification rejected.");
+  if (createPayFastItnSignatureFromEntries(parsed.entries.filter(([key]) => key !== "signature"), config.passphrase).toLowerCase() !== parsed.signature.toLowerCase()) return reject("invalid_signature", "PayFast notification rejected.");
   const sourceIp = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? request.headers.get("x-real-ip");
   if (!isPayFastSourceIp(sourceIp)) return reject("invalid_source", "PayFast source rejected.");
   try {

@@ -37,6 +37,14 @@ export function createPayFastParameterString(entries: Array<[string, string]>) {
   return entries.filter(([, value]) => value !== "").map(([key, value]) => `${key}=${payFastEncode(value)}`).join("&");
 }
 
+export function createPayFastItnParameterString(entries: Array<[string, string]>) {
+  return entries.map(([key, value]) => `${key}=${payFastEncode(value)}`).join("&");
+}
+
+export function createPayFastItnSignatureFromEntries(entries: Array<[string, string]>, passphrase: string) {
+  return createHash("md5").update(`${createPayFastItnParameterString(entries)}&passphrase=${payFastEncode(passphrase)}`).digest("hex");
+}
+
 export function parsePayFastNotification(rawBody: string) {
   if (!rawBody || rawBody.length > 32_000) throw new Error("payfast_body_invalid");
   const params = new URLSearchParams(rawBody);
