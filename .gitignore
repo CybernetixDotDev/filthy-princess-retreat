@@ -15,6 +15,7 @@
 /supabase/tests/*
 !/supabase/tests/store_foundation_test.sql
 !/supabase/tests/store_claim_fulfillment_test.sql
+!/supabase/tests/store_payfast_membership_settlement_test.sql
 
 # next.js
 /.next/

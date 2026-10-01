@@ -13,15 +13,31 @@ test("paid claim handoff requires verified payment and pure membership fulfillme
   assert.match(migration, /grant execute on function public\.issue_payfast_store_claim[\s\S]*to service_role/);
 });
 
-test("claim handoff preserves authenticated continuation and does not match checkout email", () => {
+test("new PayFast return skips the claim handoff while legacy redemption stays identity-bound", () => {
   const action = readFileSync("app/actions/store-checkout.ts", "utf8");
+  const returnPage = readFileSync("app/checkout/[reference]/payfast/return/page.tsx", "utf8");
   const claimPage = readFileSync("app/claim/page.tsx", "utf8");
   const redeem = readFileSync("supabase/migrations/20260930130000_store_paid_claim_handoff.sql", "utf8");
-  assert.match(action, /payfast_claim_handoff/);
-  assert.match(action, /store_claim_token/);
+  assert.doesNotMatch(action, /payfast_claim_handoff|store_claim_token|issue_payfast_store_claim|createStoreClaimSecret/);
+  assert.match(returnPage, /redirect\(`\/checkout\/\$\{encodeURIComponent\(reference\)\}\?payfast=return`\)/);
+  assert.doesNotMatch(returnPage, /claim/i);
   assert.match(claimPage, /signin\?returnTo=\/claim/);
   assert.match(redeem, /store_order_owned_by_another_user/);
   assert.doesNotMatch(redeem, /buyer_email/);
+});
+
+test("order status gates membership success on settlement and fulfillment, then distinguishes anonymous users", () => {
+  const checkout = readFileSync("app/checkout/[reference]/page.tsx", "utf8");
+  assert.match(checkout, /payfast === "return"/);
+  assert.match(checkout, /order\.status === "paid"/);
+  assert.match(checkout, /order\.payment_status === "verified"/);
+  assert.match(checkout, /order\.fulfilled_at/);
+  assert.match(checkout, /user\.is_anonymous === true/);
+  assert.match(checkout, /The key is yours\./);
+  assert.match(checkout, /Secure your account/);
+  assert.match(checkout, /Enter the Inner Sanctum/);
+  assert.match(checkout, /We&apos;re confirming your payment\./);
+  assert.match(checkout, /Check payment status/);
 });
 
 test("admin fulfillment distinguishes membership, manual, and mixed orders", () => {

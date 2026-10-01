@@ -43,14 +43,23 @@ export async function createStoreCartOrder(_: StoreOrderActionState, formData: F
   }
 
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  const buyerEmail = user?.email ?? parsed.data.buyerEmail;
-  const requestKey = user
-    ? (() => {
-      const digest = createHash("sha256").update(JSON.stringify(["store-cart", user.id, parsed.data.requestKey])).digest("hex");
-      return `${digest.slice(0, 8)}-${digest.slice(8, 12)}-4${digest.slice(13, 16)}-8${digest.slice(17, 20)}-${digest.slice(20, 32)}`;
-    })()
-    : parsed.data.requestKey;
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  if (authError && authError.name !== "AuthSessionMissingError") {
+    return { error: "Your checkout session could not be verified. Please try again." };
+  }
+  let checkoutUser = user;
+  if (!checkoutUser) {
+    const { error } = await supabase.auth.signInAnonymously();
+    if (error) return { error: "A secure checkout session could not be created. Please try again." };
+    const { data: { user: anonymousUser }, error: verificationError } = await supabase.auth.getUser();
+    if (verificationError || !anonymousUser) {
+      return { error: "A secure checkout session could not be confirmed. Please try again." };
+    }
+    checkoutUser = anonymousUser;
+  }
+  const buyerEmail = parsed.data.buyerEmail;
+  const digest = createHash("sha256").update(JSON.stringify(["store-cart", checkoutUser.id, parsed.data.requestKey])).digest("hex");
+  const requestKey = `${digest.slice(0, 8)}-${digest.slice(8, 12)}-4${digest.slice(13, 16)}-8${digest.slice(17, 20)}-${digest.slice(20, 32)}`;
   const referralCode = (await cookies()).get("inner_sanctum_referral")?.value ?? null;
   const { data, error } = await supabase.rpc("create_public_store_order_multi", {
     p_items: toStoreOrderRpcItems(items),

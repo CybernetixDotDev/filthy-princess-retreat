@@ -7,7 +7,7 @@ import { authenticatedDestination } from "@/lib/auth-destination";
 import { hasEmailIdentity } from "@/lib/account-identity";
 import { authReturnPath } from "@/lib/auth-return";
 
-export type AuthState = { error?: string; message?: string };
+export type AuthState = { error?: string; message?: string; accountExists?: boolean };
 const MIN_PASSWORD_LENGTH = 6;
 
 const signInSchema = z.object({
@@ -19,6 +19,63 @@ const signUpSchema = z.object({
   email: z.email().trim(),
   password: z.string().min(MIN_PASSWORD_LENGTH),
 });
+const secureAccountPasswordSchema = z.object({
+  password: z.string().min(MIN_PASSWORD_LENGTH),
+  confirmation: z.string(),
+}).refine((value) => value.password === value.confirmation);
+
+export async function requestAnonymousAccountEmail(_: AuthState, formData: FormData): Promise<AuthState> {
+  const parsed = z.email().trim().safeParse(formData.get("email"));
+  if (!parsed.success) return { error: "Enter a valid email address." };
+
+  const supabase = await createClient();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  if (authError || !user) return { error: "Your session has expired. Return to your order and try again." };
+  if (user.is_anonymous !== true) return { error: "This account is already secured. Continue to your account." };
+
+  const origin = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "http://localhost:3000";
+  const redirectTo = new URL("/you", origin);
+  redirectTo.searchParams.set("secure", "password");
+  const { data, error } = await supabase.auth.updateUser(
+    { email: parsed.data },
+    { emailRedirectTo: redirectTo.toString() },
+  );
+  if (error) {
+    if (["email_exists", "user_already_exists", "identity_already_exists", "email_conflict_identity_not_deletable"].includes(error.code ?? "")) {
+      return { error: "An account already exists for that email. Use its sign-in or password recovery; this purchase stays with its current identity.", accountExists: true };
+    }
+    return { error: "We couldn't send a verification link. Check the address and try again." };
+  }
+  if (!data.user || data.user.id !== user.id) {
+    return { error: "Your account couldn't be secured without changing its identity. Please try again." };
+  }
+  return { message: "We've sent a verification link. Open it to finish securing your account." };
+}
+
+export async function completeAnonymousAccount(_: AuthState, formData: FormData): Promise<AuthState> {
+  const parsed = secureAccountPasswordSchema.safeParse({
+    password: formData.get("password"),
+    confirmation: formData.get("confirm_password"),
+  });
+  if (!parsed.success) return { error: "Enter matching passwords of at least 6 characters." };
+
+  const supabase = await createClient();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  if (authError || !user) return { error: "Your session has expired. Sign in again to continue." };
+  if (user.is_anonymous !== false || !user.email_confirmed_at || !hasEmailIdentity(user)) {
+    return { error: "Verify your email before creating a password." };
+  }
+
+  const originalUserId = user.id;
+  const { error } = await supabase.auth.updateUser({ password: parsed.data.password });
+  if (error) return { error: "Your password could not be created. Try again or use password recovery." };
+  const { data: { user: updatedUser }, error: verificationError } = await supabase.auth.getUser();
+  if (verificationError || !updatedUser || updatedUser.id !== originalUserId
+    || updatedUser.is_anonymous !== false || !updatedUser.email_confirmed_at || !hasEmailIdentity(updatedUser)) {
+    return { error: "Your account identity could not be confirmed. Please contact support before continuing." };
+  }
+  redirect("/inner-sanctum");
+}
 
 export async function signIn(_: AuthState, formData: FormData): Promise<AuthState> {
   const parsed = signInSchema.safeParse({ email: formData.get("email"), password: formData.get("password") });

@@ -6,8 +6,6 @@ import { redirect } from "next/navigation";
 import { createHash } from "node:crypto";
 import { createClient } from "@/lib/supabase/server";
 import { getPayFastConfig } from "@/lib/payfast";
-import { createServiceClient } from "@/lib/supabase/service";
-import { createStoreClaimSecret } from "@/lib/store-claims";
 import { z } from "zod";
 
 export type CheckoutActionState = { error?: string; message?: string };
@@ -79,25 +77,5 @@ export async function startPayFastStorePayment(_: CheckoutActionState, form: For
   const { data, error } = await supabase.rpc("begin_public_payfast_store_payment", { p_order_reference: reference.data });
   const attempt = data?.[0];
   if (error || !attempt) return { error: error?.message.includes("currency") ? "PayFast Sandbox currently accepts ZAR orders only." : error?.message.includes("inventory") ? "This order's inventory reservation has expired. Return to the Store to start again." : "This order is not available for PayFast payment." };
-  (await cookies()).set("payfast_claim_handoff", `${reference.data}:${attempt.attempt_id}`, { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 60 * 60 * 24 * 7 });
   redirect(`/checkout/${encodeURIComponent(reference.data)}/payfast?attempt=${encodeURIComponent(attempt.attempt_id)}`);
-}
-
-export async function completePayFastClaimHandoff(_: CheckoutActionState, formData: FormData): Promise<CheckoutActionState> {
-  const reference = referenceSchema.safeParse(formData.get("order_reference"));
-  const handoff = (await cookies()).get("payfast_claim_handoff")?.value ?? "";
-  const [handoffReference, handoffAttempt] = handoff.split(":");
-  if (!reference.success || handoffReference !== reference.data || !z.uuid().safeParse(handoffAttempt).success) return { error: "This payment handoff is no longer available. Return to your order status." };
-  const secret = createStoreClaimSecret();
-  const service = createServiceClient();
-  const { error } = await service.rpc("issue_payfast_store_claim", { p_order_reference: reference.data, p_attempt_id: handoffAttempt, p_token_hash: secret.tokenHash });
-  if (error) return { error: error.message.includes("already_claimed") ? "This membership has already been claimed." : error.message.includes("membership") ? "This order is not eligible for membership claim." : "The membership handoff is not ready yet. Refresh after payment verification." };
-  const cookieStore = await cookies();
-  cookieStore.delete("payfast_claim_handoff");
-  cookieStore.set("store_claim_token", secret.token, { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 60 * 60 * 24 * 7 });
-  redirect("/claim");
-}
-
-export async function completePayFastClaimHandoffForm(formData: FormData): Promise<void> {
-  await completePayFastClaimHandoff({}, formData);
 }

@@ -1,5 +1,5 @@
 begin;
-select plan(31);
+select plan(32);
 
 select has_table('public', 'store_products', 'Store products table exists');
 select has_table('public', 'store_orders', 'Store orders table exists');
@@ -11,7 +11,7 @@ select ok(
     join pg_namespace n on n.oid = p.pronamespace
     where n.nspname = 'public'
       and p.proname = 'create_public_store_order'
-      and pg_get_function_identity_arguments(p.oid) = 'p_product_id uuid, p_buyer_email text, p_request_key uuid'
+      and pg_get_function_identity_arguments(p.oid) = 'p_product_id uuid, p_buyer_email text, p_request_key uuid, p_referral_code text, p_acquisition_method store_acquisition_method'
   ),
   'order creation accepts no client price or fulfillment arguments'
 );
@@ -72,9 +72,17 @@ select lives_ok(
 reset role;
 select set_config('request.jwt.claims', '{"role":"anon"}', true);
 set local role anon;
+select throws_ok(
+  $$select * from public.create_public_store_order_multi(jsonb_build_array(jsonb_build_object('product_id', (select id from public.store_products where slug = 'inner-sanctum-lifetime'), 'quantity', 1)), 'buyer@example.com', '30000000-0000-4000-8000-000000000001')$$,
+  '42501', 'authentication_required', 'unauthenticated callers cannot create Store orders'
+);
+
+reset role;
+select set_config('request.jwt.claims', '{"sub":"20000000-0000-4000-8000-000000000002","role":"authenticated"}', true);
+set local role authenticated;
 select lives_ok(
   $$select * from public.create_public_store_order((select id from public.store_products where slug = 'inner-sanctum-lifetime'), 'buyer@example.com', '30000000-0000-4000-8000-000000000001')$$,
-  'an active product creates an order'
+  'an authenticated identity can create an order'
 );
 
 reset role;
@@ -86,7 +94,8 @@ select results_eq(
   'order items snapshot product price and fulfillment metadata'
 );
 
-set local role anon;
+select set_config('request.jwt.claims', '{"sub":"20000000-0000-4000-8000-000000000002","role":"authenticated"}', true);
+set local role authenticated;
 select throws_ok(
   $$select * from public.create_public_store_order('20000000-0000-4000-8000-000000000099', 'buyer@example.com', '30000000-0000-4000-8000-000000000002')$$,
   'P0002', 'store_product_unavailable', 'inactive products cannot create orders'
@@ -100,7 +109,7 @@ select results_eq(
 reset role;
 select is((select count(*) from public.store_orders where request_key = '30000000-0000-4000-8000-000000000001'), 1::bigint, 'idempotent submission creates only one order');
 
-set local role anon;
+set local role authenticated;
 select lives_ok(
   $$select * from public.create_public_store_order((select id from public.store_products where slug = 'inner-sanctum-lifetime'), 'second@example.com', '30000000-0000-4000-8000-000000000003')$$,
   'a distinct request creates another order'
@@ -122,8 +131,9 @@ select throws_ok(
   $$delete from public.store_order_items where order_id = (select id from public.store_orders where request_key = '30000000-0000-4000-8000-000000000001')$$,
   'P0001', 'store_order_item_snapshot_is_immutable', 'order item snapshots cannot be deleted'
 );
-select is((select user_id from public.store_orders where request_key = '30000000-0000-4000-8000-000000000001'), null::uuid, 'anonymous orders can exist before an Auth user is attached');
+select is((select user_id from public.store_orders where request_key = '30000000-0000-4000-8000-000000000001'), '20000000-0000-4000-8000-000000000002'::uuid, 'new orders are owned by the authenticated identity');
 
+select set_config('request.jwt.claims', '{"role":"anon"}', true);
 set local role anon;
 select throws_ok($$select * from public.store_orders$$, '42501', null, 'public users cannot read arbitrary orders');
 select throws_ok($$update public.store_orders set status = 'paid'$$, '42501', null, 'public users cannot alter order status');
