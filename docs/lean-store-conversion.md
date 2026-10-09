@@ -1,12 +1,54 @@
 # Lean Store Conversion
 
-## 1. Current Customer Journey
+## Final Status
+
+**Lean Store Conversion: COMPLETE**
+
+Both golden customer journeys were manually tested successfully.
+
+### Existing Signed-In User
+
+`Signed in → Buy → PayFast → verified payment → The key is yours → Enter Inner Sanctum → /inner-sanctum`
+
+The order belongs to the existing authenticated user. Verified PayFast settlement grants membership to that user. No claim flow occurs; the customer returns to the successful membership state, and **Enter Inner Sanctum** works.
+
+### New / Unsigned Customer
+
+`Enter email → Buy → anonymous Supabase identity → PayFast → verified payment → The key is yours → Secure your account → enter email → click verification link → create password + confirm password → /inner-sanctum`
+
+An anonymous identity exists before order creation and owns the order from the beginning. Verified settlement grants membership to that same identity. No claim, token, or redemption step occurs. Email verification and password creation secure the existing identity, and the customer lands in the Inner Sanctum.
+
+## Final Architecture
+
+Canonical membership purchase path:
+
+`Supabase identity → Store order → PayFast verification → membership`
+
+For a new customer:
+
+`anonymous identity → owned order → payment → membership → verified email/password → same identity`
+
+Ownership invariant:
+
+`auth.users.id = store_orders.user_id = inner_sanctum_memberships.user_id`
+
+Account conversion does not transfer orders or memberships. Email is contact/login information, not the source of entitlement ownership.
+
+## Legacy Claims
+
+The claim tables, routes, RPCs, and admin recovery/reissue functions remain available only as legacy/recovery infrastructure. They are not part of the normal new-purchase journey. The known `issue_payfast_store_claim` `22P02` defect was intentionally left untouched: the function has no new-purchase caller, and historical recovery uses the separate admin recovery mechanisms.
+
+## Historical Audit
+
+The following audit sections preserve the initial implementation findings and checklist. They describe the pre-conversion flow and are superseded by the final status and architecture above.
+
+## 1. Original Customer Journey (Pre-conversion)
 
 `/store → Add to cart → /checkout/start (email + request key) → create_public_store_order_multi (store_orders + store_order_items; auth.uid() or NULL) → /checkout/[reference] → begin_public_payfast_store_payment → /checkout/[reference]/payfast → PayFast → /api/payfast/itn verifies and calls settle_payfast_store_payment → PayFast return/cancel → (return: Claim your membership) → issue_payfast_store_claim → /claim (cookie token) → sign in/create account → redeem_store_claim → inner_sanctum_memberships → /inner-sanctum`
 
 The production PayFast return base is the public app origin (`www.filthyprincesss.com`), not `inside.filthyprincesss.com`; there is no current Store-to-Inside-domain redirect.
 
-## 2. Current Code Path
+## 2. Original Code Path (Pre-conversion)
 
 | Stage | Route/File | Function/RPC | What it does |
 |---|---|---|---|
@@ -23,13 +65,13 @@ The production PayFast return base is the public app origin (`www.filthyprincess
 | Membership and entry | [`supabase/migrations/20260930130000_store_paid_claim_handoff.sql`](../supabase/migrations/20260930130000_store_paid_claim_handoff.sql); [`lib/inner-sanctum.ts`](../lib/inner-sanctum.ts); `/checkout/[reference]` | `inner_sanctum_private.apply_membership_transition`; `has_inner_sanctum_access` | Claim redemption grants lifetime membership; the order status page links to `/inner-sanctum` after fulfillment, where access is checked. |
 | Signed-in state | [`lib/supabase/server.ts`](../lib/supabase/server.ts), [`lib/supabase/proxy.ts`](../lib/supabase/proxy.ts), [`proxy.ts`](../proxy.ts), [`lib/auth.ts`](../lib/auth.ts) | `createClient`, `updateSession`, `getAuthState` | Supabase SSR cookies carry the session; proxy refreshes it, and server code uses `auth.getUser()` to determine the current user. |
 
-## 3. Complexity We Can Bypass
+## 3. Claim Complexity (Disposition)
 
 The current PayFast return page is where the customer claim flow enters: it calls `completePayFastClaimHandoff`, which issues a claim only after settlement is verified. The customer then needs the `/claim` cookie route or `/claim/[token]`, claim-state lookup, token handling, `redeem_store_claim`, and fulfillment authorization before membership is granted.
 
-For new purchases, verified settlement can grant membership directly to the already-owned `store_orders.user_id`; that removes the customer-facing claim handoff, token generation, and redemption from the new path. Keep the claim tables, RPCs, token routes, and admin recovery/reissue support for legacy orders. The selected `20260930131000_store_lifetime_membership_legacy_recovery.sql` migration's hard-coded historic-order exception is only for legacy claim recovery, not a prerequisite for new orders. There is no customer claim-email sender in the current PayFast path.
+Verified settlement now grants membership directly to the already-owned `store_orders.user_id`; the customer-facing claim handoff, token generation, and redemption are absent from the new path. The claim tables, RPCs, token routes, and admin recovery/reissue support remain for legacy orders. The selected `20260930131000_store_lifetime_membership_legacy_recovery.sql` migration's historic-order exception is only for legacy claim recovery, not a prerequisite for new orders. There is no customer claim-email sender in the PayFast path.
 
-## 4. Target Journey
+## 4. Target Journey (Completed)
 
 ### New visitor
 `Product → Email → anonymous auth identity → order owned by auth.uid() → PayFast → verified payment → membership granted to same user_id → secure account → Inner Sanctum`
@@ -37,7 +79,9 @@ For new purchases, verified settlement can grant membership directly to the alre
 ### Existing signed-in user
 `Product → order owned by auth.uid() → PayFast → verified payment → membership granted to same user_id → Inner Sanctum`
 
-## 5. Today's Implementation Checklist
+## 5. Original Implementation Checklist (Completed)
+
+All checklist items below were implemented; this list is retained as implementation history.
 
 1. Ensure a visitor has a Supabase anonymous session before order creation; keep the entered buyer email, scope the retry key to that identity, and ensure membership orders cannot be created with a NULL `auth.uid()`. Change [`app/actions/store.ts`](../app/actions/store.ts) and add a forward migration replacing the effective order RPC definition in [`supabase/migrations/20260930102000_fix_store_multi_order_reference_ambiguity.sql`](../supabase/migrations/20260930102000_fix_store_multi_order_reference_ambiguity.sql). The existing cart already collects email and creates the retry key.
 2. Keep PayFast verification, immutable server pricing, inventory handling, and settlement idempotency; grant lifetime membership from the verified settlement using `store_orders.user_id` and the existing membership transition helper. Add a forward migration replacing the current settlement definition in [`supabase/migrations/20260930120000_store_payfast_itn_settlement.sql`](../supabase/migrations/20260930120000_store_payfast_itn_settlement.sql). Do not grant on browser return.
@@ -46,7 +90,7 @@ For new purchases, verified settlement can grant membership directly to the alre
 5. Upgrade the current anonymous identity in place when the buyer secures the account; do not create a second `auth.users.id`. Allow anonymous users to reach the signup/upgrade form and preserve the post-purchase return path. Change [`app/actions/auth.ts`](../app/actions/auth.ts), [`app/signin/page.tsx`](../app/signin/page.tsx), and [`components/signin-form.tsx`](../components/signin-form.tsx).
 6. Update the focused assertions for owned orders, direct membership settlement, and removal of the new-purchase claim handoff in [`supabase/tests/store_foundation_test.sql`](../supabase/tests/store_foundation_test.sql) and [`tests/store-paid-claim-handoff.test.ts`](../tests/store-paid-claim-handoff.test.ts); retain legacy-claim coverage.
 
-**Application files to modify: 9.** The two forward SQL migrations, two focused test files, and PayFast setup doc are additional non-application changes. No Store rewrite is indicated: order creation already uses server-authoritative prices and `auth.uid()`, and the existing membership transition logic can grant the entitlement.
+**Original estimate: 9 application files.** The two forward SQL migrations, focused tests, and PayFast setup doc were additional non-application changes. No Store rewrite was needed: order creation uses server-authoritative prices and `auth.uid()`, and the existing membership transition logic grants the entitlement.
 
 **Implementation 1 complete:** `createStoreCartOrder` calls `signInAnonymously()` only when `getUser()` reports no session, verifies the resulting user before the order RPC, and scopes the existing retry UUID by that user ID. The forward RPC rejects NULL `auth.uid()`, stores `auth.uid()` as `user_id`, and rejects retries whose existing order belongs to another user. The buyer-entered email remains `buyer_email`. For the next implementation, the verified-payment path can use the persisted `store_orders.user_id` as the membership target; settlement, membership granting, and customer claim behavior are unchanged here.
 
@@ -56,4 +100,6 @@ For new purchases, verified settlement can grant membership directly to the alre
 
 **Implementation 3 complete:** The PayFast return now redirects to `/checkout/[reference]`; it no longer creates or reads claim-handoff cookies, generates tokens, invokes `issue_payfast_store_claim`, or navigates to `/claim`. The status page only shows the lifetime-membership success state for a paid, verified, fulfilled snapshot. It directs anonymous purchasers to `/you` and permanent users to `/inner-sanctum`.
 
-**Implementation 4 complete:** `/you` now calls `updateUser({ email })` on the current anonymous session and returns through `/you?secure=password` after Supabase email verification. It then calls `updateUser({ password })`, verifies the same user ID, and sends the customer to `/inner-sanctum`. Duplicate-email errors do not transfer the order or membership. Local Supabase config enables global signup, anonymous sign-ins, manual linking, email auth, and email confirmations; email signup is used only for the existing general auth flow, never for conversion. Local verification used Mailpit; the hosted project uses the configured Resend flow. Keep the hosted Site URL / redirect allowlist configured for `/you?secure=password`.
+**Implementation 4 complete:** `/you` now calls `updateUser({ email })` on the current anonymous session and returns through `/you?secure=password` after Supabase email verification. It then calls `updateUser({ password })`, verifies the same user ID, and sends the customer to `/inner-sanctum`. Duplicate-email errors do not transfer the order or membership. Local Supabase config enables global signup, anonymous sign-ins, manual linking, email auth, and email confirmations; email signup is used only for the existing general auth flow, never for conversion. Local verification used Mailpit; the hosted project uses the configured Resend flow. The hosted Site URL / redirect allowlist is configured for `/you?secure=password`.
+
+**Lean Store Conversion: COMPLETE.** The Store supports `existing user → purchase → membership → Inner Sanctum` and `new visitor → purchase → secure same identity → Inner Sanctum`, without pre-purchase signup or post-purchase claim redemption.

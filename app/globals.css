@@ -1687,241 +1687,420 @@ td a { color: var(--accent); font-weight: 650; }
   .retreat-v1-wide, .retreat-v1-form-actions, .retreat-v1-error { grid-column: auto; }
 }
 
-/* Creative Retreat pass: premium editorial foundation with Cally's annotations. */
-.retreat-creative { background: #0d090b; color: var(--customer-fg); overflow-x: clip; }
+/* Public retreat editorial composition. */
 .filthy-shell-main:has(.retreat-page-full-bleed) { max-width: none; padding-inline: 0; }
 .retreat-page-full-bleed { margin-inline: 0; overflow-x: clip; width: 100%; }
-.retreat-creative h1, .retreat-creative h2, .retreat-creative h3 { font-family: Georgia, "Times New Roman", serif; font-weight: 400; letter-spacing: -.025em; }
-.retreat-creative-eyebrow { color: var(--customer-rose); font-size: .68rem; letter-spacing: .2em; margin: 0 0 1rem; text-transform: uppercase; }
-.retreat-hand { color: #efb4c2; font-family: "Comic Sans MS", "Bradley Hand", cursive; font-size: 1.05rem; letter-spacing: .01em; line-height: 1.35; }
-.retreat-red { color: #ee8ca6; }
-.retreat-creative-hero { align-items: end; display: flex; isolation: isolate; min-height: min(760px, calc(100svh - 88px)); overflow: hidden; padding: clamp(3rem, 9vw, 8rem) max(1.5rem, calc((100vw - 1240px) / 2 + 1.5rem)); position: relative; }
-.retreat-hero-image { object-fit: cover; object-position: center; z-index: -3; }
-.retreat-hero-shade { background: linear-gradient(90deg, rgba(8, 7, 8, .86), rgba(8, 7, 8, .35) 52%, rgba(8, 7, 8, .08)), linear-gradient(0deg, rgba(8, 7, 8, .64), transparent 45%); inset: 0; position: absolute; z-index: -2; }
-.retreat-hero-copy { max-width: 650px; }
-.retreat-creative-hero h1 { color: #fff8f2; font-size: clamp(4rem, 10vw, 8.5rem); line-height: .82; margin: 0 0 1.4rem; text-transform: uppercase; }
-.retreat-creative-hero h1 em { color: #efb4c2; font-style: normal; }
-.retreat-hero-subtitle { color: #fff8f2; font-family: Georgia, "Times New Roman", serif; font-size: clamp(1.5rem, 3vw, 2.2rem); margin: 0 0 .25rem; }
-.retreat-hero-note { margin: 0 0 2rem; transform: rotate(-4deg); transform-origin: left; }
-.retreat-key-note { display: none; }
-.retreat-creative-primary { background: #e7acbb; border: 1px solid #f1c4ce; color: #24151b; display: inline-flex; font-size: .75rem; font-weight: 700; letter-spacing: .1em; min-height: 48px; padding: .9rem 1.25rem; text-decoration: none; text-transform: uppercase; }
-.retreat-creative-nights { margin: auto; max-width: 820px; padding: clamp(4rem, 10vw, 8rem) 1.5rem; position: relative; }
-.retreat-creative-nights h2, .retreat-cally-copy h2, .retreat-commercial-heading h2, .retreat-creative-enquiry h2, .retreat-creative-after h2 { color: #fff8f2; font-size: clamp(2.8rem, 6vw, 5.8rem); line-height: .94; margin: 0 0 1.5rem; }
-.retreat-creative-nights > p:not(.retreat-creative-eyebrow):not(.retreat-hand), .retreat-cally-copy > p:not(.retreat-creative-eyebrow):not(.retreat-hand), .retreat-creative-after > p:not(.retreat-creative-eyebrow) { color: var(--customer-muted); font-size: clamp(1.05rem, 2vw, 1.3rem); line-height: 1.75; max-width: 700px; }
-.retreat-note { margin-top: 2rem; transform: rotate(-3deg); }
-.retreat-flame { color: #a64f43; font-size: 2.5rem; position: absolute; right: 10%; top: 12%; transform: rotate(12deg); }
-.retreat-notebook { background: #0d090b; padding: clamp(5rem, 11vw, 9rem) max(1.5rem, calc((100vw - 1360px) / 2)); }
-.retreat-notebook-heading { max-width: 720px; }
-.retreat-notebook-heading h2 { color: #fff8f2; font-size: clamp(3rem, 7vw, 6rem); line-height: .9; margin: 0 0 1rem; }
-.retreat-crossed { position: relative; }
-.retreat-crossed::after { background: #ef8fa7; content: ""; height: 3px; left: -4%; position: absolute; top: 52%; transform: rotate(-5deg); width: 108%; }
-.retreat-notebook-grid { display: grid; gap: clamp(2rem, 5vw, 4rem); grid-template-columns: repeat(6, minmax(0, 1fr)); margin: 5rem auto 0; max-width: 1360px; }
-.retreat-note-card { background: transparent; color: #f4e8dc; min-width: 0; padding: clamp(1.25rem, 2vw, 2rem); position: relative; }
-.retreat-note-card p, .retreat-note-card h3 { color: inherit; }
-.retreat-note-card .retreat-creative-eyebrow { color: var(--customer-rose); }
-.retreat-note-card h3 { font-size: clamp(1.6rem, 3vw, 2.8rem); line-height: .98; margin: 0 0 .8rem; }
-.retreat-note-card > p:not(.retreat-creative-eyebrow):not(.retreat-hand) { line-height: 1.5; }
-.retreat-note-card .retreat-hand { color: #efb4c2; }
-.retreat-polaroid { background: #faf5ed; box-shadow: 0 14px 24px #0002; margin: -.3rem -.3rem 1.5rem; padding: .45rem .45rem 1.5rem; transform: rotate(-3deg); }
-.retreat-polaroid img { display: block; height: auto; width: 100%; }
-.retreat-note-massage { grid-column: span 3; transform: rotate(-1deg); }
-.retreat-massage-copy { align-items: start; display: grid; gap: clamp(1.5rem, 3vw, 3rem); grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); }
-.retreat-massage-editorial > p:last-child { font-family: Georgia, "Times New Roman", serif; font-size: clamp(1.05rem, 1.7vw, 1.3rem); line-height: 1.45; margin: 0; }
-.retreat-massage-serious { font-size: clamp(1rem, 1.5vw, 1.25rem); margin: .25rem 0 1.5rem; transform: rotate(-2deg); }
-.retreat-massage-interruption { padding-top: clamp(1.25rem, 3vw, 2.75rem); }
-.retreat-massage-interruption .retreat-hand { font-size: clamp(1.1rem, 1.8vw, 1.45rem); line-height: 1.3; margin: 0; }
-.retreat-massage-hands { transform: rotate(2deg); }
-.retreat-massage-hands small { display: block; font-size: .72em; margin: .2rem 0 0 1.4rem; }
-.retreat-massage-imagine { margin-top: clamp(1.5rem, 3vw, 2.5rem) !important; transform: rotate(-2deg); }
-.retreat-massage-pause { margin: clamp(1.35rem, 2.5vw, 2rem) 0 0 22% !important; transform: rotate(3deg); }
-.retreat-massage-body { font-size: clamp(1rem, 1.5vw, 1.2rem) !important; margin: clamp(1.25rem, 2vw, 1.75rem) 0 0 43% !important; transform: rotate(-3deg); }
-.retreat-note-braai { align-self: center; grid-column: span 3; isolation: isolate; min-height: 260px; overflow: hidden; padding: clamp(1.5rem, 4vw, 3rem); transform: rotate(2deg); }
-.retreat-note-braai::before, .retreat-note-braai::after { content: ""; inset: -6%; pointer-events: none; position: absolute; }
-.retreat-note-braai::before { background: url("/assets/juicySteak.png") 58% 48% / cover no-repeat; filter: saturate(1.04) contrast(1.08) brightness(1.08); mask-image: radial-gradient(ellipse at 58% 48%, #000 22%, rgba(0, 0, 0, .9) 50%, transparent 86%); opacity: .5; z-index: 0; }
-.retreat-note-braai::after { background: linear-gradient(90deg, rgba(13, 9, 11, .88) 0%, rgba(13, 9, 11, .3) 52%, rgba(13, 9, 11, .58) 100%), linear-gradient(180deg, rgba(13, 9, 11, .6), transparent 38%, rgba(13, 9, 11, .68)); z-index: 1; }
-.retreat-note-braai > div { position: relative; z-index: 2; }
-.retreat-note-braai .retreat-flame { z-index: 2; }
-.retreat-note-braai h3 { font-size: clamp(2rem, 4vw, 3.8rem); max-width: 10ch; }
-.retreat-braai-proper { font-family: Georgia, "Times New Roman", serif; font-size: clamp(1.1rem, 1.8vw, 1.4rem); line-height: 1.35; margin: 1.2rem 0 0; }
-.retreat-braai-texture { font-family: Georgia, "Times New Roman", serif; font-size: clamp(1.5rem, 2.7vw, 2.3rem); line-height: 1.05; margin: clamp(1.5rem, 3vw, 2.25rem) 0 0 9%; }
-.retreat-braai-food-aside { font-size: clamp(1rem, 1.7vw, 1.35rem); margin: .5rem 0 0 22%; transform: rotate(-3deg); }
-.retreat-braai-food { color: #fff8f2; font-family: Georgia, "Times New Roman", serif; font-size: clamp(1.05rem, 1.8vw, 1.4rem); line-height: 1.4; margin: clamp(2rem, 4vw, 3.5rem) 0 0 8%; max-width: 24rem; }
-.retreat-braai-food p { margin: 0; }
-.retreat-braai-food p + p { margin-top: .8rem; }
-.retreat-braai-finale { margin-top: clamp(2.25rem, 4vw, 3.75rem); }
-.retreat-braai-finale .retreat-hand { line-height: 1.25; margin-bottom: 0; }
-.retreat-braai-fingers { font-size: clamp(1.05rem, 1.8vw, 1.4rem); margin-left: 18%; transform: rotate(2deg); }
-.retreat-braai-payoff { font-size: clamp(1.2rem, 2.1vw, 1.7rem); margin: clamp(1.4rem, 2.5vw, 2rem) 0 0 4%; max-width: 23rem; transform: rotate(-2deg); }
-.retreat-note-outdoors { align-items: start; display: grid; column-gap: clamp(2.5rem, 6vw, 6rem); grid-column: 1 / -1; grid-template-areas: "opening photo" "strawberries photo" "spoilt photo"; grid-template-columns: minmax(0, 1.22fr) minmax(280px, 1fr); padding-block: clamp(3rem, 7vw, 6rem); row-gap: clamp(2.5rem, 5vw, 4.5rem); }
-.retreat-outdoors-opening { grid-area: opening; }
-.retreat-outdoors-opening h3 { max-width: 12ch; }
-.retreat-outdoors-support { color: rgba(244, 232, 220, .76) !important; font-family: Georgia, "Times New Roman", serif; font-size: clamp(1rem, 1.6vw, 1.25rem); line-height: 1.5; margin: 1rem 0 0; max-width: 31rem; }
-.retreat-note-outdoors .retreat-hand { font-size: clamp(1.05rem, 1.7vw, 1.4rem); line-height: 1.3; margin: 1rem 0 0 7%; transform: rotate(-2deg); }
-.retreat-outdoors-photo { align-self: center; background: #f4e8dc; grid-area: photo; padding: .4rem; transform: rotate(.4deg); }
-.retreat-outdoors-photo img { display: block; height: auto; width: 100%; }
-.retreat-outdoors-strawberries { grid-area: strawberries; }
-.retreat-outdoors-strawberries h3 { max-width: 13ch; }
-.retreat-outdoors-strawberries .retreat-hand { margin-left: 14%; margin-right: -1.25rem; position: relative; z-index: 1; }
-.retreat-outdoors-spoilt { grid-area: spoilt; }
-.retreat-outdoors-spoilt h3 { font-size: clamp(1.45rem, 2.4vw, 2.25rem); line-height: 1.08; max-width: 22ch; }
-.retreat-outdoors-spoilt .retreat-hand { margin-left: 18%; transform: rotate(2deg); }
-.retreat-note-fire { background: #252027; color: #f6e9e1; grid-column: 2 / span 4; padding: clamp(1.5rem, 4vw, 3rem); transform: rotate(-1deg); }
-.retreat-note-fire p, .retreat-note-fire h3 { color: inherit; }
-.retreat-note-fire .retreat-creative-eyebrow, .retreat-note-fire .retreat-hand { color: #efb4c2; }
-.retreat-fire-transition { margin-inline: calc(50% - 50vw); min-height: min(760px, 82svh); overflow: hidden; position: relative; width: 100vw; }
-.retreat-fire-transition img { object-fit: cover; object-position: center; }
-.retreat-fire-transition::before, .retreat-fire-transition::after { content: ""; inset: 0; pointer-events: none; position: absolute; }
-.retreat-fire-transition::before { background: linear-gradient(#0d090b, transparent 18%); z-index: 1; }
-.retreat-fire-transition::after { background: linear-gradient(90deg, rgba(8, 7, 8, .7), transparent 65%), linear-gradient(0deg, #0d090b, transparent 28%); z-index: 1; }
-.retreat-fire-transition > div { bottom: clamp(2rem, 8vw, 6rem); color: #fff8f2; left: max(1.5rem, calc((100vw - 1100px) / 2)); position: absolute; z-index: 1; }
-.retreat-fire-transition p { font-family: Georgia, "Times New Roman", serif; font-size: clamp(1.8rem, 4vw, 3.5rem); line-height: 1.05; margin: 0; }
-.retreat-fire-transition .retreat-hand { color: #efb4c2; font-size: 1.2rem; margin-top: 1.25rem; transform: rotate(-4deg); }
-.retreat-cally-arrival { background: #0d090b; min-height: clamp(300px, 42vh, 520px); padding: clamp(7rem, 16vw, 13rem) max(1.5rem, calc((100vw - 1040px) / 2)) 0; }
-.retreat-cally-arrival .retreat-hand { font-size: clamp(1.35rem, 2.5vw, 2rem); transform: rotate(-4deg); }
-.retreat-cally-reveal { background: linear-gradient(180deg, rgba(13, 9, 11, .02) 0%, rgba(13, 9, 11, .04) 34%, rgba(13, 9, 11, .98) 52%, #0d090b 68%), url("/assets/fullAttentionCally4K.jpeg") center top / cover no-repeat; display: block; margin: auto; min-height: min(1180px, 110svh); max-width: 100%; padding: clamp(34rem, 55vw, 50rem) 0 clamp(7rem, 15vw, 13rem); position: relative; }
-.retreat-cally-copy { margin: 0 auto; max-width: 680px; padding-inline: 1.5rem; }
-.retreat-cally-lead { color: #efb4c2 !important; font-family: Georgia, "Times New Roman", serif; font-size: clamp(1.6rem, 3vw, 2.4rem) !important; }
-.retreat-cally-final { color: #fff8f2 !important; font-family: Georgia, "Times New Roman", serif; font-size: clamp(1.4rem, 2.5vw, 2rem) !important; }
-.retreat-cally-image { inset: 0; pointer-events: none; position: absolute; }
-.retreat-cally-image > img { height: 1px; opacity: 0; position: absolute; width: 1px; }
-.retreat-cally-label { background: #f4e8dc; color: #25191b; display: grid; gap: .2rem; left: max(1.25rem, calc((100vw - 1180px) / 2)); padding: .8rem 1rem; position: absolute; top: clamp(31rem, 51vw, 47rem); transform: rotate(-4deg); }
-.retreat-cally-label strong { font-family: Georgia, "Times New Roman", serif; font-size: 1.4rem; font-weight: 400; }
-.retreat-cally-label span { font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; }
-.retreat-cally-label em { color: #9b3d55; font-family: "Comic Sans MS", "Bradley Hand", cursive; font-size: .95rem; font-style: normal; }
-.retreat-cally-image > .retreat-hand { margin: 0; max-width: 250px; position: absolute; right: max(1.25rem, calc((100vw - 1180px) / 2)); top: clamp(36rem, 57vw, 52rem); transform: rotate(3deg); }
-.retreat-cally-mischief { left: max(1.25rem, calc((100vw - 1180px) / 2)); position: absolute; top: clamp(42rem, 65vw, 60rem); transform: rotate(3deg); }
-.retreat-creative-commercial { background: #0d090b; padding: clamp(4rem, 10vw, 8rem) max(1.5rem, calc((100vw - 1100px) / 2)); }
-.retreat-commercial-heading { max-width: 780px; }
-.retreat-creative-products { display: grid; gap: 1rem; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 2.5rem; }
-.retreat-creative-products button { background: #0f0b0d; border: 1px solid var(--customer-border); color: #fff8f2; cursor: pointer; display: grid; gap: 1rem; min-height: 260px; padding: clamp(1.25rem, 3vw, 2rem); text-align: left; }
-.retreat-creative-products button:hover, .retreat-creative-products button.selected { border-color: #efb4c2; box-shadow: inset 0 -3px #efb4c2; }
-.retreat-creative-products button > span { font-family: Georgia, "Times New Roman", serif; font-size: clamp(1.7rem, 3vw, 2.8rem); line-height: .98; }
-.retreat-creative-products small { color: var(--customer-muted); font-size: 1rem; line-height: 1.6; }
-.retreat-creative-products i { color: #efb4c2; font-family: "Comic Sans MS", "Bradley Hand", cursive; font-size: 1rem; font-style: normal; line-height: 1.3; }
-.retreat-creative-configure { margin-top: 4rem; padding-top: 3rem; }
-.retreat-creative-formats { display: grid; gap: .75rem; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.retreat-creative-formats button { background: transparent; border: 1px solid var(--customer-border); color: #fff8f2; cursor: pointer; display: grid; gap: .4rem; min-height: 110px; padding: 1rem; text-align: left; }
-.retreat-creative-formats button:hover, .retreat-creative-formats button.selected { border-color: #efb4c2; }
-.retreat-creative-formats button small { color: var(--customer-muted); font-size: .85rem; }
-.retreat-creative-guests { color: var(--customer-muted); display: grid; gap: .5rem; margin-top: 1.25rem; max-width: 220px; }
-.retreat-creative-guests input, .retreat-creative-form input, .retreat-creative-form textarea { background: #0d090b; border-color: var(--customer-border); color: #fff8f2; }
-.retreat-creative-price { background: #0d090b; padding: clamp(5rem, 12vw, 10rem) max(1.5rem, calc((100vw - 900px) / 2)); }
-.retreat-creative-price h2 { color: #fff8f2; font-family: Georgia, "Times New Roman", serif; font-size: clamp(3.5rem, 9vw, 8rem); font-weight: 400; line-height: .9; margin: 0 0 1.5rem; }
-.retreat-creative-price > p:not(.retreat-creative-eyebrow):not(.retreat-hand) { color: var(--customer-muted); line-height: 1.7; max-width: 620px; }
-.retreat-creative-price .retreat-hand { margin-top: 2rem; transform: rotate(-3deg); }
-.retreat-creative-enquiry { display: grid; gap: 2rem 5rem; grid-template-columns: minmax(0, .75fr) minmax(0, 1.25fr); padding: clamp(4rem, 10vw, 8rem) max(1.5rem, calc((100vw - 1100px) / 2)); }
-.retreat-creative-enquiry h2, .retreat-creative-after h2 { color: #fff8f2; font-size: clamp(2.8rem, 6vw, 5.5rem); line-height: .94; margin: 0 0 1rem; }
-.retreat-creative-enquiry p:not(.retreat-creative-eyebrow), .retreat-creative-after > p:not(.retreat-creative-eyebrow) { color: var(--customer-muted); line-height: 1.7; }
-.retreat-creative-form { display: grid; gap: 1rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.retreat-creative-form label { color: var(--customer-muted); }
+.retreat-creative { --retreat-ink: #171014; --retreat-paper: #f1e8dd; --retreat-blush: #efb4c2; background: #0d090b; color: #f7eee8; overflow-x: clip; }
+.retreat-creative h1, .retreat-creative h2, .retreat-creative h3 { font-family: Georgia, "Times New Roman", serif; font-weight: 400; margin-top: 0; }
+.retreat-creative h2 { font-size: 2.65rem; line-height: 1; margin-bottom: 1.25rem; }
+.retreat-creative p { line-height: 1.7; }
+.retreat-creative-eyebrow { color: var(--retreat-blush); font-size: .7rem; letter-spacing: .16em; margin: 0 0 1rem; text-transform: uppercase; }
+.retreat-hand { color: var(--retreat-blush); font-family: "Comic Sans MS", "Bradley Hand", cursive; font-size: 1.1rem; line-height: 1.35; }
+.retreat-creative-hero { align-items: end; display: flex; isolation: isolate; min-height: 620px; overflow: hidden; padding: 2rem 1.25rem 3.5rem; position: relative; }
+.retreat-hero-image { object-fit: cover; object-position: 53% center; z-index: -2; }
+.retreat-hero-shade { background: linear-gradient(0deg, rgba(8, 7, 8, .94), rgba(8, 7, 8, .16) 82%); inset: 0; position: absolute; z-index: -1; }
+.retreat-hero-copy { animation: retreat-entrance .7s ease-out both; max-width: 680px; }
+.retreat-creative-hero h1 { color: #fff8f2; font-size: 4.2rem; line-height: .88; margin: 0 0 1.25rem; text-transform: uppercase; }
+.retreat-hero-subtitle { color: #fff8f2; font: 400 1.65rem/1.2 Georgia, "Times New Roman", serif; margin: 0 0 .5rem; }
+.retreat-hero-invitation { font-family: Georgia, "Times New Roman", serif; font-size: 1.2rem; margin: 0 0 1.5rem; }
+.retreat-hero-three-nights { font-size: .9rem; margin: 0; }
+.retreat-hero-note { margin: .3rem 0 1.5rem; transform: rotate(-3deg); transform-origin: left; }
+.retreat-creative-primary { align-items: center; background: #e7acbb; border: 1px solid #f1c4ce; color: #24151b; display: inline-flex; font-size: .75rem; font-weight: 700; letter-spacing: .08em; min-height: 48px; padding: .85rem 1.2rem; text-decoration: none; text-transform: uppercase; }
+.retreat-creative-primary:hover { background: #f2c4ce; }
+.retreat-creative-nights { margin-inline: auto; max-width: 780px; padding: 5rem 1.4rem; }
+.retreat-creative-nights h2 { color: #fff8f2; margin-bottom: 1.5rem; }
+.retreat-creative-nights > p:not(.retreat-creative-eyebrow):not(.retreat-hand) { color: #c8b9b6; font-size: 1.05rem; max-width: 700px; }
+.retreat-note { margin-top: 2rem; transform: rotate(-2deg); }
+.retreat-daylight { background: var(--retreat-paper); color: #2b2121; padding: 4.5rem 1.25rem; }
+.retreat-daylight-copy { margin: 0 auto 2.5rem; max-width: 34rem; }
+.retreat-daylight .retreat-creative-eyebrow { color: #944e5d; }
+.retreat-daylight h2 { font-size: 3.1rem; }
+.retreat-daylight-copy > p:not(.retreat-creative-eyebrow):not(.retreat-hand) { max-width: 34rem; }
+.retreat-daylight .retreat-hand { color: #a34c65; }
+.retreat-daylight-aside { margin-left: 12%; transform: rotate(-3deg); }
+.retreat-daylight-photo { margin: 0 auto; max-width: 720px; }
+.retreat-daylight-photo img { display: block; height: auto; width: 100%; }
+.retreat-daylight-photo figcaption { font: italic .85rem Georgia, "Times New Roman", serif; margin-top: .75rem; }
+.retreat-massage { align-items: center; background: #171014; display: grid; gap: 2rem; padding: 4.5rem 1.25rem; }
+.retreat-massage-photo { margin: 0 -1.25rem; }
+.retreat-massage-photo img { display: block; height: auto; width: 100%; }
+.retreat-massage-copy { max-width: 36rem; }
+.retreat-massage-copy h2 { color: #fff8f2; }
+.retreat-massage-copy > p:not(.retreat-creative-eyebrow) { color: #d8cbc5; }
+.retreat-massage-serious { margin: -.25rem 0 1.5rem; transform: rotate(-2deg); }
+.retreat-massage-lead { color: #fff8f2; font: 400 1.45rem Georgia, "Times New Roman", serif; }
+.retreat-massage-copy .retreat-hand { color: var(--retreat-blush); }
+.retreat-massage-copy small { display: block; font-size: .78em; margin-left: 1.2rem; }
+.retreat-massage-imagine { margin-top: 2rem; transform: rotate(-2deg); }
+.retreat-massage-pause { margin: 1rem 0 0 18%; transform: rotate(3deg); }
+.retreat-massage-body { margin: .75rem 0 0 38%; transform: rotate(-3deg); }
+.retreat-curiosity { background: #291b20; border-left: 3px solid #d9829a; margin: 0 auto; max-width: 1100px; padding: 4.5rem 1.5rem; }
+.retreat-curiosity h2 { max-width: 760px; }
+.retreat-curiosity > p:not(.retreat-creative-eyebrow):not(.retreat-hand) { color: #d7c9c6; max-width: 690px; }
+.retreat-curiosity .retreat-hand { margin: 2rem 0 0 8%; transform: rotate(-2deg); }
+.retreat-rest { background: #e8ded3; color: #261b1d; padding: 5.5rem 1.4rem; }
+.retreat-rest .retreat-creative-eyebrow { color: #995466; }
+.retreat-rest h2 { max-width: 780px; }
+.retreat-rest-lines { display: grid; gap: 1.25rem; font: 1.15rem/1.8 Georgia, "Times New Roman", serif; max-width: 780px; }
+.retreat-rest-lines p { margin: 0; }
+.retreat-rest .retreat-hand { color: #9b4c62; margin: 2rem 0 0 28%; transform: rotate(2deg); }
+.retreat-dusk { align-items: end; display: flex; isolation: isolate; min-height: 500px; overflow: hidden; padding: 3rem 1.25rem; position: relative; }
+.retreat-dusk > img, .retreat-night > img { object-fit: cover; object-position: center; z-index: -2; }
+.retreat-dusk-shade, .retreat-night-shade { background: linear-gradient(0deg, rgba(9, 8, 10, .9), rgba(9, 8, 10, .12) 85%); inset: 0; position: absolute; z-index: -1; }
+.retreat-dusk-copy { max-width: 650px; }
+.retreat-dusk h2 { font-size: 3rem; }
+.retreat-dusk-copy > p:not(.retreat-creative-eyebrow) { font: 1.35rem/1.45 Georgia, "Times New Roman", serif; margin: .6rem 0; }
+.retreat-braai { background: #0d090b; display: grid; gap: 1rem; padding: 4.5rem 1.25rem; }
+.retreat-braai-heading { max-width: 720px; }
+.retreat-braai-heading .retreat-creative-eyebrow { text-transform: uppercase; }
+.retreat-braai-heading h2 { color: #fff8f2; font-size: 3.2rem; text-transform: uppercase; }
+.retreat-braai-photo { aspect-ratio: 1.15; margin: 0 -1.25rem; overflow: hidden; position: relative; }
+.retreat-braai-photo img { object-fit: cover; object-position: center; }
+.retreat-braai-copy { max-width: 650px; padding-top: 1rem; }
+.retreat-braai-copy > p:not(.retreat-hand) { color: #f0e3da; font: 1.2rem/1.5 Georgia, "Times New Roman", serif; }
+.retreat-braai-copy > p:nth-child(2) { font-size: 1.55rem; line-height: 1.25; }
+.retreat-braai-copy > p:nth-child(2) span { color: var(--retreat-blush); font-style: italic; }
+.retreat-braai-texture { font-size: 2rem !important; }
+.retreat-braai-fingers { margin: 2rem 0 0 22%; transform: rotate(-3deg); }
+.retreat-night { align-items: flex-start; display: flex; flex-direction: column; isolation: isolate; justify-content: flex-end; min-height: 490px; overflow: hidden; padding: 3rem 1.25rem; position: relative; }
+.retreat-night-shade { background: linear-gradient(90deg, rgba(8, 7, 8, .7), rgba(8, 7, 8, .05) 75%), linear-gradient(0deg, rgba(8, 7, 8, .68), transparent 75%); }
+.retreat-night > .retreat-creative-eyebrow, .retreat-night > h2, .retreat-night > .retreat-hand { position: relative; }
+.retreat-night > .retreat-creative-eyebrow { left: 0; position: absolute; top: 3rem; }
+.retreat-night h2 { font-size: 3.2rem; }
+.retreat-night .retreat-hand { margin: 0 0 1rem 1rem; transform: rotate(-3deg); }
+.retreat-cally-editorial { background: #181216; display: grid; gap: 2rem; padding: 4rem 1.25rem; }
+.retreat-cally-portrait-column { min-width: 0; }
+.retreat-cally-portrait { aspect-ratio: 2 / 3; margin: 0 auto; max-width: 520px; overflow: hidden; position: relative; }
+.retreat-cally-portrait img { object-fit: cover; object-position: center; }
+.retreat-cally-portrait figcaption { background: rgba(16, 10, 13, .72); bottom: 0; color: #fff8f2; display: grid; gap: .3rem; left: 0; padding: 1rem; position: absolute; right: 0; }
+.retreat-cally-portrait figcaption strong { font: 400 1.5rem Georgia, "Times New Roman", serif; }
+.retreat-cally-portrait figcaption span { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; }
+.retreat-cally-portrait figcaption em { color: var(--retreat-blush); font: 1rem "Comic Sans MS", "Bradley Hand", cursive; }
+.retreat-cally-copy { max-width: 600px; }
+.retreat-cally-copy h2 { font-size: 4rem; margin-bottom: 1.5rem; }
+.retreat-cally-copy > .retreat-hand { margin: 1rem 0; }
+.retreat-cally-thought { transform: rotate(-3deg); }
+.retreat-cally-good { margin-left: 30% !important; transform: rotate(3deg); }
+.retreat-cally-sincere { border-top: 1px solid rgba(239, 180, 194, .35); margin-top: 2.5rem; padding-top: 1.5rem; }
+.retreat-cally-sincere p:not(.retreat-hand) { color: #e3d6d0; font: 1.05rem/1.8 Georgia, "Times New Roman", serif; }
+.retreat-cally-sincere .retreat-hand { margin: 1.5rem 0 0 28%; transform: rotate(-3deg); }
+.retreat-creative-commercial { background: #0d090b; padding: 4.5rem 1.25rem; }
+.retreat-commercial-heading, .retreat-creative-products, .retreat-creative-configure { margin-inline: auto; max-width: 1100px; }
+.retreat-commercial-heading h2 { color: #fff8f2; max-width: 800px; text-transform: uppercase; }
+.retreat-creative-products { display: grid; gap: 1rem; margin-top: 2rem; }
+.retreat-creative-products button { background: transparent; border: 1px solid rgba(239, 180, 194, .4); color: #fff8f2; cursor: pointer; display: grid; gap: .85rem; min-height: 200px; padding: 1.35rem; text-align: left; }
+.retreat-creative-products button:hover, .retreat-creative-products button.selected { border-color: var(--retreat-blush); box-shadow: inset 0 -3px var(--retreat-blush); }
+.retreat-creative-products button > span { font: 1.9rem/1 Georgia, "Times New Roman", serif; text-transform: uppercase; }
+.retreat-creative-products small { color: #c8b9b6; font-size: .95rem; line-height: 1.6; }
+.retreat-creative-products i { color: var(--retreat-blush); font: 1rem/1.4 "Comic Sans MS", "Bradley Hand", cursive; }
+.retreat-creative-configure { margin-top: 3.5rem; max-width: 1100px; padding-top: 2rem; }
+.retreat-creative-formats { display: grid; gap: .75rem; }
+.retreat-creative-formats button { background: transparent; border: 1px solid rgba(239, 180, 194, .4); color: #fff8f2; cursor: pointer; display: grid; gap: .4rem; min-height: 86px; padding: 1rem; text-align: left; }
+.retreat-creative-formats button:hover, .retreat-creative-formats button.selected { border-color: var(--retreat-blush); }
+.retreat-creative-formats button:disabled { cursor: not-allowed; opacity: .5; }
+.retreat-creative-formats button small { color: #c8b9b6; font-size: .85rem; }
+.retreat-creative-guests { color: #c8b9b6; display: grid; gap: .5rem; margin-top: 1.25rem; max-width: 220px; }
+.retreat-creative-guests input, .retreat-creative-form input, .retreat-creative-form textarea { background: #0d090b; border: 1px solid rgba(239, 180, 194, .4); color: #fff8f2; padding: .75rem; width: 100%; }
+.retreat-creative-price { background: #0d090b; padding: 4.5rem 1.25rem; }
+.retreat-creative-price > * { margin-inline: auto; max-width: 900px; }
+.retreat-creative-price h2 { color: #fff8f2; font: 400 3.7rem/.95 Georgia, "Times New Roman", serif; margin-bottom: 1.25rem; overflow-wrap: anywhere; }
+.retreat-creative-price > p:not(.retreat-creative-eyebrow):not(.retreat-hand) { color: #c8b9b6; line-height: 1.7; max-width: 620px; }
+.retreat-creative-price .retreat-hand { margin-top: 2rem; transform: rotate(-2deg); }
+.retreat-creative-enquiry { display: grid; gap: 2rem; padding: 4.5rem 1.25rem; }
+.retreat-enquiry-heading, .retreat-creative-form { margin-inline: auto; max-width: 1100px; width: 100%; }
+.retreat-creative-enquiry h2 { color: #fff8f2; font-size: 2.65rem; }
+.retreat-enquiry-heading > p:not(.retreat-creative-eyebrow) { color: #c8b9b6; margin: .5rem 0; }
+.retreat-creative-form { display: grid; gap: 1rem; }
+.retreat-creative-form label { color: #c8b9b6; display: grid; gap: .45rem; }
 .retreat-form-wide, .retreat-creative-error, .retreat-form-actions { grid-column: 1 / -1; }
 .retreat-form-actions { align-items: center; display: flex; flex-wrap: wrap; gap: 1rem; }
-.retreat-creative-text { background: none; border: 0; color: var(--customer-muted); cursor: pointer; padding: .7rem 0; text-decoration: underline; text-underline-offset: 4px; }
+.retreat-creative-text { background: none; border: 0; color: #c8b9b6; cursor: pointer; padding: .7rem 0; text-decoration: underline; text-underline-offset: 4px; }
 .retreat-creative-error { color: #f2aebd; margin: 0; }
-.retreat-creative-success { border-left: 1px solid #efb4c2; padding-left: 1.25rem; }
-.retreat-creative-success h3 { color: #fff8f2; font-family: Georgia, "Times New Roman", serif; font-size: 2.2rem; font-weight: 400; margin: 0 0 .75rem; }
-.retreat-creative-success p:last-child { color: var(--customer-muted); line-height: 1.7; }
-.retreat-creative-after { padding: clamp(4rem, 10vw, 8rem) 1.5rem; text-align: center; }
-.retreat-creative-after > p:not(.retreat-creative-eyebrow) { margin-inline: auto; max-width: 520px; }
-.retreat-creative-after div { display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center; margin-top: 2rem; }
-.retreat-creative-after a { color: #efb4c2; text-underline-offset: 5px; }
-@media (max-width: 700px) {
-  .retreat-creative-hero { align-items: stretch; display: flex; flex-direction: column; justify-content: end; min-height: 620px; padding: 2rem 1.25rem; }
-  .retreat-hero-image { object-position: 58% center; }
-  .retreat-hero-shade { background: linear-gradient(0deg, rgba(8, 7, 8, .9), rgba(8, 7, 8, .05) 75%); }
-  .retreat-creative-hero h1 { font-size: clamp(3.5rem, 17vw, 5rem); }
-  .retreat-key-note { bottom: 34%; right: 8%; }
-  .retreat-notebook-grid { display: flex; flex-direction: column; gap: 2.25rem; margin-top: 3rem; }
-  .retreat-note-card { transform: none; }
-  .retreat-note-massage { transform: rotate(-1deg); }
-  .retreat-massage-copy { display: block; }
-  .retreat-massage-interruption { padding-top: 1.75rem; }
-  .retreat-massage-interruption .retreat-hand { font-size: clamp(1.15rem, 5vw, 1.4rem); max-width: 19rem; }
-  .retreat-massage-pause { margin-left: 16% !important; }
-  .retreat-massage-body { margin-left: 36% !important; }
-  .retreat-note-outdoors { display: grid; gap: 2rem; grid-template-areas: "opening" "photo" "strawberries" "spoilt"; grid-template-columns: minmax(0, 1fr); padding-block: 2.5rem; }
-  .retreat-outdoors-photo { justify-self: center; max-width: 330px; padding: .3rem; width: 100%; }
-  .retreat-note-outdoors .retreat-hand { font-size: clamp(1.1rem, 5vw, 1.4rem); margin-left: 5%; }
-  .retreat-outdoors-strawberries .retreat-hand { margin-right: 0; }
-  .retreat-outdoors-spoilt h3 { font-size: clamp(1.45rem, 6.3vw, 1.9rem); }
-  .retreat-outdoors-spoilt .retreat-hand { margin-left: 9%; }
-  .retreat-note-braai { min-height: 0; padding-block: 2rem; }
-  .retreat-note-braai::before { background-position: 62% 50%; background-size: auto 108%; mask-image: radial-gradient(ellipse at 62% 49%, #000 20%, rgba(0, 0, 0, .86) 48%, transparent 84%); opacity: .4; }
-  .retreat-note-braai::after { background: linear-gradient(90deg, rgba(13, 9, 11, .86), rgba(13, 9, 11, .36) 62%, rgba(13, 9, 11, .66)), linear-gradient(180deg, rgba(13, 9, 11, .58), transparent 40%, rgba(13, 9, 11, .72)); }
-  .retreat-note-braai h3 { font-size: clamp(2rem, 9vw, 2.75rem); max-width: 9ch; }
-  .retreat-braai-texture { margin-left: 4%; }
-  .retreat-braai-food-aside { font-size: clamp(1.05rem, 4.8vw, 1.3rem); margin-left: 13%; }
-  .retreat-braai-food { margin-left: 3%; }
-  .retreat-braai-finale { margin-top: 2.25rem; }
-  .retreat-braai-fingers { font-size: clamp(1.1rem, 5vw, 1.35rem); margin-left: 12%; }
-  .retreat-braai-payoff { font-size: clamp(1.2rem, 5.5vw, 1.5rem); margin-left: 0; max-width: 18rem; }
-  .retreat-note-fire { transform: rotate(1deg); }
-  .retreat-fire-transition { margin-inline: 0; min-height: 500px; width: 100%; }
-  .retreat-fire-transition img { object-position: 58% center; }
-  .retreat-cally-arrival { min-height: 300px; padding-inline: 1.25rem; }
-  .retreat-cally-reveal { background-position: 62% top; min-height: 980px; padding-top: 22rem; }
-  .retreat-cally-copy { padding-inline: 1.25rem; }
-  .retreat-cally-label { left: 2%; top: 20rem; }
-  .retreat-cally-image > .retreat-hand { right: 2%; top: 23rem; }
-  .retreat-cally-mischief { left: auto; right: 2%; top: 27rem; }
-  .retreat-creative-products, .retreat-creative-formats, .retreat-creative-form, .retreat-creative-enquiry { grid-template-columns: 1fr; }
-  .retreat-creative-products button { min-height: 210px; }
-  .retreat-form-wide, .retreat-creative-error, .retreat-form-actions { grid-column: auto; }
+.retreat-creative-success { border-left: 1px solid var(--retreat-blush); padding-left: 1.25rem; }
+.retreat-creative-success h3 { color: #fff8f2; font: 400 2rem Georgia, "Times New Roman", serif; margin: 0 0 .75rem; }
+.retreat-creative-success p:last-child { color: #c8b9b6; line-height: 1.7; }
+.retreat-red { color: #ee8ca6; }
+.retreat-creative-after { background: #eee3d8; color: #261b1d; padding: 4.5rem 1.25rem; text-align: center; }
+.retreat-creative-after > * { margin-inline: auto; max-width: 680px; }
+.retreat-creative-after .retreat-creative-eyebrow { color: #995466; }
+.retreat-creative-after h2 { font-size: 2.8rem; text-transform: uppercase; }
+.retreat-inner-sanctum-name { color: #9a4d62; font: 1.5rem Georgia, "Times New Roman", serif; text-transform: uppercase; }
+.retreat-creative-after > p:not(.retreat-creative-eyebrow):not(.retreat-inner-sanctum-name):not(.retreat-hand) { color: #56474a; line-height: 1.7; }
+.retreat-creative-after .retreat-hand { color: #a34c65; margin-top: 1.5rem; }
+.retreat-creative-after div { margin-top: 2rem; }
+.retreat-creative-after a { color: #7f3048; display: inline-flex; font-weight: 700; min-height: 44px; text-underline-offset: 5px; }
+@keyframes retreat-entrance { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@media (min-width: 760px) {
+  .retreat-creative-hero { min-height: 700px; padding: 5rem max(3rem, calc((100vw - 1240px) / 2 + 2rem)); }
+  .retreat-creative-hero h1 { font-size: 7rem; }
+  .retreat-hero-shade { background: linear-gradient(90deg, rgba(8, 7, 8, .86), rgba(8, 7, 8, .32) 58%, rgba(8, 7, 8, .06)), linear-gradient(0deg, rgba(8, 7, 8, .62), transparent 50%); }
+  .retreat-creative-nights { padding-block: 7rem; }
+  .retreat-creative-nights h2, .retreat-curiosity h2, .retreat-rest h2, .retreat-cally-editorial h2 { font-size: 4.4rem; }
+  .retreat-daylight { align-items: center; display: grid; gap: 4rem; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); padding: 7rem max(3rem, calc((100vw - 1200px) / 2)); }
+  .retreat-daylight-copy { margin: 0; }
+  .retreat-daylight h2 { font-size: 4.5rem; }
+  .retreat-daylight-photo { max-width: none; }
+  .retreat-massage { gap: 5rem; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); padding: 7rem max(3rem, calc((100vw - 1200px) / 2)); }
+  .retreat-massage-photo { margin: 0; }
+  .retreat-massage-photo img { height: auto; }
+  .retreat-massage-copy h2 { font-size: 4.2rem; }
+  .retreat-curiosity { padding: 6rem max(3rem, calc((100vw - 1000px) / 2)); }
+  .retreat-rest { padding: 7rem max(3rem, calc((100vw - 1100px) / 2)); }
+  .retreat-rest-lines { grid-template-columns: 1fr 1fr; }
+  .retreat-dusk { min-height: 620px; padding: 5rem max(3rem, calc((100vw - 1100px) / 2)); }
+  .retreat-dusk h2 { font-size: 4.3rem; }
+  .retreat-braai { align-items: center; column-gap: 4rem; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); padding: 7rem max(3rem, calc((100vw - 1200px) / 2)); }
+  .retreat-braai-heading { grid-column: 1 / -1; }
+  .retreat-braai-heading h2 { font-size: 5rem; }
+  .retreat-braai-photo { aspect-ratio: 4 / 5; margin: 0; }
+  .retreat-braai-copy { padding-top: 0; }
+  .retreat-braai-copy > p:not(.retreat-hand) { font-size: 1.4rem; }
+  .retreat-braai-texture { font-size: 2.6rem !important; }
+  .retreat-night { min-height: 620px; padding: 5rem max(3rem, calc((100vw - 1100px) / 2)); }
+  .retreat-night h2 { font-size: 4.6rem; }
+  .retreat-night > .retreat-creative-eyebrow { left: max(3rem, calc((100vw - 1100px) / 2)); }
+  .retreat-cally-editorial { align-items: center; gap: 5rem; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); padding: 7rem max(3rem, calc((100vw - 1200px) / 2)); }
+  .retreat-cally-portrait { max-width: none; }
+  .retreat-cally-copy h2 { font-size: 5rem; }
+  .retreat-creative-commercial, .retreat-creative-price, .retreat-creative-enquiry, .retreat-creative-after { padding-block: 6rem; }
+  .retreat-creative-commercial { padding-inline: max(3rem, calc((100vw - 1100px) / 2)); }
+  .retreat-creative-products { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .retreat-creative-products button { min-height: 245px; padding: 1.75rem; }
+  .retreat-creative-products button > span { font-size: 2.3rem; }
+  .retreat-creative-formats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .retreat-creative-price { padding-inline: max(3rem, calc((100vw - 900px) / 2)); }
+  .retreat-creative-price h2 { font-size: 5rem; }
+  .retreat-creative-enquiry { column-gap: 5rem; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); padding-inline: max(3rem, calc((100vw - 1100px) / 2)); }
+  .retreat-creative-enquiry h2 { font-size: 3.4rem; }
+  .retreat-creative-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .retreat-creative-after { padding-inline: 2rem; }
 }
-@media (prefers-reduced-motion: reduce) { .retreat-creative * { scroll-behavior: auto; transition: none !important; } }
+@media (prefers-reduced-motion: reduce) {
+  .retreat-hero-copy { animation: none; }
+  .retreat-creative * { scroll-behavior: auto; transition: none !important; }
+}
 
-/* Cally's native-scroll scene: the image and each handwritten thought stay still. */
-.retreat-cally-dark-prelude { background: #070708; min-height: clamp(17rem, 36svh, 34rem); width: 100%; }
-.retreat-cally-scroll-scene { background: #0d090b; min-height: 760svh; position: relative; }
-.retreat-cally-sticky-stage { align-items: center; background: #0d090b; display: flex; height: calc(100svh - 88px); justify-content: center; overflow: hidden; position: sticky; top: 88px; z-index: 0; }
-.retreat-cally-sticky-stage picture, .retreat-cally-sticky-stage picture img { display: block; height: 100%; width: 100%; }
-.retreat-cally-photo { clip-path: inset(0 0 calc((1 - var(--cally-reveal, 0)) * 100%) 0); filter: brightness(calc(0.38 + var(--cally-reveal, 0) * 0.62)) saturate(1.08); object-fit: contain; object-position: center; transform: scale(1.02); }
-.retreat-cally-sticky-stage picture img { object-fit: contain; object-position: center; }
-.retreat-cally-reveal-edge { background: linear-gradient(180deg, transparent, rgba(13, 9, 11, .68), #0d090b); height: 7svh; left: 0; opacity: calc(1 - var(--cally-reveal, 0)); pointer-events: none; position: absolute; right: 0; top: calc(var(--cally-reveal, 0) * 100% - 3svh); z-index: 1; }
-.retreat-cally-stage-fade { background: linear-gradient(180deg, #0d090b 0%, transparent 13%, transparent 76%, #0d090b 100%); inset: 0; pointer-events: none; position: absolute; }
-.retreat-cally-stage-fade { z-index: 2; }
-.retreat-cally-annotations { inset: 0; pointer-events: none; position: absolute; z-index: 3; }
-.retreat-cally-scroll-track { height: calc(760svh - (100svh - 88px)); pointer-events: none; position: relative; }
-.retreat-cally-beat { opacity: 0; pointer-events: none; position: absolute; transition: opacity .12s ease-out; }
-.retreat-cally-beat > * { max-width: clamp(220px, 26vw, 360px); }
-.retreat-cally-beat p { color: rgba(255, 248, 242, .96); font-family: Georgia, "Times New Roman", serif; font-size: clamp(1.45rem, 2.8vw, 2.7rem); line-height: 1.2; text-shadow: 0 0 10px rgba(239, 180, 194, .08); }
-.retreat-cally-beat .retreat-hand { color: rgba(239, 180, 194, .96); font-family: "Comic Sans MS", "Bradley Hand", cursive; font-size: clamp(1.4rem, 2.2vw, 2.15rem); font-weight: 600; }
-.retreat-cally-beat-arrival { left: 8%; top: 20%; }
-.retreat-cally-beat-arrival p { transform: rotate(-4deg); }
-.retreat-cally-beat-arrival .retreat-hand { text-shadow: 0 0 14px rgba(239, 180, 194, .18); }
-.retreat-cally-beat-hunger { right: 8%; top: 42%; }
-.retreat-cally-beat-strawberries { right: 7%; top: 18%; }
-.retreat-cally-beat-pampered { right: 9%; top: 65%; }
-.retreat-cally-beat-hunger p, .retreat-cally-beat-pampered p { transform: rotate(3deg); }
-.retreat-cally-beat-plans { bottom: 15%; left: 7%; }
-.retreat-cally-beat-showers { left: 11%; top: 42%; }
-.retreat-cally-beat-bad { bottom: 10%; left: 12%; }
-.retreat-cally-beat-plans p, .retreat-cally-beat-bad p { transform: rotate(-3deg); }
-.retreat-cally-beat-identity { bottom: 10%; right: 8%; }
-.retreat-cally-beat-identity .retreat-cally-label { bottom: auto; left: auto; position: relative; top: auto; }
-.retreat-cally-beat-looking { left: 9%; top: 25%; }
-.retreat-cally-beat-looking p { transform: rotate(-4deg); }
-.retreat-cally-beat-good { bottom: 18%; right: 13%; }
-.retreat-cally-beat-good p { font-size: clamp(.9rem, 1.4vw, 1.25rem); transform: rotate(3deg); }
-@media (max-width: 700px) {
-  .retreat-cally-dark-prelude { min-height: clamp(13rem, 20svh, 18rem); }
-  .retreat-cally-scroll-scene { min-height: 650svh; }
-  .retreat-cally-sticky-stage { height: calc(100svh - 88px); top: 88px; }
-  .retreat-cally-sticky-stage picture img { object-fit: contain; object-position: center top; }
-  .retreat-cally-scroll-track { height: calc(650svh - (100svh - 88px)); }
-  .retreat-cally-beat > * { max-width: min(72vw, 260px); }
-  .retreat-cally-beat .retreat-hand { font-size: clamp(1.7rem, 5.6vw, 2.45rem); }
-  .retreat-cally-beat-arrival { left: 6%; top: 12%; }
-  .retreat-cally-beat-hunger { right: 5%; top: 43%; }
-  .retreat-cally-beat-plans { bottom: 10%; left: 5%; }
-  .retreat-cally-beat-strawberries { right: 5%; top: 17%; }
-  .retreat-cally-beat-showers { left: 5%; top: 53%; }
-  .retreat-cally-beat-identity { bottom: 7%; left: 5%; right: auto; }
-  .retreat-cally-beat-pampered { right: 5%; top: 64%; }
-  .retreat-cally-beat-bad { bottom: 14%; left: 5%; }
-  .retreat-cally-beat-looking { left: 5%; top: 24%; }
-  .retreat-cally-beat-good { bottom: 12%; right: 8%; }
+/* Retreat marketing story: a single day-to-night canvas, with a quiet offer. */
+.retreat-creative { background: #17121a; color: #f5eee7; }
+.retreat-creative h1, .retreat-creative h2, .retreat-creative h3, .retreat-creative h4 { font-family: Georgia, "Times New Roman", serif; font-weight: 400; }
+.retreat-creative h2 { font-size: clamp(2.5rem, 8vw, 4.6rem); line-height: .98; margin: 0 0 1.4rem; }
+.retreat-creative p { line-height: 1.72; }
+.retreat-creative-eyebrow { color: #efb4c2; font-size: .72rem; letter-spacing: .16em; margin: 0 0 1rem; text-transform: uppercase; }
+.retreat-hand { color: #efb4c2; font-family: "Comic Sans MS", "Bradley Hand", cursive; font-size: 1.1rem; line-height: 1.35; }
+.retreat-story-hero { align-items: end; display: flex; isolation: isolate; min-height: max(520px, min(82svh, 760px)); overflow: hidden; padding: 2rem 1.35rem 3rem; position: relative; }
+.retreat-story-hero-image { object-fit: cover; object-position: 53% center; z-index: -2; }
+.retreat-story-hero-shade { background: linear-gradient(0deg, rgba(12, 9, 13, .94), rgba(12, 9, 13, .52) 46%, rgba(12, 9, 13, .08)); inset: 0; position: absolute; z-index: -1; }
+.retreat-story-hero-copy { max-width: 800px; }
+.retreat-brand-mark { color: #fff7f0; font: 1.15rem/1 Georgia, "Times New Roman", serif; letter-spacing: .16em; margin: 0 0 2rem; text-transform: uppercase; }
+.retreat-story-hero h1 { color: #fff7f0; font-size: clamp(3.7rem, 12.5vw, 7.3rem); line-height: .87; margin: 0 0 1.4rem; max-width: 9ch; text-transform: uppercase; }
+.retreat-story-hero-support { color: #fff7f0; font: 1.35rem/1.35 Georgia, "Times New Roman", serif; margin: 0 0 1.25rem; }
+.retreat-story-hero-proposition { font-size: .95rem; margin: 0; }
+.retreat-story-hero-aside { margin: .35rem 0 1.5rem; transform: rotate(-3deg); transform-origin: left; }
+.retreat-story-scroll { color: #fff7f0; display: inline-flex; min-height: 44px; align-items: center; text-decoration-thickness: 1px; text-underline-offset: 6px; }
+.retreat-story-intro { align-items: center; background: #211922; display: grid; gap: 2.5rem; padding: 4.5rem 1.35rem; }
+.retreat-intro-copy { margin-inline: auto; max-width: 42rem; }
+.retreat-intro-copy h2 { color: #fff7f0; }
+.retreat-intro-copy > p { color: #ded2cd; margin: .7rem 0; }
+.retreat-intro-copy > .retreat-copy-emphasis { color: #fff7f0; font: 1.2rem/1.5 Georgia, "Times New Roman", serif; margin: 1.7rem 0; }
+.retreat-itinerary-vandalism { margin-top: 2.5rem; transform: rotate(-1deg); }
+.retreat-itinerary-vandalism p { margin: .25rem 0; }
+.retreat-itinerary-vandalism .retreat-hand { color: #f0a9bc; }
+.retreat-photo { aspect-ratio: 16 / 9; background: #282431; isolation: isolate; margin: 0; min-width: 0; overflow: hidden; position: relative; }
+.retreat-photo img { object-fit: cover; }
+.retreat-intro-photo { aspect-ratio: 4 / 3; border: 1px solid rgba(239, 180, 194, .25); box-shadow: 0 20px 50px rgba(12, 9, 17, .3); margin-inline: auto; max-width: 620px; width: 100%; }
+.retreat-intro-photo img { object-position: 62% center; }
+.retreat-intro-photo::after { background: linear-gradient(0deg, rgba(33, 25, 34, .4), transparent 40%); content: ""; inset: 0; pointer-events: none; position: absolute; }
+.retreat-story-massage { align-items: center; background: #17121a; display: grid; gap: 2rem; padding: 4rem 1.35rem; }
+.retreat-massage-image-wrap { margin-inline: -1.35rem; overflow: hidden; }
+.retreat-massage-image { display: block; height: auto; width: 100%; }
+.retreat-massage-copy { margin-inline: auto; max-width: 36rem; }
+.retreat-massage-copy h2 { color: #fff7f0; }
+.retreat-massage-lead { color: #e7d8d1; font: 1.25rem/1.5 Georgia, "Times New Roman", serif; margin: 1.8rem 0 1.2rem; }
+.retreat-massage-pressure { color: #fff7f0; font: clamp(2.5rem, 10vw, 4.5rem)/.94 Georgia, "Times New Roman", serif; letter-spacing: .035em; margin: 1.5rem 0; }
+.retreat-massage-sensory { color: #e6d8d2; font: 1.12rem/1.8 Georgia, "Times New Roman", serif; }
+.retreat-massage-slow { color: #efb4c2; margin-top: 2.25rem; }
+.retreat-massage-pause { color: #fff7f0; font-size: 1.45rem; margin: 1.7rem 0; }
+.retreat-massage-release { color: #efb4c2; font: 2.7rem Georgia, "Times New Roman", serif; margin: 2rem 0; }
+.retreat-massage-still { color: #d9ccc6; margin-top: 2rem; }
+.retreat-massage-cally { margin: 2rem 0; transform: rotate(-2deg); }
+.retreat-massage-sting { color: #fff7f0; font: 1.1rem/1.6 Georgia, "Times New Roman", serif; margin-top: 2.5rem; }
+.retreat-day-night { background: linear-gradient(180deg, #d9b662 0%, #c38e4a 39%, #95654f 66%, #65475d 83%, #252238 100%); color: #271d18; }
+.retreat-story-day { padding: 4rem 1.35rem 3.75rem; }
+.retreat-day-copy { margin: 0 auto 2.5rem; max-width: 58rem; }
+.retreat-day-copy h2 { color: #2b211a; }
+.retreat-day-copy p { font-size: 1.03rem; max-width: 48rem; }
+.retreat-day-gallery { display: grid; gap: .75rem; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0 auto; max-width: 1120px; }
+.retreat-day-gallery > :first-child { grid-column: 1 / -1; }
+.retreat-day-gallery .retreat-photo { aspect-ratio: 4 / 3; border: 1px solid rgba(68, 43, 26, .2); box-shadow: 0 8px 20px rgba(61, 36, 21, .16); }
+.retreat-day-gallery .retreat-day-forest { aspect-ratio: 16 / 8; }
+.retreat-day-beach img { object-position: 42% center; }
+.retreat-day-pool img { object-position: 65% center; }
+.retreat-day-river img { object-position: 63% center; }
+.retreat-do-nothing { margin: 3.5rem auto 0; max-width: 54rem; padding: 1rem 0; }
+.retreat-do-nothing h2 { color: #2b211a; max-width: 12ch; }
+.retreat-do-nothing > p:first-of-type { font: 1.12rem/1.8 Georgia, "Times New Roman", serif; }
+.retreat-do-nothing .retreat-copy-emphasis { font: 1.2rem/1.5 Georgia, "Times New Roman", serif; }
+.retreat-story-sunset { align-items: end; display: flex; isolation: isolate; justify-content: center; min-height: 390px; overflow: hidden; padding: 3rem 1.35rem; position: relative; }
+.retreat-sunset-image { object-fit: cover; object-position: center 57%; opacity: .82; z-index: -2; }
+.retreat-sunset-shade { background: linear-gradient(180deg, rgba(195, 142, 74, .15), rgba(76, 52, 76, .36) 42%, rgba(25, 24, 42, .85)); inset: 0; position: absolute; z-index: -1; }
+.retreat-sunset-copy { margin-inline: auto; max-width: 850px; width: 100%; }
+.retreat-sunset-copy h2 { color: #fff7f0; font-size: clamp(2.9rem, 10vw, 5.5rem); max-width: 10ch; }
+.retreat-sunset-copy .retreat-hand { font-size: 1.35rem; margin-left: 1rem; transform: rotate(-2deg); }
+.retreat-story-feast { align-items: center; background: #191824; display: grid; gap: 2rem; padding: 4.5rem 1.35rem; }
+.retreat-feast-copy { margin-inline: auto; max-width: 38rem; }
+.retreat-feast-copy h2 { color: #fff7f0; font-size: clamp(3rem, 10vw, 5.8rem); text-transform: uppercase; }
+.retreat-feast-lead { color: #f4ddd0; font: 1.3rem Georgia, "Times New Roman", serif; }
+.retreat-feast-copy > p:not(.retreat-feast-lead):not(.retreat-feast-texture):not(.retreat-copy-emphasis) { color: #e4d9d4; }
+.retreat-feast-texture { color: #f4bc67; font: clamp(2.2rem, 7vw, 3.5rem)/1.05 Georgia, "Times New Roman", serif; margin: 2rem 0; }
+.retreat-feast-copy .retreat-copy-emphasis { color: #fff7f0; font: 1.3rem/1.5 Georgia, "Times New Roman", serif; }
+.retreat-feast-vandalism { margin-top: 2.25rem; }
+.retreat-feast-vandalism p { margin: .55rem 0; }
+.retreat-feast-vandalism .retreat-hand { color: #efb4c2; }
+.retreat-feast-image { aspect-ratio: 4 / 5; margin: 0 -1.35rem; overflow: hidden; position: relative; }
+.retreat-feast-image img { object-fit: cover; }
+.retreat-story-after-dinner { background: #211e33; display: grid; gap: 2rem; isolation: isolate; padding: 4rem 1.35rem; position: relative; }
+.retreat-after-dinner-backdrop { margin-inline: -1.35rem; }
+.retreat-after-dinner-backdrop::after { background: linear-gradient(0deg, #211e33, transparent 30%); content: ""; inset: 0; pointer-events: none; position: absolute; }
+.retreat-after-dinner-copy { margin-inline: auto; max-width: 46rem; }
+.retreat-after-dinner-copy h2 { color: #fff5ec; }
+.retreat-after-dinner-copy .retreat-after-dinner-second { color: #efb4c2; margin-top: 2.2rem; }
+.retreat-after-dinner-copy > p { color: #ded4d8; }
+.retreat-after-dinner-copy > .retreat-hand { color: #f0b2c4; }
+.retreat-after-dinner-question { font: 1.22rem/1.5 Georgia, "Times New Roman", serif; margin-top: 2.5rem; }
+.retreat-story-play { background: #241c31; display: grid; gap: 2rem; padding: 4rem 1.35rem; }
+.retreat-play-copy { margin-inline: auto; max-width: 44rem; }
+.retreat-play-copy h2 { color: #fff5ec; }
+.retreat-play-mostly { margin-top: -.7rem; transform: rotate(-3deg); }
+.retreat-play-fragments { color: #f2e7e4; font: 1.16rem/1.9 Georgia, "Times New Roman", serif; margin: 2rem 0; }
+.retreat-play-fragments p { margin: .1rem 0; }
+.retreat-play-vandalism { margin: 1em 0; }
+.retreat-play-vandalism p { margin: 0; }
+.retreat-play-identity { color: #f2e7e4; }
+.retreat-play-replacement { color: #f08eb5; font-size: 1.3rem; margin-left: 1.2rem !important; transform: rotate(-2deg); transform-origin: left center; }
+.retreat-play-meow { color: #ff83ae; font: clamp(4rem, 18vw, 8rem)/1 Georgia, "Times New Roman", serif; margin: 2rem 0 0 12%; }
+.retreat-play-images { display: grid; gap: .8rem; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-inline: auto; max-width: 850px; width: 100%; }
+.retreat-play-images { align-items: center; gap: .5rem; padding: .8rem .6rem; }
+.retreat-play-photo { aspect-ratio: 4 / 5; background: #e7d6c7; border: .45rem solid #e7d6c7; border-bottom-width: 1.6rem; box-shadow: 0 12px 26px rgba(10, 7, 19, .4); overflow: visible; }
+.retreat-play-photo img { object-fit: cover; }
+.retreat-play-photo-first { transform: rotate(-4deg); }
+.retreat-play-photo-first img { object-position: 56% center; }
+.retreat-play-photo-second { margin-top: 2.5rem; transform: rotate(5deg); }
+.retreat-play-photo-second img { object-position: 62% center; }
+.retreat-story-host { align-items: center; background: #1a1828; display: grid; gap: 2rem; padding: 4rem 1.35rem; }
+.retreat-host-photo { aspect-ratio: 4 / 5; border: 1px solid rgba(239, 180, 194, .25); box-shadow: 0 20px 55px rgba(10, 8, 20, .4); margin-inline: auto; max-width: 470px; width: 100%; }
+.retreat-host-copy { margin-inline: auto; max-width: 44rem; }
+.retreat-host-copy h2 { color: #fff5ec; }
+.retreat-host-copy p { color: #ded4d8; }
+.retreat-host-copy .retreat-hand { color: #efb4c2; }
+.retreat-host-close { color: #fff5ec !important; font: 1.18rem/1.7 Georgia, "Times New Roman", serif; margin-top: 2rem; }
+.retreat-story-morning { align-items: center; background: #b89978; color: #2c211e; display: grid; gap: 2rem; isolation: isolate; padding: 4rem 1.35rem; position: relative; }
+.retreat-morning-photo { margin-inline: -1.35rem; }
+.retreat-morning-photo img { object-position: 65% center; }
+.retreat-morning-copy { margin-inline: auto; max-width: 36rem; }
+.retreat-morning-copy h2 { color: #2c211e; font-size: clamp(2.8rem, 9vw, 5rem); }
+.retreat-morning-copy p { color: #43312b; }
+.retreat-story-offer { background: #eee5da; color: #261c1c; padding: 4rem 1.35rem; }
+.retreat-offer-intro, .retreat-inclusions, .retreat-offer-flow { margin-inline: auto; max-width: 1100px; }
+.retreat-offer-intro h2 { color: #261c1c; }
+.retreat-offer-intro > p { color: #56474a; font: 1.16rem/1.65 Georgia, "Times New Roman", serif; max-width: 42rem; }
+.retreat-inclusions { margin-top: 2.5rem; }
+.retreat-inclusions h3 { color: #704452; font-size: .76rem; letter-spacing: .14em; margin: 0 0 .8rem; text-transform: uppercase; }
+.retreat-inclusions ul { display: grid; gap: 0 .8rem; grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
+.retreat-inclusions li { border-top: 1px solid rgba(59, 42, 42, .2); color: #3a2d2d; line-height: 1.45; padding: .8rem 0; }
+.retreat-offer-flow { margin-top: 3rem; }
+.retreat-offer-products, .retreat-offer-format-selection { border: 0; margin: 0; min-width: 0; padding: 0; }
+.retreat-offer-products legend, .retreat-offer-format-selection legend { color: #704452; font-size: .78rem; font-weight: 700; letter-spacing: .12em; margin-bottom: .85rem; text-transform: uppercase; }
+.retreat-creative-products { display: grid; gap: .75rem; margin: 0; max-width: none; }
+.retreat-creative-products button { background: rgba(255, 255, 255, .34); border: 1px solid rgba(84, 60, 59, .32); color: #2b2021; cursor: pointer; display: grid; gap: .65rem; min-height: 0; padding: 1.15rem; text-align: left; }
+.retreat-creative-products button:hover, .retreat-creative-products button.selected { border-color: #8f4d5d; box-shadow: inset 0 -3px #8f4d5d; }
+.retreat-creative-products button > span { font: 1.35rem/1.1 Georgia, "Times New Roman", serif; text-transform: none; }
+.retreat-creative-products small { color: #57484a; font-size: .9rem; line-height: 1.55; }
+.retreat-creative-formats { display: grid; gap: .65rem; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.retreat-creative-formats button { background: transparent; border: 1px solid rgba(84, 60, 59, .32); color: #302426; cursor: pointer; min-height: 50px; padding: .8rem; text-align: left; }
+.retreat-creative-formats button:hover, .retreat-creative-formats button.selected { border-color: #8f4d5d; box-shadow: inset 0 -2px #8f4d5d; }
+.retreat-creative-formats button:disabled, .retreat-offer-format-selection:disabled { cursor: not-allowed; opacity: .55; }
+.retreat-creative-products button:focus-visible, .retreat-creative-formats button:focus-visible, .retreat-creative-form input:focus-visible, .retreat-creative-form textarea:focus-visible, .retreat-creative-guests input:focus-visible, .retreat-creative-text:focus-visible, .retreat-creative-primary:focus-visible, .retreat-story-scroll:focus-visible, .retreat-story-not-ready a:focus-visible, .retreat-price-retry:focus-visible { outline: 3px solid #9c5165; outline-offset: 3px; }
+.retreat-creative-guests { color: #49393b; display: grid; gap: .45rem; margin-top: 1rem; max-width: 14rem; }
+.retreat-creative-guests input, .retreat-creative-form input, .retreat-creative-form textarea { background: #fffaf3; border: 1px solid rgba(84, 60, 59, .4); border-radius: 0; color: #261c1c; padding: .8rem; width: 100%; }
+.retreat-offer-price { background: #28212a; color: #f7eee8; margin-top: 2.5rem; padding: 1.4rem; }
+.retreat-offer-price h3 { color: #fff7f0; font-size: 1.6rem; margin: 0; }
+.retreat-offer-price > p { color: #e2d4d0; margin: .55rem 0 0; }
+.retreat-offer-price .retreat-offer-price-label { color: #efb4c2; font-size: .7rem; letter-spacing: .13em; text-transform: uppercase; }
+.retreat-offer-price .retreat-offer-total { color: #fff7f0; font: clamp(2.8rem, 9vw, 4.8rem)/1 Georgia, "Times New Roman", serif; margin: .35rem 0; overflow-wrap: anywhere; }
+.retreat-price-retry { background: transparent; border: 0; color: #f0b2c4; cursor: pointer; min-height: 44px; padding: .5rem 0; text-decoration: underline; text-underline-offset: 4px; }
+.retreat-offer-enquiry { border-top: 1px solid rgba(86, 64, 64, .24); display: grid; gap: 1.25rem; margin-top: 2.5rem; padding-top: 2rem; }
+.retreat-enquiry-heading h3 { color: #2b2021; font-size: clamp(1.8rem, 6vw, 2.8rem); margin: 0; }
+.retreat-creative-form { display: grid; gap: 1rem; margin: 0; max-width: none; width: 100%; }
+.retreat-creative-form label { color: #483a3b; display: grid; gap: .45rem; }
+.retreat-creative-form label span { font-size: .87em; }
+.retreat-form-wide, .retreat-creative-error, .retreat-form-actions, .retreat-offer-reassurance { grid-column: 1 / -1; }
+.retreat-form-actions { align-items: center; display: flex; flex-wrap: wrap; gap: 1rem; }
+.retreat-creative-primary { align-items: center; background: #803f54; border: 1px solid #803f54; color: #fff8f2; cursor: pointer; display: inline-flex; font-size: .76rem; font-weight: 700; justify-content: center; letter-spacing: .08em; min-height: 48px; padding: .85rem 1.2rem; text-decoration: none; text-transform: uppercase; }
+.retreat-creative-primary:hover { background: #632f42; }
+.retreat-creative-text { background: none; border: 0; color: #62434b; cursor: pointer; min-height: 44px; padding: .7rem 0; text-decoration: underline; text-underline-offset: 4px; }
+.retreat-creative-error { color: #9d263c; margin: 0; }
+.retreat-offer-reassurance { color: #57484a; font-size: .93rem; margin: 0; }
+.retreat-creative-success { border-left: 1px solid #9f6072; padding-left: 1.25rem; }
+.retreat-creative-success h4 { color: #2b2021; font: 400 1.8rem Georgia, "Times New Roman", serif; margin: 0 0 .75rem; }
+.retreat-creative-success p:last-child { color: #57484a; line-height: 1.7; }
+.retreat-red { color: #9a4d62; }
+.retreat-story-not-ready { align-items: center; background: #282331; color: #f5eee7; display: grid; gap: 2rem; padding: 4rem 1.35rem; }
+.retreat-not-ready-photo { aspect-ratio: 4 / 5; margin-inline: auto; max-width: 420px; width: 100%; }
+.retreat-not-ready-photo::after { background: linear-gradient(0deg, rgba(40, 35, 49, .6), transparent 35%); content: ""; inset: 0; pointer-events: none; position: absolute; }
+.retreat-not-ready-copy { margin-inline: auto; max-width: 36rem; text-align: center; }
+.retreat-not-ready-copy h2 { color: #fff5ec; text-transform: lowercase; }
+.retreat-not-ready-copy p { color: #e6d8d7; margin: 2.5rem 0; }
+.retreat-story-not-ready a { color: #f0b2c4; display: inline-flex; font-size: .76rem; font-weight: 700; letter-spacing: .1em; min-height: 48px; align-items: center; text-decoration: none; text-transform: uppercase; }
+@media (min-width: 760px) {
+  .retreat-story-hero { min-height: min(88svh, 860px); padding: 5rem max(3rem, calc((100vw - 1240px) / 2 + 2rem)); }
+  .retreat-story-hero-shade { background: linear-gradient(90deg, rgba(12, 9, 13, .86), rgba(12, 9, 13, .36) 60%, rgba(12, 9, 13, .04)), linear-gradient(0deg, rgba(12, 9, 13, .65), transparent 56%); }
+  .retreat-story-intro { gap: 4rem; grid-template-columns: minmax(0, 1fr) minmax(340px, .85fr); padding: 7rem max(3rem, calc((100vw - 1180px) / 2)); }
+  .retreat-story-massage { gap: 4.5rem; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); padding: 7rem max(3rem, calc((100vw - 1180px) / 2)); }
+  .retreat-massage-image-wrap { margin: 0; }
+  .retreat-massage-copy h2 { font-size: 4.2rem; }
+  .retreat-story-day { padding: 6rem max(3rem, calc((100vw - 1120px) / 2)); }
+  .retreat-day-gallery { gap: 1rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .retreat-day-gallery .retreat-photo { aspect-ratio: 16 / 9; }
+  .retreat-day-gallery .retreat-day-forest { aspect-ratio: 16 / 6; }
+  .retreat-do-nothing { margin-top: 5rem; padding: 1.5rem 0; }
+  .retreat-do-nothing h2 { max-width: 14ch; }
+  .retreat-story-sunset { min-height: 600px; padding: 5rem max(3rem, calc((100vw - 1120px) / 2)); }
+  .retreat-story-feast { gap: 4rem; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); padding: 7rem max(3rem, calc((100vw - 1180px) / 2)); }
+  .retreat-feast-image { aspect-ratio: 4 / 5; margin: 0; }
+  .retreat-story-after-dinner { gap: 4rem; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); padding: 6rem max(3rem, calc((100vw - 1100px) / 2)); }
+  .retreat-after-dinner-backdrop { aspect-ratio: auto; inset: 0; margin: 0; position: absolute; z-index: -1; }
+  .retreat-after-dinner-backdrop img { object-position: 65% center; }
+  .retreat-after-dinner-backdrop::after { background: linear-gradient(90deg, rgba(33, 30, 51, .94) 0%, rgba(33, 30, 51, .85) 43%, rgba(33, 30, 51, .12) 100%), linear-gradient(0deg, #211e33, transparent 22%); }
+  .retreat-story-play { align-items: center; gap: 4rem; grid-template-columns: minmax(0, 1fr) minmax(360px, .85fr); padding: 6rem max(3rem, calc((100vw - 1180px) / 2)); }
+  .retreat-play-images { gap: 1rem; }
+  .retreat-story-host { gap: 5rem; grid-template-columns: minmax(320px, .8fr) minmax(0, 1.2fr); padding: 7rem max(3rem, calc((100vw - 1180px) / 2)); }
+  .retreat-story-morning { display: block; padding: 6rem max(3rem, calc((100vw - 1180px) / 2)); }
+  .retreat-morning-photo { aspect-ratio: auto; inset: 0; margin: 0; position: absolute; z-index: -1; }
+  .retreat-morning-photo img { object-position: 70% center; }
+  .retreat-morning-photo::after { background: linear-gradient(90deg, #b89978 0%, rgba(184, 153, 120, .97) 30%, rgba(184, 153, 120, .85) 48%, rgba(184, 153, 120, .08) 76%); content: ""; inset: 0; pointer-events: none; position: absolute; }
+  .retreat-morning-copy { margin-left: 0; max-width: min(36rem, 48%); }
+  .retreat-story-offer { padding: 6rem max(3rem, calc((100vw - 1120px) / 2)); }
+  .retreat-inclusions ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .retreat-creative-products { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .retreat-creative-formats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .retreat-offer-price { padding: 2rem; }
+  .retreat-offer-enquiry { align-items: start; gap: 3rem; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); padding-top: 3rem; }
+  .retreat-creative-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .retreat-story-not-ready { gap: 5rem; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); padding: 6rem max(3rem, calc((100vw - 1080px) / 2)); }
 }
+@media (max-width: 420px) {
+  .retreat-story-hero { min-height: 560px; }
+  .retreat-day-gallery { gap: .55rem; }
+  .retreat-play-images { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 700px) {
+  .retreat-story-hero-support { font-size: 1.05rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .retreat-story-hero-copy { animation: none; }
+  .retreat-creative a, .retreat-creative button { scroll-behavior: auto; transition: none !important; }
+}
+
 @media (min-width: 560px) { .entrance-auth-actions { flex-direction: row; max-width: 500px; } .entrance-auth-actions > * { flex: 1; } }
 @media (prefers-reduced-motion: no-preference) { .entrance-panel { animation: entrance-reveal .65s ease both; } }
 @keyframes entrance-reveal { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
